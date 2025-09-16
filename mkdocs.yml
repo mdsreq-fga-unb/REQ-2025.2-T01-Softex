@@ -53,21 +53,24 @@ theme:
 # Plugins
 plugins:
   - search
-  - git-revision-date-localized:
-      enable_creation_date: true
-  - git-committers:
-      repository: seu-usuario/REQ-2025.2-T01-Softex
-      branch: main
 
 # Page tree
 nav:
   - Início: index.md
-  - Documentação:
-    - Introdução: docs/introducao.md
-    - Instalação: docs/instalacao.md
-    - Uso: docs/uso.md
+  - Documentação do Projeto:
+    - Introdução: introducao.md
+    - Cenário Atual: cenario-atual.md
+    - Solução Proposta: solucao-proposta.md
+    - Estratégias de Engenharia: estrategias-engenharia.md
+    - Cronograma e Entregas: cronograma-entregas.md
+    - Interação Equipe-Cliente: interacao-equipe-cliente.md
+    - Lições Aprendidas: licoes-aprendidas.md
+  - Guias Técnicos:
+    - Instalação: instalacao.md
+    - Uso: uso.md
   - API:
     - Referência: api/referencia.md
+  - Referências: referencias.md
   - Sobre: sobre.md
 
 # Extra
@@ -94,8 +97,8 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.snippets
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - attr_list
   - md_in_html
   - toc:
