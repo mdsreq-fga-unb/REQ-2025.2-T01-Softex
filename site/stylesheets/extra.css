@@ -1,0 +1,266 @@
+/* Cores da Softex */
+:root {
+  --softex-primary: #4A2BE1;
+  --softex-secondary: #F142FB;
+  --softex-accent: #80E4F9;
+  --softex-dark: #0A1A3D;
+}
+
+/* Fundo branco */
+.md-main {
+  background-color: white !important;
+}
+
+.md-content {
+  background-color: white !important;
+}
+
+.md-typeset {
+  background-color: white !important;
+}
+
+body {
+  background-color: white !important;
+}
+
+.md-container {
+  background-color: white !important;
+}
+
+/* Aplicar cores personalizadas */
+.md-header {
+  background-color: var(--softex-primary) !important;
+}
+
+.md-header__button {
+  color: white !important;
+}
+
+.md-header__title {
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Navegação */
+.md-nav__link--active {
+  color: var(--softex-primary) !important;
+  font-weight: 600;
+}
+
+.md-nav__link:hover {
+  color: var(--softex-secondary) !important;
+}
+
+/* Tabs de navegação */
+.md-tabs {
+  background-color: var(--softex-primary) !important;
+}
+
+.md-tabs__link {
+  color: white !important;
+}
+
+.md-tabs__link--active {
+  color: var(--softex-accent) !important;
+  font-weight: 600;
+}
+
+.md-tabs__link:hover {
+  color: var(--softex-accent) !important;
+}
+
+/* Botões e links */
+.md-button {
+  background-color: var(--softex-primary) !important;
+  color: white !important;
+  border: 2px solid var(--softex-primary) !important;
+}
+
+.md-button:hover {
+  background-color: var(--softex-secondary) !important;
+  border-color: var(--softex-secondary) !important;
+  color: white !important;
+}
+
+.md-button--primary {
+  background-color: var(--softex-primary) !important;
+  color: white !important;
+}
+
+/* Links */
+a {
+  color: var(--softex-primary) !important;
+}
+
+a:hover {
+  color: var(--softex-secondary) !important;
+}
+
+/* Títulos */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--softex-dark) !important;
+  font-weight: bold !important;
+}
+
+/* Títulos específicos do MkDocs */
+.md-typeset h1 {
+  font-weight: bold !important;
+  color: var(--softex-dark) !important;
+}
+
+.md-typeset h2 {
+  font-weight: bold !important;
+  color: var(--softex-dark) !important;
+}
+
+.md-typeset h3 {
+  font-weight: bold !important;
+  color: var(--softex-dark) !important;
+}
+
+.md-typeset h4 {
+  font-weight: bold !important;
+  color: var(--softex-dark) !important;
+}
+
+.md-typeset h5 {
+  font-weight: bold !important;
+  color: var(--softex-dark) !important;
+}
+
+.md-typeset h6 {
+  font-weight: bold !important;
+  color: var(--softex-dark) !important;
+}
+
+/* Código */
+.md-typeset code {
+  background-color: var(--softex-accent) !important;
+  color: var(--softex-dark) !important;
+}
+
+/* Blocos de nota */
+.md-typeset .admonition.note {
+  border-left-color: var(--softex-primary) !important;
+}
+
+.md-typeset .admonition.note .admonition-title {
+  background-color: var(--softex-primary) !important;
+  color: white !important;
+}
+
+/* Blocos de aviso */
+.md-typeset .admonition.warning {
+  border-left-color: var(--softex-secondary) !important;
+}
+
+.md-typeset .admonition.warning .admonition-title {
+  background-color: var(--softex-secondary) !important;
+  color: white !important;
+}
+
+/* Blocos de dica */
+.md-typeset .admonition.tip {
+  border-left-color: var(--softex-accent) !important;
+}
+
+.md-typeset .admonition.tip .admonition-title {
+  background-color: var(--softex-accent) !important;
+  color: var(--softex-dark) !important;
+}
+
+/* Tabelas */
+.md-typeset table:not([class]) th {
+  background-color: var(--softex-primary) !important;
+  color: white !important;
+}
+
+.md-typeset table:not([class]) tr:nth-child(even) {
+  background-color: rgba(74, 43, 225, 0.1) !important;
+}
+
+/* Barras de progresso */
+.md-typeset .progress-bar {
+  background-color: var(--softex-primary) !important;
+}
+
+/* Seleção de texto */
+::selection {
+  background-color: var(--softex-accent) !important;
+  color: var(--softex-dark) !important;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--softex-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--softex-secondary);
+}
+
+/* Footer */
+.md-footer {
+  background-color: var(--softex-dark) !important;
+}
+
+.md-footer-meta {
+  background-color: var(--softex-dark) !important;
+}
+
+.md-footer-meta__inner {
+  color: white !important;
+}
+
+/* Ícones sociais */
+.md-footer-social__link {
+  color: white !important;
+}
+
+.md-footer-social__link:hover {
+  color: var(--softex-accent) !important;
+}
+
+/* Busca */
+.md-search__form {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.md-search__input {
+  color: white !important;
+}
+
+.md-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Resultados da busca */
+.md-search-result__meta {
+  color: var(--softex-primary) !important;
+}
+
+/* Melhorias gerais */
+.md-content {
+  line-height: 1.6;
+}
+
+.md-typeset {
+  font-size: 16px;
+}
+
+/* Responsividade */
+@media screen and (max-width: 76.1875em) {
+  .md-nav--primary .md-nav__title {
+    background-color: var(--softex-primary) !important;
+    color: white !important;
+  }
+}
