@@ -21,7 +21,7 @@ A documentação é totalmente responsiva e funciona perfeitamente em dispositiv
 
 ## Funcionalidades do MkDocs
 
-### Tema Material
+### Tema do Material
 
 Este projeto usa o tema Material para MkDocs, que oferece:
 
