@@ -57,16 +57,6 @@ Um sistema web que oferece:
 - **Duração**: 12 semanas (14/09/2025 a 09/12/2025)
 - **Entregas**: Quinzenais com validação do cliente
 
-## Equipe do Projeto
-
-- **Gerência do Projeto**: Yuri
-- **Frontend (Vue.js)**: Guilherme (Gusmão)
-- **Backend (Python/DRF)**: Felipe e Pietro
-- **DevOps/Infraestrutura**: Yuri e Kauã
-- **Modelagem de Dados**: Júlia
-- **Análise de Requisitos**: Felipe
-- **Qualidade (QA)**: Kauã
-
 ## Estrutura da Documentação
 
 Esta documentação está organizada nas seguintes seções:
@@ -77,3 +67,61 @@ Esta documentação está organizada nas seguintes seções:
 - **Cronograma**: Planejamento e entregas do projeto
 - **Interação Equipe-Cliente**: Comunicação e validação
 - **Lições Aprendidas**: Reflexões e melhorias do processo
+
+## Equipe do Projeto
+
+<div class="team-grid">
+  <div class="team-card">
+    <img src="https://github.com/gusmoles.png" alt="Guilherme Gusmão" class="team-photo">
+    <div class="team-info">
+      <h3>Guilherme Gusmão</h3>
+      <p class="team-role">Frontend (Vue.js)</p>
+      <p class="team-github">@gusmoles</p>
+    </div>
+  </div>
+
+  <div class="team-card">
+    <img src="https://github.com/darkymeubem.png" alt="Felipe Pedroza" class="team-photo">
+    <div class="team-info">
+      <h3>Felipe Pedroza</h3>
+      <p class="team-role">Backend (Python/DRF) & Análise de Requisitos</p>
+      <p class="team-github">@darkymeubem</p>
+    </div>
+  </div>
+
+  <div class="team-card">
+    <img src="https://github.com/camposs04.png" alt="Júlia Santana" class="team-photo">
+    <div class="team-info">
+      <h3>Júlia Santana</h3>
+      <p class="team-role">Modelagem de Dados</p>
+      <p class="team-github">@camposs04</p>
+    </div>
+  </div>
+
+  <div class="team-card">
+    <img src="https://github.com/Pietrocv.png" alt="Pietro Calegari" class="team-photo">
+    <div class="team-info">
+      <h3>Pietro Calegari</h3>
+      <p class="team-role">Backend (Python/DRF)</p>
+      <p class="team-github">@Pietrocv</p>
+    </div>
+  </div>
+
+  <div class="team-card">
+    <img src="https://github.com/rich4rd1.png" alt="Kauã Richard" class="team-photo">
+    <div class="team-info">
+      <h3>Kauã Richard</h3>
+      <p class="team-role">DevOps/Infraestrutura & Qualidade (QA)</p>
+      <p class="team-github">@rich4rd1</p>
+    </div>
+  </div>
+
+  <div class="team-card">
+    <img src="https://github.com/y123yuri.png" alt="Yuri Andrade" class="team-photo">
+    <div class="team-info">
+      <h3>Yuri Andrade</h3>
+      <p class="team-role">Gerência do Projeto & DevOps</p>
+      <p class="team-github">@y123yuri</p>
+    </div>
+  </div>
+</div>

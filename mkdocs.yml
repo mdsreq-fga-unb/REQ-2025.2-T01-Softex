@@ -14,7 +14,7 @@ copyright: Copyright &copy; 2025 Equipe REQ-2025.2-T01 - Softex
 theme:
   name: material
   palette:
-    # Tema claro fixo
+    # Tema claro fixo com cores da Softex
     - scheme: default
       primary: "#4A2BE1"
       accent: "#F142FB"
