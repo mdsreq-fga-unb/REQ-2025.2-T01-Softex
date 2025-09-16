@@ -222,6 +222,31 @@ h1, h2, h3, h4, h5, h6 {
   color: white !important;
 }
 
+.md-footer-meta__inner a {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+.md-footer-meta__inner a:hover {
+  color: var(--softex-accent) !important;
+  opacity: 1 !important;
+}
+
+/* Texto específico do MkDocs no footer */
+.md-footer-meta__inner .md-footer-meta__inner {
+  color: white !important;
+}
+
+.md-footer-meta__inner p {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+.md-footer-meta__inner .md-footer-meta__inner p {
+  color: white !important;
+  opacity: 1 !important;
+}
+
 /* Ícones sociais */
 .md-footer-social__link {
   color: white !important;
