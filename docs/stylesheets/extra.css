@@ -1,9 +1,10 @@
-/* Cores da Softex */
+/* Cores da Nova Identidade Visual */
 :root {
-  --softex-primary: #4A2BE1;
-  --softex-secondary: #F142FB;
-  --softex-accent: #80E4F9;
-  --softex-dark: #0A1A3D;
+  --softex-primary: #441A4F;
+  --softex-secondary: #3D1D59;
+  --softex-accent: #231942;
+  --softex-dark: #1D1F59;
+  --softex-deep: #1A294F;
 }
 
 /* Fundo branco */
@@ -136,7 +137,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Código */
 .md-typeset code {
   background-color: var(--softex-accent) !important;
-  color: var(--softex-dark) !important;
+  color: white !important;
 }
 
 /* Blocos de nota */
@@ -176,7 +177,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .md-typeset table:not([class]) tr:nth-child(even) {
-  background-color: rgba(74, 43, 225, 0.1) !important;
+  background-color: rgba(68, 26, 79, 0.1) !important;
 }
 
 /* Barras de progresso */
@@ -187,7 +188,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Seleção de texto */
 ::selection {
   background-color: var(--softex-accent) !important;
-  color: var(--softex-dark) !important;
+  color: white !important;
 }
 
 /* Scrollbar personalizada */
@@ -210,11 +211,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Footer */
 .md-footer {
-  background-color: var(--softex-dark) !important;
+  background-color: var(--softex-primary) !important;
 }
 
 .md-footer-meta {
-  background-color: var(--softex-dark) !important;
+  background-color: var(--softex-primary) !important;
 }
 
 .md-footer-meta__inner {
@@ -280,7 +281,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 15px;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(74, 43, 225, 0.1);
+  box-shadow: 0 4px 8px rgba(68, 26, 79, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -289,7 +290,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .team-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(74, 43, 225, 0.2);
+  box-shadow: 0 8px 16px rgba(68, 26, 79, 0.2);
 }
 
 .team-photo {

@@ -4,11 +4,11 @@ Bem-vindo à documentação do projeto **REQ-2025.2-T01-Softex**!
 
 Este é um repositório de projeto da disciplina de REQ-T1 - 2025.2, em parceria com a **Softex** (Associação para Promoção da Excelência do Software Brasileiro).
 
-## 🎯 Objetivo do Projeto
+## Objetivo do Projeto
 
 Desenvolver um **sistema centralizado de gestão de recursos físicos** (salas de reunião e estações de trabalho) para a Softex, eliminando o processo manual e fragmentado atual que gera conflitos de reserva, retrabalho administrativo e baixa visibilidade da ocupação.
 
-## 📚 Documentação do Projeto
+## Documentação do Projeto
 
 Navegue pela documentação usando o menu lateral para encontrar:
 
@@ -27,7 +27,7 @@ Navegue pela documentação usando o menu lateral para encontrar:
 - **API**: Documentação técnica da API
 - **Referências**: Fontes consultadas e conceitos técnicos
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 ### Frontend
 - **Vue.js**: Framework moderno e reativo para interface do usuário
@@ -46,7 +46,7 @@ Navegue pela documentação usando o menu lateral para encontrar:
 - **Material Theme**: Tema moderno e responsivo
 - **GitHub Pages**: Hospedagem gratuita
 
-## 👥 Equipe do Projeto
+## Equipe do Projeto
 
 - **Gerência do Projeto**: Yuri
 - **Frontend (Vue.js)**: Guilherme (Gusmão)
@@ -56,7 +56,7 @@ Navegue pela documentação usando o menu lateral para encontrar:
 - **Análise de Requisitos**: Felipe
 - **Qualidade (QA)**: Kauã
 
-## 🚀 Início Rápido
+## Início Rápido
 
 Para começar a usar este projeto:
 

@@ -13,6 +13,7 @@ copyright: Copyright &copy; 2025 Equipe REQ-2025.2-T01 - Softex
 # Configuration
 theme:
   name: material
+  logo: assets/logo.png
   palette:
     # Tema claro fixo com cores da Softex
     - scheme: default
