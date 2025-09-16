@@ -18,6 +18,8 @@ Além do ambiente operacional, há diretrizes de governança e compliance, polí
 
 A Softex não possui um processo/sistema centralizado para gerir o uso dos recursos físicos do escritório (salas de reunião e estações de trabalho). O fluxo atual, **manual e fragmentado** (planilhas, calendários e trocas por mensagem), gera:
 
+![Descrição da imagem](https://cdn.discordapp.com/attachments/1410750986049556522/1417336633186979840/Imagem_do_WhatsApp_de_2025-09-15_as_22.27.31_fe9d4f3a.jpg?ex=68ca1d1a&is=68c8cb9a&hm=1219852301df978295a2a7a06fbd1415596273ac9fc5daf34531078940942a68)
+
 - Conflitos de reserva
 - Retrabalho administrativo
 - Baixa visibilidade da ocupação
