@@ -1,6 +1,6 @@
-site_name: REQ-2025.2-T01-Softex
-site_description: Repositório de projeto da disciplina de REQ-T1 - 2025.2
-site_author: Guilherme
+site_name: Sistema de Gestão de Recursos - Softex
+site_description: Sistema centralizado de gestão de recursos físicos para a Softex
+site_author: Equipe REQ-2025.2-T01
 site_url: https://seu-usuario.github.io/REQ-2025.2-T01-Softex
 
 # Repository
@@ -8,35 +8,19 @@ repo_name: seu-usuario/REQ-2025.2-T01-Softex
 repo_url: https://github.com/seu-usuario/REQ-2025.2-T01-Softex
 
 # Copyright
-copyright: Copyright &copy; 2025 Guilherme
+copyright: Copyright &copy; 2025 Equipe REQ-2025.2-T01 - Softex
 
 # Configuration
 theme:
   name: material
   palette:
-    # Palette toggle for automatic mode
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-auto
-        name: Switch to light mode
-
-    # Palette toggle for light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: indigo
-      accent: indigo
+    # Tema claro fixo
+    - scheme: default
+      primary: "#4A2BE1"
+      accent: "#F142FB"
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-
-    # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to system preference
 
   features:
     - navigation.tabs
@@ -80,6 +64,10 @@ extra:
       link: https://github.com/seu-usuario
     - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/seu-usuario
+
+# CSS personalizado
+extra_css:
+  - stylesheets/extra.css
 
 # Markdown extensions
 markdown_extensions:
