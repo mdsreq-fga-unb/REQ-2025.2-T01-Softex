@@ -4,6 +4,8 @@
 
 O projeto será desenvolvido em **12 semanas**, de **14/09/2025** a **09/12/2025**, com entregas quinzenais ao cliente e atualizações semanais de progresso. O planejamento segue um modelo incremental, em que cada sprint resulta em funcionalidades validadas.
 
+O projeto já superou a fase de Iniciação, na qual foram definidos escopo, objetivos e principais requisitos. Nesse momento, avançamos para a fase de Elaboração, onde o foco está em refinar a arquitetura, validar riscos técnicos e consolidar o protótipo inicial, preparando a base necessária para o desenvolvimento incremental nas próximas etapas.
+
 !!! note "Cronograma Preliminar"
     Este cronograma é preliminar e será atualizado ao longo da disciplina, conforme o andamento das sprints.
 

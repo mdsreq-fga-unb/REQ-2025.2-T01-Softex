@@ -4,36 +4,11 @@
 
 A **Softex** (Associação para Promoção da Excelência do Software Brasileiro) é uma entidade sem fins lucrativos dedicada ao fortalecimento do setor de tecnologia e software no Brasil. Atua em articulação com o Ministério da Ciência, Tecnologia e Inovação (MCTI) e outras instituições públicas e privadas, fomentando inovação, capacitação, certificação, internacionalização e competitividade de empresas, startups, pesquisadores e profissionais em todo o país.
 
-### Histórico e Reconhecimento
+Com mais de **25 anos de atuação**, a Softex é reconhecida como a principal articuladora de programas estratégicos de tecnologia e inovação em parceria com o Ministério da Ciência, Tecnologia e Inovação (MCTI) e outras instituições públicas e privadas. Entre suas principais áreas de atuação estão o fomento ao empreendedorismo, a capacitação e certificação de profissionais, o apoio à internacionalização de empresas brasileiras de TI e o estímulo à transformação digital em diversos setores da economia.
 
-Com mais de **25 anos de atuação**, a Softex é reconhecida como a principal articuladora de programas estratégicos de tecnologia e inovação em parceria com o Ministério da Ciência, Tecnologia e Inovação (MCTI) e outras instituições públicas e privadas. Entre suas principais áreas de atuação estão:
+A entidade opera por meio de uma **rede nacional de polos regionais** e iniciativas que conectam diferentes atores do ecossistema de inovação, desde startups em estágio inicial até grandes empresas consolidadas. Dessa forma, a Softex desempenha um papel estratégico na criação de oportunidades, no desenvolvimento de talentos e na ampliação da presença internacional da indústria de software e serviços digitais do Brasil.
 
-- Fomento ao empreendedorismo
-- Capacitação e certificação de profissionais
-- Apoio à internacionalização de empresas brasileiras de TI
-- Estímulo à transformação digital em diversos setores da economia
-
-### Estrutura Operacional
-
-A entidade opera por meio de uma **rede nacional de polos regionais** e iniciativas que conectam diferentes atores do ecossistema de inovação, desde startups em estágio inicial até grandes empresas consolidadas. Dessa forma, a Softex desempenha um papel estratégico na:
-
-- Criação de oportunidades
-- Desenvolvimento de talentos
-- Ampliação da presença internacional da indústria de software e serviços digitais do Brasil
-
-### Modelo de Trabalho Híbrido
-
-No contexto interno, a Softex adota **modelo de trabalho híbrido**, com equipes que executam programas e iniciativas estratégicas distribuídas entre atividades presenciais e remotas. Esse arranjo exige coordenação eficiente de recursos físicos de escritório, especialmente:
-
-- **Salas de reunião**: Alinhamentos de equipe, videoconferências, decisões estratégicas
-- **Estações de trabalho**: Postos individuais não fixos em coworking interno
-
-A demanda por esses recursos varia conforme:
-- Calendário institucional
-- Ciclos de projeto
-- Picos de presença no escritório
-
-### Governança e Compliance
+No contexto interno, a Softex adota **modelo de trabalho híbrido**, com equipes que executam programas e iniciativas estratégicas distribuídas entre atividades presenciais e remotas. Esse arranjo exige coordenação eficiente de recursos físicos de escritório, especialmente salas de reunião (alinhamentos de equipe, videoconferências, decisões estratégicas) e estações de trabalho (postos individuais não fixos em coworking interno). A demanda por esses recursos varia conforme calendário institucional, ciclos de projeto e picos de presença no escritório.
 
 Além do ambiente operacional, há diretrizes de governança e compliance, políticas de uso de espaços, requisitos de segurança e integração ao ecossistema corporativo (por exemplo, Google Workspace e Slack) que orientam processos internos e a tomada de decisão sobre infraestrutura. Esse conjunto de fatores compõe o cenário organizacional no qual a gestão diária dos recursos físicos ocorre.
 
