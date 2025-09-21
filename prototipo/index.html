@@ -6,7 +6,7 @@
     <title>Softex Coworking - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
     
@@ -25,6 +25,27 @@
             <!-- Login Form -->
             <div id="loginForm" class="form-container rounded-2xl shadow-2xl p-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Entrar na sua conta</h2>
+                
+                <!-- Google SSO Button -->
+                <button onclick="loginWithGoogle()" 
+                        class="w-full bg-white border-2 border-gray-300 text-gray-700 py-4 px-6 rounded-lg hover:bg-gray-50 transition-all font-semibold text-lg mb-6 flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Entrar com Google
+                </button>
+
+                <div class="relative mb-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">ou</span>
+                    </div>
+                </div>
                 
                 <form id="loginFormElement" class="space-y-6">
                     <div>
@@ -67,14 +88,6 @@
                     </button>
                 </form>
 
-                <div class="mt-6 text-center">
-                    <p class="text-gray-600">Não tem uma conta?</p>
-                    <button onclick="showRegisterForm()" 
-                            class="text-[#4A2BE1] hover:text-[#4A2BE1] hover:opacity-80 font-semibold">
-                        Criar conta gratuita
-                    </button>
-                </div>
-
                 <!-- Demo Login -->
                 <div class="mt-6 pt-6 border-t border-gray-200">
                     <p class="text-center text-sm text-gray-600 mb-3">Acesso rápido para demonstração:</p>
@@ -91,109 +104,7 @@
                 </div>
             </div>
 
-            <!-- Register Form -->
-            <div id="registerForm" class="form-container rounded-2xl shadow-2xl p-8 hidden">
-                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Criar nova conta</h2>
-                
-                <form id="registerFormElement" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-user mr-2 text-[#4A2BE1]"></i>Nome
-                            </label>
-                            <input type="text" id="registerFirstName" required 
-                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all"
-                                   placeholder="João">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Sobrenome</label>
-                            <input type="text" id="registerLastName" required 
-                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all"
-                                   placeholder="Silva">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-envelope mr-2 text-[#4A2BE1]"></i>Email
-                        </label>
-                        <input type="email" id="registerEmail" required 
-                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all"
-                               placeholder="seu@email.com">
-                    </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-building mr-2 text-[#4A2BE1]"></i>Departamento
-                        </label>
-                        <select id="registerDepartment" required 
-                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all">
-                            <option value="">Selecione seu departamento</option>
-                            <option value="desenvolvimento">Desenvolvimento</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="vendas">Vendas</option>
-                            <option value="rh">Recursos Humanos</option>
-                            <option value="financeiro">Financeiro</option>
-                            <option value="operacoes">Operações</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2 text-[#4A2BE1]"></i>Senha
-                        </label>
-                        <div class="relative">
-                            <input type="password" id="registerPassword" required 
-                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all pr-12"
-                                   placeholder="••••••••">
-                            <button type="button" onclick="togglePassword('registerPassword')" 
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="mt-1 text-xs text-gray-500">
-                            Mínimo 8 caracteres, incluindo letras e números
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2 text-[#4A2BE1]"></i>Confirmar Senha
-                        </label>
-                        <div class="relative">
-                            <input type="password" id="registerConfirmPassword" required 
-                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all pr-12"
-                                   placeholder="••••••••">
-                            <button type="button" onclick="togglePassword('registerConfirmPassword')" 
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <input type="checkbox" id="termsAccept" required 
-                               class="mt-1 rounded border-gray-300 text-[#4A2BE1] focus:ring-[#4A2BE1]">
-                        <label for="termsAccept" class="ml-2 text-sm text-gray-600">
-                            Eu aceito os <a href="#" class="text-[#4A2BE1] hover:opacity-80">Termos de Uso</a> 
-                            e <a href="#" class="text-[#4A2BE1] hover:opacity-80">Política de Privacidade</a>
-                        </label>
-                    </div>
-
-                    <button type="submit" 
-                            class="w-full bg-[#4A2BE1] text-white py-4 px-6 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all font-semibold text-lg">
-                        <i class="fas fa-user-plus mr-2"></i>Criar Conta
-                    </button>
-                </form>
-
-                <div class="mt-6 text-center">
-                    <p class="text-gray-600">Já tem uma conta?</p>
-                    <button onclick="showLoginForm()" 
-                            class="text-[#4A2BE1] hover:text-[#4A2BE1] hover:opacity-80 font-semibold">
-                        Fazer login
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -231,25 +142,8 @@
         <!-- Navigation -->
         <nav class="bg-white shadow-sm border-b">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex space-x-8">
-                    <button onclick="showSection('dashboard')" class="nav-btn py-4 px-2 border-b-2 border-[#4A2BE1] text-[#4A2BE1] font-medium">
-                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-                    </button>
-                    <button onclick="showSection('map')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-map mr-2"></i>Mapa Interativo
-                    </button>
-                    <button onclick="showSection('reservations')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-calendar-alt mr-2"></i>Reservas
-                    </button>
-                    <button onclick="showSection('reports')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-chart-bar mr-2"></i>Relatórios
-                    </button>
-                    <button onclick="showSection('users')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-users mr-2"></i>Usuários
-                    </button>
-                    <button onclick="showSection('integrations')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-plug mr-2"></i>Integrações
-                    </button>
+                <div class="flex space-x-8" id="navigationMenu">
+                    <!-- Navigation will be populated based on user role -->
                 </div>
             </div>
         </nav>
@@ -319,7 +213,86 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
+                <!-- Charts and Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Occupancy Chart -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Ocupação por Horário</h3>
+                        <div class="h-64">
+                            <svg viewBox="0 0 400 200" class="w-full h-full">
+                                <!-- Chart background -->
+                                <rect x="50" y="20" width="320" height="140" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+                                
+                                <!-- Y-axis labels -->
+                                <text x="40" y="30" class="text-xs fill-gray-600" text-anchor="end">100%</text>
+                                <text x="40" y="65" class="text-xs fill-gray-600" text-anchor="end">75%</text>
+                                <text x="40" y="100" class="text-xs fill-gray-600" text-anchor="end">50%</text>
+                                <text x="40" y="135" class="text-xs fill-gray-600" text-anchor="end">25%</text>
+                                <text x="40" y="165" class="text-xs fill-gray-600" text-anchor="end">0%</text>
+                                
+                                <!-- Bars -->
+                                <rect x="70" y="95" width="30" height="65" fill="#4A2BE1" rx="2"/>
+                                <rect x="120" y="50" width="30" height="110" fill="#80E4F9" rx="2"/>
+                                <rect x="170" y="30" width="30" height="130" fill="#F142FB" rx="2"/>
+                                <rect x="220" y="65" width="30" height="95" fill="#0A1A3D" rx="2"/>
+                                <rect x="270" y="85" width="30" height="75" fill="#10B981" rx="2"/>
+                                <rect x="320" y="110" width="30" height="50" fill="#F59E0B" rx="2"/>
+                                
+                                <!-- X-axis labels -->
+                                <text x="85" y="180" class="text-xs fill-gray-600" text-anchor="middle">8h</text>
+                                <text x="135" y="180" class="text-xs fill-gray-600" text-anchor="middle">10h</text>
+                                <text x="185" y="180" class="text-xs fill-gray-600" text-anchor="middle">12h</text>
+                                <text x="235" y="180" class="text-xs fill-gray-600" text-anchor="middle">14h</text>
+                                <text x="285" y="180" class="text-xs fill-gray-600" text-anchor="middle">16h</text>
+                                <text x="335" y="180" class="text-xs fill-gray-600" text-anchor="middle">18h</text>
+                                
+                                <!-- Values on bars -->
+                                <text x="85" y="90" class="text-xs fill-white font-bold" text-anchor="middle">45%</text>
+                                <text x="135" y="45" class="text-xs fill-black font-bold" text-anchor="middle">78%</text>
+                                <text x="185" y="25" class="text-xs fill-white font-bold" text-anchor="middle">92%</text>
+                                <text x="235" y="60" class="text-xs fill-white font-bold" text-anchor="middle">67%</text>
+                                <text x="285" y="80" class="text-xs fill-white font-bold" text-anchor="middle">54%</text>
+                                <text x="335" y="105" class="text-xs fill-white font-bold" text-anchor="middle">32%</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Usage Pie Chart -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribuição de Uso</h3>
+                        <div class="flex items-center justify-center h-64">
+                            <svg viewBox="0 0 200 200" class="w-48 h-48">
+                                <!-- Pie chart segments -->
+                                <circle cx="100" cy="100" r="80" fill="none" stroke="#4A2BE1" stroke-width="20" 
+                                        stroke-dasharray="125.6 251.2" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                                <circle cx="100" cy="100" r="80" fill="none" stroke="#80E4F9" stroke-width="20" 
+                                        stroke-dasharray="75.4 301.4" stroke-dashoffset="-125.6" transform="rotate(-90 100 100)"/>
+                                <circle cx="100" cy="100" r="80" fill="none" stroke="#F142FB" stroke-width="20" 
+                                        stroke-dasharray="50.2 326.6" stroke-dashoffset="-201" transform="rotate(-90 100 100)"/>
+                                
+                                <!-- Center text -->
+                                <text x="100" y="95" class="text-lg font-bold fill-gray-900" text-anchor="middle">78%</text>
+                                <text x="100" y="110" class="text-sm fill-gray-600" text-anchor="middle">Ocupação</text>
+                            </svg>
+                        </div>
+                        <div class="flex justify-center space-x-4 mt-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-[#4A2BE1] rounded-full"></div>
+                                <span class="text-sm text-gray-600">Coworking (50%)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-[#80E4F9] rounded-full"></div>
+                                <span class="text-sm text-gray-600">Salas (30%)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-[#F142FB] rounded-full"></div>
+                                <span class="text-sm text-gray-600">Livre (20%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity and Upcoming -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Atividade Recente</h3>
@@ -377,11 +350,11 @@
                 </div>
             </div>
 
-            <!-- Map Section -->
-            <div id="map" class="section hidden">
+            <!-- Coworking Section -->
+            <div id="coworking" class="section hidden">
                 <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Mapa Interativo</h2>
-                    <p class="text-gray-600">Visualização em tempo real dos espaços</p>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Coworking</h2>
+                    <p class="text-gray-600">Planta baixa interativa do espaço de coworking</p>
                 </div>
 
                 <!-- Legend -->
@@ -389,264 +362,148 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Legenda</h3>
                     <div class="flex flex-wrap gap-6">
                         <div class="flex items-center space-x-2">
-                            <div class="w-4 h-4 bg-green-500 rounded"></div>
+                            <div class="w-4 h-4 bg-green-500 rounded-full"></div>
                             <span class="text-sm text-gray-700">Disponível</span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <div class="w-4 h-4 bg-red-500 rounded"></div>
+                            <div class="w-4 h-4 bg-red-500 rounded-full"></div>
                             <span class="text-sm text-gray-700">Ocupado</span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                            <div class="w-4 h-4 bg-yellow-500 rounded-full"></div>
                             <span class="text-sm text-gray-700">Reservado</span>
                         </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+                            <span class="text-sm text-gray-700">Sua Reserva</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Coworking Map -->
-                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Posições de Coworking (58 posições)</h3>
-                    <div class="grid grid-cols-10 gap-2 mb-6" id="coworkingGrid">
-                        <!-- Seats will be generated by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Meeting Rooms -->
+                <!-- Interactive Floor Plan -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Salas de Reunião (6 salas)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="meetingRooms">
-                        <!-- Rooms will be generated by JavaScript -->
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Planta Baixa - Espaço Coworking</h3>
+                    <div class="bg-gray-50 p-6 rounded-lg overflow-x-auto">
+                        <svg viewBox="0 0 800 600" class="w-full h-96 min-w-[800px]" id="floorPlan">
+                            <!-- Office walls -->
+                            <rect x="50" y="50" width="700" height="500" fill="none" stroke="#374151" stroke-width="4"/>
+                            
+                            <!-- Reception area -->
+                            <rect x="50" y="50" width="150" height="100" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="2"/>
+                            <text x="125" y="105" text-anchor="middle" class="text-sm fill-gray-700 font-semibold">Recepção</text>
+                            
+                            <!-- Kitchen/Break area -->
+                            <rect x="600" y="50" width="150" height="120" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+                            <text x="675" y="115" text-anchor="middle" class="text-sm fill-gray-700 font-semibold">Copa</text>
+                            
+                            <!-- Meeting rooms area -->
+                            <rect x="50" y="450" width="700" height="100" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+                            <text x="400" y="505" text-anchor="middle" class="text-sm fill-gray-700 font-semibold">Salas de Reunião</text>
+                            
+                            <!-- Coworking desks - Row 1 -->
+                            <g id="row1">
+                                <rect x="100" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="120" cy="185" r="8" class="seat-point available" data-seat="A01" onclick="selectSeat('A01')"/>
+                                
+                                <rect x="160" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="180" cy="185" r="8" class="seat-point occupied" data-seat="A02"/>
+                                
+                                <rect x="220" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="240" cy="185" r="8" class="seat-point available" data-seat="A03" onclick="selectSeat('A03')"/>
+                                
+                                <rect x="280" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="300" cy="185" r="8" class="seat-point reserved" data-seat="A04"/>
+                                
+                                <rect x="340" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="360" cy="185" r="8" class="seat-point available" data-seat="A05" onclick="selectSeat('A05')"/>
+                                
+                                <rect x="400" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="420" cy="185" r="8" class="seat-point available" data-seat="A06" onclick="selectSeat('A06')"/>
+                                
+                                <rect x="460" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="480" cy="185" r="8" class="seat-point occupied" data-seat="A07"/>
+                                
+                                <rect x="520" y="200" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="540" cy="185" r="8" class="seat-point available" data-seat="A08" onclick="selectSeat('A08')"/>
+                            </g>
+                            
+                            <!-- Coworking desks - Row 2 -->
+                            <g id="row2">
+                                <rect x="100" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="120" cy="315" r="8" class="seat-point available" data-seat="B01" onclick="selectSeat('B01')"/>
+                                
+                                <rect x="160" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="180" cy="315" r="8" class="seat-point available" data-seat="B02" onclick="selectSeat('B02')"/>
+                                
+                                <rect x="220" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="240" cy="315" r="8" class="seat-point reserved" data-seat="B03"/>
+                                
+                                <rect x="280" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="300" cy="315" r="8" class="seat-point available" data-seat="B04" onclick="selectSeat('B04')"/>
+                                
+                                <rect x="340" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="360" cy="315" r="8" class="seat-point occupied" data-seat="B05"/>
+                                
+                                <rect x="400" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="420" cy="315" r="8" class="seat-point available" data-seat="B06" onclick="selectSeat('B06')"/>
+                                
+                                <rect x="460" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="480" cy="315" r="8" class="seat-point available" data-seat="B07" onclick="selectSeat('B07')"/>
+                                
+                                <rect x="520" y="270" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="540" cy="315" r="8" class="seat-point available" data-seat="B08" onclick="selectSeat('B08')"/>
+                            </g>
+                            
+                            <!-- Coworking desks - Row 3 -->
+                            <g id="row3">
+                                <rect x="100" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="120" cy="335" r="8" class="seat-point available" data-seat="C01" onclick="selectSeat('C01')"/>
+                                
+                                <rect x="160" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="180" cy="335" r="8" class="seat-point occupied" data-seat="C02"/>
+                                
+                                <rect x="220" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="240" cy="335" r="8" class="seat-point available" data-seat="C03" onclick="selectSeat('C03')"/>
+                                
+                                <rect x="280" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="300" cy="335" r="8" class="seat-point available" data-seat="C04" onclick="selectSeat('C04')"/>
+                                
+                                <rect x="340" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="360" cy="335" r="8" class="seat-point available" data-seat="C05" onclick="selectSeat('C05')"/>
+                                
+                                <rect x="400" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="420" cy="335" r="8" class="seat-point reserved" data-seat="C06"/>
+                                
+                                <rect x="460" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="480" cy="335" r="8" class="seat-point available" data-seat="C07" onclick="selectSeat('C07')"/>
+                                
+                                <rect x="520" y="350" width="40" height="30" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" rx="5"/>
+                                <circle cx="540" cy="335" r="8" class="seat-point available" data-seat="C08" onclick="selectSeat('C08')"/>
+                            </g>
+                            
+                            <!-- Private offices -->
+                            <rect x="600" y="200" width="120" height="80" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+                            <text x="660" y="245" text-anchor="middle" class="text-sm fill-gray-700 font-semibold">Escritórios</text>
+                            <text x="660" y="260" text-anchor="middle" class="text-sm fill-gray-700 font-semibold">Privativos</text>
+                            
+                            <!-- Entrance -->
+                            <rect x="350" y="50" width="100" height="20" fill="white" stroke="#374151" stroke-width="2"/>
+                            <text x="400" y="45" text-anchor="middle" class="text-sm fill-gray-700 font-semibold">Entrada</text>
+                        </svg>
                     </div>
                 </div>
+            </div>
 
-                <!-- Floor Plans -->
-                <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Plantas Baixas das Salas</h3>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        
-                        <!-- Sala Zeus - 12 pessoas -->
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                                Sala Zeus - 12 pessoas
-                            </h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <svg viewBox="0 0 300 200" class="w-full h-32">
-                                    <!-- Paredes -->
-                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
-                                    <!-- Porta -->
-                                    <rect x="10" y="90" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <!-- Mesa principal -->
-                                    <rect x="50" y="60" width="200" height="80" fill="#F59E0B" stroke="#D97706" stroke-width="2" rx="10"/>
-                                    <!-- Cadeiras ao redor da mesa -->
-                                    <circle cx="70" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="110" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="150" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="190" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="230" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="70" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="110" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="150" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="190" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="230" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="40" cy="100" r="8" fill="#4A2BE1"/>
-                                    <circle cx="260" cy="100" r="8" fill="#4A2BE1"/>
-                                    <!-- TV/Projetor -->
-                                    <rect x="260" y="30" width="25" height="15" fill="#1F2937" rx="2"/>
-                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa Executiva</text>
-                                </svg>
-                            </div>
-                        </div>
+            <!-- Meeting Rooms Section -->
+            <div id="meetingRooms" class="section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Salas de Reunião</h2>
+                    <p class="text-gray-600">Visualize e reserve salas de reunião</p>
+                </div>
 
-                        <!-- Sala Hermes - 8 pessoas -->
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
-                                Sala Hermes - 8 pessoas
-                            </h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <svg viewBox="0 0 300 200" class="w-full h-32">
-                                    <!-- Paredes -->
-                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
-                                    <!-- Porta -->
-                                    <rect x="130" y="10" width="40" height="15" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <!-- Mesa oval -->
-                                    <ellipse cx="150" cy="100" rx="80" ry="40" fill="#80E4F9" stroke="#0891B2" stroke-width="2"/>
-                                    <!-- Cadeiras -->
-                                    <circle cx="100" cy="80" r="8" fill="#4A2BE1"/>
-                                    <circle cx="120" cy="65" r="8" fill="#4A2BE1"/>
-                                    <circle cx="180" cy="65" r="8" fill="#4A2BE1"/>
-                                    <circle cx="200" cy="80" r="8" fill="#4A2BE1"/>
-                                    <circle cx="200" cy="120" r="8" fill="#4A2BE1"/>
-                                    <circle cx="180" cy="135" r="8" fill="#4A2BE1"/>
-                                    <circle cx="120" cy="135" r="8" fill="#4A2BE1"/>
-                                    <circle cx="100" cy="120" r="8" fill="#4A2BE1"/>
-                                    <!-- Whiteboard -->
-                                    <rect x="20" y="40" width="50" height="30" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-black font-semibold">Mesa Oval</text>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Sala Apolo - 6 pessoas -->
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                Sala Apolo - 6 pessoas
-                            </h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <svg viewBox="0 0 300 200" class="w-full h-32">
-                                    <!-- Paredes -->
-                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
-                                    <!-- Porta -->
-                                    <rect x="250" y="80" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <!-- Mesa retangular -->
-                                    <rect x="80" y="70" width="140" height="60" fill="#F142FB" stroke="#C026D3" stroke-width="2" rx="8"/>
-                                    <!-- Cadeiras -->
-                                    <circle cx="100" cy="60" r="8" fill="#4A2BE1"/>
-                                    <circle cx="150" cy="60" r="8" fill="#4A2BE1"/>
-                                    <circle cx="200" cy="60" r="8" fill="#4A2BE1"/>
-                                    <circle cx="100" cy="140" r="8" fill="#4A2BE1"/>
-                                    <circle cx="150" cy="140" r="8" fill="#4A2BE1"/>
-                                    <circle cx="200" cy="140" r="8" fill="#4A2BE1"/>
-                                    <!-- Armário -->
-                                    <rect x="20" y="20" width="40" height="20" fill="#6B7280" stroke="#374151" stroke-width="2"/>
-                                    <!-- Monitor -->
-                                    <rect x="230" y="90" width="15" height="20" fill="#1F2937" rx="2"/>
-                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa Compacta</text>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Sala Atena - 10 pessoas -->
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                Sala Atena - 10 pessoas
-                            </h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <svg viewBox="0 0 300 200" class="w-full h-32">
-                                    <!-- Paredes -->
-                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
-                                    <!-- Porta -->
-                                    <rect x="10" y="80" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <!-- Mesa em U -->
-                                    <rect x="60" y="50" width="180" height="30" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
-                                    <rect x="60" y="120" width="180" height="30" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
-                                    <rect x="60" y="80" width="30" height="40" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
-                                    <rect x="210" y="80" width="30" height="40" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
-                                    <!-- Cadeiras -->
-                                    <circle cx="80" cy="40" r="8" fill="#4A2BE1"/>
-                                    <circle cx="120" cy="40" r="8" fill="#4A2BE1"/>
-                                    <circle cx="160" cy="40" r="8" fill="#4A2BE1"/>
-                                    <circle cx="200" cy="40" r="8" fill="#4A2BE1"/>
-                                    <circle cx="80" cy="160" r="8" fill="#4A2BE1"/>
-                                    <circle cx="120" cy="160" r="8" fill="#4A2BE1"/>
-                                    <circle cx="160" cy="160" r="8" fill="#4A2BE1"/>
-                                    <circle cx="200" cy="160" r="8" fill="#4A2BE1"/>
-                                    <circle cx="50" cy="100" r="8" fill="#4A2BE1"/>
-                                    <circle cx="250" cy="100" r="8" fill="#4A2BE1"/>
-                                    <!-- Projetor -->
-                                    <rect x="130" y="100" width="40" height="8" fill="#1F2937" rx="4"/>
-                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa em U</text>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Sala Poseidon - 15 pessoas -->
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                                Sala Poseidon - 15 pessoas
-                            </h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <svg viewBox="0 0 300 200" class="w-full h-32">
-                                    <!-- Paredes -->
-                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
-                                    <!-- Porta dupla -->
-                                    <rect x="120" y="10" width="30" height="15" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <rect x="150" y="10" width="30" height="15" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <!-- Mesa grande retangular -->
-                                    <rect x="40" y="60" width="220" height="80" fill="#F59E0B" stroke="#D97706" stroke-width="2" rx="10"/>
-                                    <!-- Cadeiras - lado superior -->
-                                    <circle cx="60" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="90" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="120" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="150" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="180" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="210" cy="50" r="8" fill="#4A2BE1"/>
-                                    <circle cx="240" cy="50" r="8" fill="#4A2BE1"/>
-                                    <!-- Cadeiras - lado inferior -->
-                                    <circle cx="60" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="90" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="120" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="150" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="180" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="210" cy="150" r="8" fill="#4A2BE1"/>
-                                    <circle cx="240" cy="150" r="8" fill="#4A2BE1"/>
-                                    <!-- Cadeira da cabeceira -->
-                                    <circle cx="30" cy="100" r="8" fill="#F142FB"/>
-                                    <!-- Sistema A/V -->
-                                    <rect x="270" y="30" width="15" height="25" fill="#1F2937" rx="2"/>
-                                    <rect x="270" y="145" width="15" height="25" fill="#1F2937" rx="2"/>
-                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa Diretoria</text>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Sala Ártemis - 4 pessoas -->
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                Sala Ártemis - 4 pessoas
-                            </h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <svg viewBox="0 0 300 200" class="w-full h-32">
-                                    <!-- Paredes -->
-                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
-                                    <!-- Porta -->
-                                    <rect x="10" y="90" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
-                                    <!-- Mesa redonda pequena -->
-                                    <circle cx="150" cy="100" r="40" fill="#80E4F9" stroke="#0891B2" stroke-width="2"/>
-                                    <!-- Cadeiras -->
-                                    <circle cx="150" cy="60" r="8" fill="#4A2BE1"/>
-                                    <circle cx="190" cy="100" r="8" fill="#4A2BE1"/>
-                                    <circle cx="150" cy="140" r="8" fill="#4A2BE1"/>
-                                    <circle cx="110" cy="100" r="8" fill="#4A2BE1"/>
-                                    <!-- Sofá -->
-                                    <rect x="220" y="40" width="60" height="25" fill="#6B7280" stroke="#374151" stroke-width="2" rx="12"/>
-                                    <!-- Mesa de apoio -->
-                                    <rect x="230" y="80" width="40" height="20" fill="#F59E0B" stroke="#D97706" stroke-width="2" rx="5"/>
-                                    <!-- Planta -->
-                                    <circle cx="50" cy="50" r="15" fill="#10B981" stroke="#059669" stroke-width="2"/>
-                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-black font-semibold">Mesa Íntima</text>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Legenda das plantas baixas -->
-                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                        <h4 class="font-semibold text-gray-900 mb-3">Legenda das Plantas Baixas</h4>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                            <div class="flex items-center space-x-2">
-                                <circle class="w-4 h-4 bg-[#4A2BE1] rounded-full"></circle>
-                                <span>Cadeiras</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="w-4 h-4 bg-[#F59E0B] rounded"></div>
-                                <span>Mesas</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="w-4 h-4 bg-[#1F2937] rounded"></div>
-                                <span>Equipamentos A/V</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="w-4 h-4 bg-white border-2 border-gray-400 rounded"></div>
-                                <span>Portas</span>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Meeting Rooms Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="meetingRoomsGrid">
+                    <!-- Rooms will be populated by JavaScript -->
                 </div>
             </div>
 
@@ -1003,7 +860,7 @@
             </form>
         </div>
     </div>
-
-    <script src="script.js"></script>
-</body>
+        
+        <script src="script.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982cfd14c6c862a1',t:'MTc1ODQ5MzYzMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

@@ -1,59 +1,33 @@
-/* Estilos personalizados para o Sistema Softex Coworking */
-
-/* Animações e transições para assentos */
-.seat { 
-    transition: all 0.3s ease; 
-}
-
-.seat:hover { 
-    transform: scale(1.1); 
-}
-
-/* Estados dos assentos */
-.seat.occupied { 
-    background-color: #ef4444; 
-}
-
-.seat.available { 
-    background-color: #10b981; 
-}
-
-.seat.reserved { 
-    background-color: #f59e0b; 
-}
-
-/* Animações e transições para salas */
-.room { 
-    transition: all 0.3s ease; 
-}
-
-.room:hover { 
-    transform: scale(1.05); 
-}
-
-/* Estados das salas */
-.room.occupied { 
-    border-color: #ef4444; 
-    background-color: #fef2f2; 
-}
-
-.room.available { 
-    border-color: #10b981; 
-    background-color: #f0fdf4; 
-}
-
-.room.reserved { 
-    border-color: #f59e0b; 
-    background-color: #fffbeb; 
-}
-
-/* Background do login */
-.login-bg {
-    background: linear-gradient(135deg, #4A2BE1 0%, #80E4F9 50%, #F142FB 100%);
-}
-
-/* Container dos formulários */
-.form-container {
-    backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.95);
-}
+.seat { transition: all 0.3s ease; }
+        .seat:hover { transform: scale(1.1); }
+        .seat.occupied { background-color: #ef4444; }
+        .seat.available { background-color: #10b981; }
+        .seat.reserved { background-color: #f59e0b; }
+        .room { transition: all 0.3s ease; }
+        .room:hover { transform: scale(1.05); }
+        .room.occupied { border-color: #ef4444; background-color: #fef2f2; }
+        .room.available { border-color: #10b981; background-color: #f0fdf4; }
+        .room.reserved { border-color: #f59e0b; background-color: #fffbeb; }
+        
+        .seat-point { 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            stroke-width: 2;
+            stroke: white;
+        }
+        .seat-point:hover { 
+            transform: scale(1.2); 
+            stroke-width: 3;
+        }
+        .seat-point.available { fill: #10b981; }
+        .seat-point.occupied { fill: #ef4444; cursor: not-allowed; }
+        .seat-point.reserved { fill: #f59e0b; cursor: not-allowed; }
+        .seat-point.selected { fill: #3b82f6; stroke: #1d4ed8; }
+        .seat-point.user-reserved { fill: #3b82f6; }
+        .login-bg {
+            background: linear-gradient(135deg, #4A2BE1 0%, #80E4F9 50%, #F142FB 100%);
+        }
+        .form-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }

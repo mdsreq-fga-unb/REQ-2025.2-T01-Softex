@@ -1,7 +1,3 @@
-// Sistema de Gestão de Recursos - Softex Coworking
-// JavaScript principal da aplicação
-
-// Sample data - usando arrays globais para permitir modificações
 let users = [
     { id: 1, name: 'João Silva', email: 'joao@softex.com', department: 'Desenvolvimento', role: 'Administrador', status: 'Ativo' },
     { id: 2, name: 'Maria Santos', email: 'maria@softex.com', department: 'Marketing', role: 'Gerente', status: 'Ativo' },
@@ -30,14 +26,13 @@ const meetingRooms = [
 ];
 
 // Authentication functions
-function showLoginForm() {
-    document.getElementById('loginForm').classList.remove('hidden');
-    document.getElementById('registerForm').classList.add('hidden');
-}
-
-function showRegisterForm() {
-    document.getElementById('loginForm').classList.add('hidden');
-    document.getElementById('registerForm').classList.remove('hidden');
+function loginWithGoogle() {
+    // Simulate Google SSO login
+    showNotification('Redirecionando para Google SSO...', 'info');
+    setTimeout(() => {
+        currentUser = { name: 'João Silva', email: 'joao@softex.com', role: 'Administrador' };
+        loginUser();
+    }, 2000);
 }
 
 function togglePassword(inputId) {
@@ -75,10 +70,52 @@ function loginUser() {
     document.getElementById('authScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
     
+    // Setup navigation based on user role
+    setupNavigation();
+    
     // Initialize the app
     initializeApp();
     
     showNotification(`Bem-vindo, ${currentUser.name}!`, 'success');
+}
+
+function setupNavigation() {
+    const navigationMenu = document.getElementById('navigationMenu');
+    navigationMenu.innerHTML = '';
+    
+    if (currentUser.role === 'Administrador') {
+        // Admin navigation
+        navigationMenu.innerHTML = `
+            <button onclick="showSection('dashboard')" class="nav-btn py-4 px-2 border-b-2 border-[#4A2BE1] text-[#4A2BE1] font-medium">
+                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+            </button>
+            <button onclick="showSection('coworking')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                <i class="fas fa-map mr-2"></i>Coworking
+            </button>
+            <button onclick="showSection('reservations')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                <i class="fas fa-calendar-alt mr-2"></i>Reservas
+            </button>
+            <button onclick="showSection('reports')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                <i class="fas fa-chart-bar mr-2"></i>Relatórios
+            </button>
+            <button onclick="showSection('users')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                <i class="fas fa-users mr-2"></i>Usuários
+            </button>
+            <button onclick="showSection('integrations')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                <i class="fas fa-plug mr-2"></i>Integrações
+            </button>
+        `;
+    } else {
+        // User navigation
+        navigationMenu.innerHTML = `
+            <button onclick="showSection('coworking')" class="nav-btn py-4 px-2 border-b-2 border-[#4A2BE1] text-[#4A2BE1] font-medium">
+                <i class="fas fa-map mr-2"></i>Coworking
+            </button>
+            <button onclick="showSection('meetingRooms')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                <i class="fas fa-door-open mr-2"></i>Salas de Reunião
+            </button>
+        `;
+    }
 }
 
 function logout() {
@@ -173,12 +210,111 @@ function showSection(sectionName) {
     
     // Update navigation
     document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('border-blue-600', 'text-blue-600');
+        btn.classList.remove('border-[#4A2BE1]', 'text-[#4A2BE1]');
         btn.classList.add('border-transparent', 'text-gray-500');
     });
     
     event.target.classList.remove('border-transparent', 'text-gray-500');
-    event.target.classList.add('border-blue-600', 'text-blue-600');
+    event.target.classList.add('border-[#4A2BE1]', 'text-[#4A2BE1]');
+}
+
+// Interactive seat selection
+function selectSeat(seatId) {
+    // Remove previous selection
+    document.querySelectorAll('.seat-point.selected').forEach(seat => {
+        seat.classList.remove('selected');
+    });
+    
+    // Select current seat
+    const seatElement = document.querySelector(`[data-seat="${seatId}"]`);
+    seatElement.classList.add('selected');
+    
+    // Show reservation modal
+    showReservationModal(seatId);
+}
+
+function showReservationModal(seatId) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Reservar Posição ${seatId}</h3>
+                <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="makeReservation(event, '${seatId}')" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+                    <input type="date" id="reservationDate" required 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1]">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Período</label>
+                    <select id="reservationPeriod" required 
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1]">
+                        <option value="">Selecione o período</option>
+                        <option value="morning">Manhã (08:00 - 12:00)</option>
+                        <option value="afternoon">Tarde (13:00 - 17:00)</option>
+                        <option value="fullday">Dia Inteiro (08:00 - 17:00)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Observações (opcional)</label>
+                    <textarea id="reservationNotes" rows="3" 
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1]"
+                              placeholder="Alguma observação especial..."></textarea>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="button" onclick="this.closest('.fixed').remove()" 
+                            class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 bg-[#4A2BE1] text-white py-2 px-4 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all">
+                        Confirmar Reserva
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Set today as default date
+    document.getElementById('reservationDate').valueAsDate = new Date();
+}
+
+function makeReservation(event, seatId) {
+    event.preventDefault();
+    
+    const date = document.getElementById('reservationDate').value;
+    const period = document.getElementById('reservationPeriod').value;
+    const notes = document.getElementById('reservationNotes').value;
+    
+    // Update seat status
+    const seatElement = document.querySelector(`[data-seat="${seatId}"]`);
+    seatElement.classList.remove('available', 'selected');
+    seatElement.classList.add('user-reserved');
+    seatElement.removeAttribute('onclick');
+    
+    // Add to reservations
+    const newReservation = {
+        id: nextReservationId++,
+        user: currentUser.name,
+        space: `Posição ${seatId}`,
+        date: date,
+        time: period === 'morning' ? '08:00-12:00' : period === 'afternoon' ? '13:00-17:00' : '08:00-17:00',
+        status: 'Confirmada',
+        notes: notes
+    };
+    
+    reservations.push(newReservation);
+    
+    // Close modal
+    document.querySelector('.fixed').remove();
+    
+    showNotification(`Posição ${seatId} reservada com sucesso!`, 'success');
 }
 
 // Initialize coworking grid
@@ -201,36 +337,326 @@ function initializeCoworkingGrid() {
     }
 }
 
-// Initialize meeting rooms
-function initializeMeetingRooms() {
-    const container = document.getElementById('meetingRooms');
+// Initialize meeting rooms grid
+function initializeMeetingRoomsGrid() {
+    const container = document.getElementById('meetingRoomsGrid');
     
     meetingRooms.forEach(room => {
-        const roomDiv = document.createElement('div');
-        roomDiv.className = `room ${room.status} border-2 rounded-lg p-4 cursor-pointer`;
-        roomDiv.innerHTML = `
-            <div class="flex items-center justify-between mb-2">
-                <h4 class="font-semibold text-gray-900">${room.name}</h4>
-                <span class="text-xs px-2 py-1 rounded-full ${
-                    room.status === 'available' ? 'bg-green-100 text-green-800' :
-                    room.status === 'occupied' ? 'bg-red-100 text-red-800' :
-                    'bg-yellow-100 text-yellow-800'
-                }">
-                    ${room.status === 'available' ? 'Disponível' : room.status === 'occupied' ? 'Ocupado' : 'Reservado'}
-                </span>
+        const roomCard = document.createElement('div');
+        roomCard.className = `bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer`;
+        roomCard.innerHTML = `
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">${room.name}</h3>
+                    <span class="text-xs px-3 py-1 rounded-full ${
+                        room.status === 'available' ? 'bg-green-100 text-green-800' :
+                        room.status === 'occupied' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                    }">
+                        ${room.status === 'available' ? 'Disponível' : room.status === 'occupied' ? 'Ocupado' : 'Reservado'}
+                    </span>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="flex items-center text-sm text-gray-600 mb-2">
+                        <i class="fas fa-users mr-2 text-[#4A2BE1]"></i>
+                        Capacidade: ${room.capacity} pessoas
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600 mb-2">
+                        <i class="fas fa-tv mr-2 text-[#4A2BE1]"></i>
+                        TV/Projetor incluído
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-wifi mr-2 text-[#4A2BE1]"></i>
+                        Wi-Fi de alta velocidade
+                    </div>
+                </div>
+                
+                <!-- Room floor plan preview -->
+                <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                    <div class="text-xs text-gray-600 mb-2">Planta Baixa:</div>
+                    ${getRoomFloorPlan(room.name)}
+                </div>
+                
+                <button onclick="showRoomDetails('${room.name}')" 
+                        class="w-full bg-[#4A2BE1] text-white py-2 px-4 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all ${room.status !== 'available' ? 'opacity-50 cursor-not-allowed' : ''}">
+                    ${room.status === 'available' ? 'Ver Detalhes & Reservar' : 'Ver Detalhes'}
+                </button>
             </div>
-            <p class="text-sm text-gray-600">
-                <i class="fas fa-users mr-1"></i>
-                Até ${room.capacity} pessoas
-            </p>
         `;
         
-        roomDiv.addEventListener('click', () => {
-            alert(`${room.name} selecionada - Capacidade: ${room.capacity} pessoas`);
-        });
-        
-        container.appendChild(roomDiv);
+        container.appendChild(roomCard);
     });
+}
+
+function getRoomFloorPlan(roomName) {
+    const plans = {
+        'Sala Zeus': `
+            <svg viewBox="0 0 120 80" class="w-full h-16">
+                <rect x="5" y="5" width="110" height="70" fill="none" stroke="#9CA3AF" stroke-width="1"/>
+                <rect x="20" y="25" width="80" height="30" fill="#F59E0B" rx="4"/>
+                <circle cx="30" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="50" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="70" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="90" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="30" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="50" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="70" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="90" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="15" cy="40" r="3" fill="#4A2BE1"/>
+                <circle cx="105" cy="40" r="3" fill="#4A2BE1"/>
+                <rect x="105" y="15" width="10" height="6" fill="#1F2937"/>
+            </svg>
+        `,
+        'Sala Hermes': `
+            <svg viewBox="0 0 120 80" class="w-full h-16">
+                <rect x="5" y="5" width="110" height="70" fill="none" stroke="#9CA3AF" stroke-width="1"/>
+                <ellipse cx="60" cy="40" rx="32" ry="16" fill="#80E4F9"/>
+                <circle cx="40" cy="32" r="3" fill="#4A2BE1"/>
+                <circle cx="48" cy="26" r="3" fill="#4A2BE1"/>
+                <circle cx="72" cy="26" r="3" fill="#4A2BE1"/>
+                <circle cx="80" cy="32" r="3" fill="#4A2BE1"/>
+                <circle cx="80" cy="48" r="3" fill="#4A2BE1"/>
+                <circle cx="72" cy="54" r="3" fill="#4A2BE1"/>
+                <circle cx="48" cy="54" r="3" fill="#4A2BE1"/>
+                <circle cx="40" cy="48" r="3" fill="#4A2BE1"/>
+                <rect x="10" y="20" width="20" height="12" fill="white" stroke="#9CA3AF"/>
+            </svg>
+        `,
+        'Sala Apolo': `
+            <svg viewBox="0 0 120 80" class="w-full h-16">
+                <rect x="5" y="5" width="110" height="70" fill="none" stroke="#9CA3AF" stroke-width="1"/>
+                <rect x="32" y="28" width="56" height="24" fill="#F142FB" rx="3"/>
+                <circle cx="40" cy="24" r="3" fill="#4A2BE1"/>
+                <circle cx="60" cy="24" r="3" fill="#4A2BE1"/>
+                <circle cx="80" cy="24" r="3" fill="#4A2BE1"/>
+                <circle cx="40" cy="56" r="3" fill="#4A2BE1"/>
+                <circle cx="60" cy="56" r="3" fill="#4A2BE1"/>
+                <circle cx="80" cy="56" r="3" fill="#4A2BE1"/>
+                <rect x="10" y="10" width="16" height="8" fill="#6B7280"/>
+                <rect x="92" y="36" width="6" height="8" fill="#1F2937"/>
+            </svg>
+        `,
+        'Sala Atena': `
+            <svg viewBox="0 0 120 80" class="w-full h-16">
+                <rect x="5" y="5" width="110" height="70" fill="none" stroke="#9CA3AF" stroke-width="1"/>
+                <rect x="24" y="20" width="72" height="12" fill="#0A1A3D" rx="2"/>
+                <rect x="24" y="48" width="72" height="12" fill="#0A1A3D" rx="2"/>
+                <rect x="24" y="32" width="12" height="16" fill="#0A1A3D" rx="2"/>
+                <rect x="84" y="32" width="12" height="16" fill="#0A1A3D" rx="2"/>
+                <circle cx="32" cy="16" r="3" fill="#4A2BE1"/>
+                <circle cx="48" cy="16" r="3" fill="#4A2BE1"/>
+                <circle cx="72" cy="16" r="3" fill="#4A2BE1"/>
+                <circle cx="88" cy="16" r="3" fill="#4A2BE1"/>
+                <circle cx="32" cy="64" r="3" fill="#4A2BE1"/>
+                <circle cx="48" cy="64" r="3" fill="#4A2BE1"/>
+                <circle cx="72" cy="64" r="3" fill="#4A2BE1"/>
+                <circle cx="88" cy="64" r="3" fill="#4A2BE1"/>
+                <circle cx="20" cy="40" r="3" fill="#4A2BE1"/>
+                <circle cx="100" cy="40" r="3" fill="#4A2BE1"/>
+            </svg>
+        `,
+        'Sala Poseidon': `
+            <svg viewBox="0 0 120 80" class="w-full h-16">
+                <rect x="5" y="5" width="110" height="70" fill="none" stroke="#9CA3AF" stroke-width="1"/>
+                <rect x="16" y="24" width="88" height="32" fill="#F59E0B" rx="4"/>
+                <circle cx="24" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="36" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="48" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="60" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="72" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="84" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="96" cy="20" r="3" fill="#4A2BE1"/>
+                <circle cx="24" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="36" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="48" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="60" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="72" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="84" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="96" cy="60" r="3" fill="#4A2BE1"/>
+                <circle cx="12" cy="40" r="3" fill="#F142FB"/>
+                <rect x="108" y="12" width="6" height="10" fill="#1F2937"/>
+                <rect x="108" y="58" width="6" height="10" fill="#1F2937"/>
+            </svg>
+        `,
+        'Sala Ártemis': `
+            <svg viewBox="0 0 120 80" class="w-full h-16">
+                <rect x="5" y="5" width="110" height="70" fill="none" stroke="#9CA3AF" stroke-width="1"/>
+                <circle cx="60" cy="40" r="16" fill="#80E4F9"/>
+                <circle cx="60" cy="24" r="3" fill="#4A2BE1"/>
+                <circle cx="76" cy="40" r="3" fill="#4A2BE1"/>
+                <circle cx="60" cy="56" r="3" fill="#4A2BE1"/>
+                <circle cx="44" cy="40" r="3" fill="#4A2BE1"/>
+                <rect x="88" y="16" width="24" height="10" fill="#6B7280" rx="5"/>
+                <rect x="92" y="32" width="16" height="8" fill="#F59E0B" rx="2"/>
+                <circle cx="20" cy="20" r="6" fill="#10B981"/>
+            </svg>
+        `
+    };
+    
+    return plans[roomName] || '<div class="text-center text-gray-400">Planta não disponível</div>';
+}
+
+function showRoomDetails(roomName) {
+    const room = meetingRooms.find(r => r.name === roomName);
+    if (!room) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">${room.name}</h2>
+                    <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Especificações</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-users mr-3 text-[#4A2BE1] w-4"></i>
+                                Capacidade: ${room.capacity} pessoas
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-tv mr-3 text-[#4A2BE1] w-4"></i>
+                                TV 55" com HDMI/USB
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-wifi mr-3 text-[#4A2BE1] w-4"></i>
+                                Wi-Fi de alta velocidade
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-marker mr-3 text-[#4A2BE1] w-4"></i>
+                                Quadro branco
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-snowflake mr-3 text-[#4A2BE1] w-4"></i>
+                                Ar condicionado
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-coffee mr-3 text-[#4A2BE1] w-4"></i>
+                                Serviço de café (opcional)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Planta Baixa</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            ${getRoomFloorPlan(room.name)}
+                        </div>
+                    </div>
+                </div>
+                
+                ${room.status === 'available' ? `
+                    <div class="border-t pt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Fazer Reserva</h3>
+                        <form onsubmit="makeRoomReservation(event, '${room.name}')" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+                                    <input type="date" id="roomReservationDate" required 
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Horário</label>
+                                    <select id="roomReservationTime" required 
+                                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1]">
+                                        <option value="">Selecione o horário</option>
+                                        <option value="08:00-09:00">08:00 - 09:00</option>
+                                        <option value="09:00-10:00">09:00 - 10:00</option>
+                                        <option value="10:00-11:00">10:00 - 11:00</option>
+                                        <option value="11:00-12:00">11:00 - 12:00</option>
+                                        <option value="14:00-15:00">14:00 - 15:00</option>
+                                        <option value="15:00-16:00">15:00 - 16:00</option>
+                                        <option value="16:00-17:00">16:00 - 17:00</option>
+                                        <option value="17:00-18:00">17:00 - 18:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Finalidade da reunião</label>
+                                <input type="text" id="roomReservationPurpose" required 
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1]"
+                                       placeholder="Ex: Reunião de projeto, apresentação para cliente...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Número de participantes</label>
+                                <input type="number" id="roomReservationParticipants" min="1" max="${room.capacity}" required 
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1]"
+                                       placeholder="Quantas pessoas participarão?">
+                            </div>
+                            <div class="flex space-x-3 pt-4">
+                                <button type="button" onclick="this.closest('.fixed').remove()" 
+                                        class="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                                    Cancelar
+                                </button>
+                                <button type="submit" 
+                                        class="flex-1 bg-[#4A2BE1] text-white py-3 px-4 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all">
+                                    Confirmar Reserva
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                ` : `
+                    <div class="border-t pt-6 text-center">
+                        <div class="text-gray-500">
+                            <i class="fas fa-lock text-2xl mb-2"></i>
+                            <p>Esta sala está ${room.status === 'occupied' ? 'ocupada' : 'reservada'} no momento.</p>
+                        </div>
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Set today as default date
+    if (room.status === 'available') {
+        document.getElementById('roomReservationDate').valueAsDate = new Date();
+    }
+}
+
+function makeRoomReservation(event, roomName) {
+    event.preventDefault();
+    
+    const date = document.getElementById('roomReservationDate').value;
+    const time = document.getElementById('roomReservationTime').value;
+    const purpose = document.getElementById('roomReservationPurpose').value;
+    const participants = document.getElementById('roomReservationParticipants').value;
+    
+    // Add to reservations
+    const newReservation = {
+        id: nextReservationId++,
+        user: currentUser.name,
+        space: roomName,
+        date: date,
+        time: time,
+        status: 'Confirmada',
+        purpose: purpose,
+        participants: participants
+    };
+    
+    reservations.push(newReservation);
+    
+    // Update room status
+    const room = meetingRooms.find(r => r.name === roomName);
+    if (room) {
+        room.status = 'reserved';
+    }
+    
+    // Close modal
+    document.querySelector('.fixed').remove();
+    
+    // Refresh meeting rooms grid
+    document.getElementById('meetingRoomsGrid').innerHTML = '';
+    initializeMeetingRoomsGrid();
+    
+    showNotification(`${roomName} reservada com sucesso!`, 'success');
 }
 
 // Populate users table
@@ -551,13 +977,26 @@ document.getElementById('addUserForm').addEventListener('submit', function(e) {
 
 // Initialize app
 function initializeApp() {
-    initializeCoworkingGrid();
-    initializeMeetingRooms();
-    populateUsersTable();
-    populateReservationsTable();
+    if (currentUser.role === 'Administrador') {
+        populateUsersTable();
+        populateReservationsTable();
+        
+        // Set current date for admin forms
+        const reservationDateField = document.getElementById('reservationDate');
+        if (reservationDateField) {
+            reservationDateField.valueAsDate = new Date();
+        }
+    }
     
-    // Set current date
-    document.getElementById('reservationDate').valueAsDate = new Date();
+    // Initialize meeting rooms grid for both admin and user
+    initializeMeetingRoomsGrid();
+    
+    // Show appropriate first section
+    if (currentUser.role === 'Administrador') {
+        showSection('dashboard');
+    } else {
+        showSection('coworking');
+    }
 }
 
 // Initialize everything when DOM is loaded
