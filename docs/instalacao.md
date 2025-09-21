@@ -2,103 +2,64 @@
 
 ## Pré-requisitos
 
-Antes de começar, certifique-se de ter instalado:
-
-- [Python 3.8+](https://www.python.org/downloads/)
-- [Git](https://git-scm.com/downloads)
-- [pip](https://pip.pypa.io/en/stable/installation/)
+| Software | Versão Mínima | Link de Download |
+|----------|---------------|------------------|
+| **Python** | 3.8+ | [Download](https://www.python.org/downloads/) |
+| **Git** | Última versão | [Download](https://git-scm.com/downloads) |
+| **pip** | Última versão | [Instalação](https://pip.pypa.io/en/stable/installation/) |
 
 ## Instalação das Dependências
 
-### 1. Clone o Repositório
+| Passo | Comando | Descrição |
+|-------|---------|-----------|
+| **1. Clone o Repositório** | `git clone https://github.com/seu-usuario/REQ-2025.2-T01-Softex.git`<br>`cd REQ-2025.2-T01-Softex` | Baixar o código fonte do projeto |
+| **2. Ambiente Virtual** | **Windows:**<br>`python -m venv venv`<br>`venv\Scripts\activate`<br><br>**Linux/macOS:**<br>`python -m venv venv`<br>`source venv/bin/activate` | Criar ambiente isolado para o projeto |
+| **3. Instalar Dependências** | `pip install -r requirements.txt` | Instalar todas as bibliotecas necessárias |
 
-```bash
-git clone https://github.com/seu-usuario/REQ-2025.2-T01-Softex.git
-cd REQ-2025.2-T01-Softex
-```
+## Verificação e Execução
 
-### 2. Crie um Ambiente Virtual (Recomendado)
-
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
-
-# Linux/macOS
-python -m venv venv
-source venv/bin/activate
-```
-
-### 3. Instale as Dependências
-
-```bash
-pip install -r requirements.txt
-```
-
-## Verificação da Instalação
-
-Para verificar se tudo foi instalado corretamente:
-
+### Verificar Instalação
 ```bash
 mkdocs --version
 ```
-
 Você deve ver a versão do MkDocs instalada.
 
-## Executando o Servidor de Desenvolvimento
-
-Para visualizar a documentação localmente:
-
+### Executar o Servidor de Desenvolvimento
 ```bash
 mkdocs serve
 ```
-
 A documentação estará disponível em: `http://127.0.0.1:8000`
 
-## Construindo a Documentação
-
-Para gerar os arquivos estáticos da documentação:
-
+### Construir a Documentação
 ```bash
 mkdocs build
 ```
-
 Os arquivos serão gerados na pasta `site/`.
 
-## Deploy para GitHub Pages
-
-Para fazer deploy da documentação para o GitHub Pages:
-
+### Deploy para GitHub Pages
 ```bash
 mkdocs gh-deploy
 ```
+A documentação será publicada no GitHub Pages.
 
 ## Solução de Problemas
 
-### Erro de Permissão
-
-Se encontrar erros de permissão no Windows:
-
+### Erro de Permissão (Windows)
+Se encontrar erros de permissão, execute o PowerShell como Administrador:
 ```bash
-# Execute o PowerShell como Administrador
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 ### Dependências em Conflito
-
 Se houver conflitos de dependências:
-
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt --force-reinstall
 ```
 
 ### Problemas com Git
-
-Se o comando `mkdocs gh-deploy` falhar:
-
+Se o comando `mkdocs gh-deploy` falhar, configure o Git:
 ```bash
-# Configure o Git se ainda não foi feito
 git config --global user.name "Seu Nome"
 git config --global user.email "seu.email@exemplo.com"
 ```

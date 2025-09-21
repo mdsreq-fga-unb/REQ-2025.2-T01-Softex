@@ -4,142 +4,64 @@
 
 ### Estrutura da Equipe
 
-#### Gerência do Projeto — Yuri
-- Coordenação geral, prazos, priorização e interface com o cliente
-
-#### Front-End Web (Vue) — Guilherme (Gusmão)
-- Liderança técnica do Frontend
-- Qualquer membro pode colaborar seguindo os padrões do Frontend
-
-#### Back-End (Python/DRF) — Felipe e Pietro (arquitetura)
-- **Apoio**: Yuri, Kauã (integrações, infraestrutura e rotinas de serviço)
-
-#### DevOps / Infra & Deploy — Yuri
-- **Apoio**: Kauã (VMs, Docker, pipelines de CI/CD)
-
-#### Modelagem de Dados — Júlia
-- **Apoio**: Pietro (schema, migrações, consultas e performance)
-
-#### Analista de Requisitos (BA) — Felipe
-- **Sub-equipe**: Yuri, Kauã (levantamento, validação e documentação)
-
-#### Qualidade (QA) — Kauã
-- **Apoio**: Pietro (testes funcionais/integrados e critérios de aceite)
+| Papel | Responsável Principal | Apoio | Responsabilidades |
+|-------|----------------------|-------|-------------------|
+| **Gerência do Projeto** | Yuri | - | Coordenação geral, prazos, priorização e interface com o cliente |
+| **Front-End Web (Vue)** | Guilherme | Qualquer membro | Liderança técnica do Frontend |
+| **Back-End (Python/DRF)** | Felipe e Pietro | Yuri, Kauã | Arquitetura, integrações, infraestrutura e rotinas de serviço |
+| **DevOps / Infra & Deploy** | Yuri | Kauã | VMs, Docker, pipelines de CI/CD |
+| **Modelagem de Dados** | Júlia | Pietro | Schema, migrações, consultas e performance |
+| **Analista de Requisitos (BA)** | Felipe | Yuri, Kauã | Levantamento, validação e documentação |
+| **Qualidade (QA)** | Kauã | Pietro | Testes funcionais/integrados e critérios de aceite |
 
 ## 5.2 Comunicação
 
 ### Ferramentas de Comunicação
 
-#### WhatsApp
-Utilizado para alinhamentos rápidos e comunicação instantânea entre os membros da equipe, garantindo agilidade na troca de informações do dia a dia.
-
-**Uso:**
-- Comunicação rápida entre membros
-- Resolução de dúvidas imediatas
-- Coordenação de atividades
-
-#### Discord
-Adotado para as reuniões internas semanais e encontros em aula, permitindo organização de canais de voz e tela compartilhada para acompanhamento do desenvolvimento.
-
-**Uso:**
-- Reuniões internas semanais
-- Encontros em aula
-- Compartilhamento de tela
-- Comunicação por voz
-
-#### Slack
-Canal dedicado para a comunicação direta com o cliente, usado para dúvidas, alinhamentos rápidos e registro de decisões ao longo do projeto.
-
-**Uso:**
-- Comunicação com o cliente
-- Registro de decisões
-- Dúvidas e esclarecimentos
-- Acompanhamento de status
-
-#### Google Meet
-Ferramenta oficial para as reuniões quinzenais com o cliente, voltadas para acompanhamento, validação das entregas e discussão dos próximos passos.
-
-**Uso:**
-- Reuniões formais com cliente
-- Apresentação de entregas
-- Validação de funcionalidades
-- Planejamento de próximos passos
-
-#### GitHub
-Utilizado para gerenciamento do backlog, controle de tarefas e acompanhamento do progresso do projeto, com uso de issues, PRs e Projects.
-
-**Uso:**
-- Controle de versão do código
-- Gerenciamento de issues
-- Pull requests e code review
-- Acompanhamento de progresso
-
-#### GitPages
-Responsável por centralizar as entregas documentais e publicar a evolução do projeto em um espaço acessível ao cliente.
-
-**Uso:**
-- Documentação do projeto
-- Relatórios de progresso
-- Entregas documentais
-- Acesso público ao projeto
+| Ferramenta | Uso Principal | Características |
+|------------|---------------|-----------------|
+| **WhatsApp** | Comunicação rápida entre membros | • Alinhamentos rápidos<br>• Resolução de dúvidas imediatas<br>• Coordenação de atividades |
+| **Discord** | Reuniões internas e encontros em aula | • Reuniões internas semanais<br>• Encontros em aula<br>• Compartilhamento de tela<br>• Comunicação por voz |
+| **Slack** | Comunicação direta com o cliente | • Comunicação com o cliente<br>• Registro de decisões<br>• Dúvidas e esclarecimentos<br>• Acompanhamento de status |
+| **Google Meet** | Reuniões quinzenais com cliente | • Reuniões formais com cliente<br>• Apresentação de entregas<br>• Validação de funcionalidades<br>• Planejamento de próximos passos |
+| **GitHub** | Gerenciamento do projeto | • Controle de versão do código<br>• Gerenciamento de issues<br>• Pull requests e code review<br>• Acompanhamento de progresso |
+| **GitPages** | Documentação e entregas | • Documentação do projeto<br>• Relatórios de progresso<br>• Entregas documentais<br>• Acesso público ao projeto |
 
 ### Métodos e Frequência de Reuniões
 
-#### Reunião Interna Semanal
-- **Frequência**: Segundas-feiras
-- **Ferramenta**: Discord
-- **Objetivo**: Planejamento e acompanhamento do status da equipe
-- **Participantes**: Equipe completa
-- **Duração**: 1-2 horas
-
-#### Encontros em Aula
-- **Frequência**: Terças e quintas
-- **Ferramenta**: Discord ou presenciais
-- **Objetivo**: Tirar bloqueios e revisar entregas
-- **Participantes**: Equipe completa
-- **Duração**: 1 hora
-
-#### Reuniões de Revisão e Validação (a cada 2 semanas)
-- **Frequência**: Ao final de cada sprint
-- **Ferramenta**: Google Meet
-- **Objetivo**: Apresentação das funcionalidades concluídas, testes guiados e coleta de feedback
-- **Participantes**: Equipe + Cliente
-- **Duração**: 2-3 horas
-
-#### Planejamento de Sprint
-- **Frequência**: Logo após as revisões
-- **Ferramenta**: Discord
-- **Objetivo**: Definir prioridades da próxima entrega com base no feedback do cliente
-- **Participantes**: Equipe completa
-- **Duração**: 1-2 horas
-
-#### Retrospectiva
-- **Frequência**: Ao final de cada sprint
-- **Ferramenta**: Discord
-- **Objetivo**: Discutir pontos fortes, aspectos a melhorar e lições aprendidas
-- **Participantes**: Equipe completa
-- **Duração**: 1 hora
+| Tipo de Reunião | Frequência | Ferramenta | Participantes | Duração | Objetivo |
+|------------------|------------|------------|---------------|---------|----------|
+| **Interna Semanal** | Segundas-feiras | Discord | Equipe completa | 1-2h | Planejamento e acompanhamento do status da equipe |
+| **Encontros em Aula** | Terças e quintas | Discord ou presencial | Equipe completa | 1h | Tirar bloqueios e revisar entregas |
+| **Revisão e Validação** | A cada 2 semanas | Google Meet | Equipe + Cliente | 2-3h | Apresentação das funcionalidades concluídas, testes guiados e coleta de feedback |
+| **Planejamento de Sprint** | Logo após as revisões | Discord | Equipe completa | 1-2h | Definir prioridades da próxima entrega com base no feedback do cliente |
+| **Retrospectiva** | Ao final de cada sprint | Discord | Equipe completa | 1h | Discutir pontos fortes, aspectos a melhorar e lições aprendidas |
 
 ### Frequência de Interações com o Cliente
 
-#### Revisões Quinzenais
-Realizadas sempre ao final de cada sprint, garantindo validação incremental do projeto.
+| Tipo de Interação | Frequência | Descrição |
+|-------------------|------------|-----------|
+| **Revisões Quinzenais** | A cada 2 semanas | Validação incremental do projeto ao final de cada sprint |
+| **Interações Slack** | Conforme necessário | Discussões rápidas e ajustes ao longo do desenvolvimento |
 
-**Agenda típica:**
-1. Apresentação das funcionalidades desenvolvidas
-2. Demonstração prática do sistema
-3. Testes guiados pelo cliente
-4. Coleta de feedback
-5. Definição de prioridades para próximo sprint
+### Agenda Típica das Revisões Quinzenais
 
-#### Interações Adicionais pelo Slack
-O cliente tem acesso ao canal do projeto, o que permite discussões rápidas ou ajustes necessários ao longo do desenvolvimento, sem depender apenas das reuniões formais.
+| Etapa | Responsável | Atividade |
+|-------|-------------|-----------|
+| **1** | Equipe técnica | Apresentação das funcionalidades desenvolvidas |
+| **2** | Equipe técnica | Demonstração prática do sistema |
+| **3** | Cliente (com apoio da equipe) | Testes guiados pelo cliente |
+| **4** | Gerente do Projeto | Coleta de feedback |
+| **5** | Equipe + Cliente | Definição de prioridades para próximo sprint |
 
-**Tipos de interação:**
-- Dúvidas técnicas
-- Esclarecimentos de requisitos
-- Ajustes de prioridades
-- Status de desenvolvimento
+### Tipos de Interação pelo Slack
+
+| Tipo | Descrição |
+|------|-----------|
+| **Dúvidas técnicas** | Esclarecimentos sobre implementação |
+| **Esclarecimentos de requisitos** | Validação de especificações |
+| **Ajustes de prioridades** | Mudanças no planejamento |
+| **Status de desenvolvimento** | Acompanhamento do progresso |
 
 ## 5.3 Processo de Validação
 
@@ -149,121 +71,86 @@ O processo de validação será realizado de forma quinzenal, acompanhando o fec
 
 ### Fluxo de Validação
 
-#### 1. Preparação da Reunião
-- **Responsável**: Yuri (Gerente do Projeto)
-- **Atividades**:
-  - Preparar demonstração das funcionalidades
-  - Organizar agenda da reunião
-  - Enviar convite com antecedência
-  - Preparar materiais de apoio
+```mermaid
+flowchart TD
+    A[Início do Sprint] --> B[Desenvolvimento]
+    B --> C[Testes Internos]
+    C --> D[Preparação da Reunião]
+    D --> E[Demonstração Prática]
+    E --> F[Testes Guiados pelo Cliente]
+    F --> G[Coleta de Feedback]
+    G --> H{Feedback Aprovado?}
+    H -->|Sim| I[Validação e Aceite]
+    H -->|Não| J[Ajustes Necessários]
+    J --> B
+    I --> K[Próximo Sprint]
+    
+    style I fill:#ccffcc
+    style K fill:#ccffcc
+```
 
-#### 2. Demonstração Prática
-- **Responsável**: Equipe técnica
-- **Atividades**:
-  - Apresentar funcionalidades desenvolvidas
-  - Demonstrar uso prático do sistema
-  - Explicar melhorias implementadas
-  - Mostrar relatórios e indicadores
+### Fluxo de Validação
 
-#### 3. Testes Guiados
-- **Responsável**: Cliente (com apoio da equipe)
-- **Atividades**:
-  - Cliente testa as funcionalidades
-  - Equipe observa e anota feedback
-  - Identificação de problemas ou melhorias
-  - Validação de requisitos
-
-#### 4. Coleta de Feedback
-- **Responsável**: Yuri (Gerente do Projeto)
-- **Atividades**:
-  - Registrar feedback do cliente
-  - Identificar mudanças necessárias
-  - Priorizar ajustes
-  - Documentar decisões
-
-#### 5. Validação e Aceite
-- **Responsável**: Cliente
-- **Atividades**:
-  - Aprovar funcionalidades apresentadas
-  - Solicitar ajustes se necessário
-  - Definir prioridades para próximo sprint
-  - Confirmar cronograma
+| Etapa | Responsável | Atividades |
+|-------|-------------|------------|
+| **1. Preparação da Reunião** | Yuri (Gerente do Projeto) | • Preparar demonstração das funcionalidades<br>• Organizar agenda da reunião<br>• Enviar convite com antecedência<br>• Preparar materiais de apoio |
+| **2. Demonstração Prática** | Equipe técnica | • Apresentar funcionalidades desenvolvidas<br>• Demonstrar uso prático do sistema<br>• Explicar melhorias implementadas<br>• Mostrar relatórios e indicadores |
+| **3. Testes Guiados** | Cliente (com apoio da equipe) | • Cliente testa as funcionalidades<br>• Equipe observa e anota feedback<br>• Identificação de problemas ou melhorias<br>• Validação de requisitos |
+| **4. Coleta de Feedback** | Yuri (Gerente do Projeto) | • Registrar feedback do cliente<br>• Identificar mudanças necessárias<br>• Priorizar ajustes<br>• Documentar decisões |
+| **5. Validação e Aceite** | Cliente | • Aprovar funcionalidades apresentadas<br>• Solicitar ajustes se necessário<br>• Definir prioridades para próximo sprint<br>• Confirmar cronograma |
 
 ### Situações Excepcionais
 
-Situações excepcionais poderão gerar validações adicionais fora do ciclo regular, mas a regra principal será concentrar a checagem e o aceite nas entregas previstas, garantindo alinhamento constante e evolução contínua do produto.
-
-**Exemplos de situações excepcionais:**
-- Mudanças críticas de requisitos
-- Problemas técnicos significativos
-- Necessidade de esclarecimentos urgentes
-- Ajustes de cronograma
+| Situação | Descrição |
+|----------|-----------|
+| **Mudanças críticas de requisitos** | Alterações que impactam o escopo do projeto |
+| **Problemas técnicos significativos** | Bloqueios que impedem o desenvolvimento |
+| **Necessidade de esclarecimentos urgentes** | Dúvidas que precisam ser resolvidas rapidamente |
+| **Ajustes de cronograma** | Mudanças nos prazos ou entregas |
 
 ### Documentação das Validações
 
-#### Registro de Feedback
-- **Ferramenta**: Slack + Documento compartilhado
-- **Conteúdo**:
-  - Feedback recebido
-  - Ações definidas
-  - Responsáveis
-  - Prazos
-
-#### Ata de Reunião
-- **Ferramenta**: Google Docs
-- **Conteúdo**:
-  - Participantes
-  - Funcionalidades apresentadas
-  - Decisões tomadas
-  - Próximos passos
-
-#### Atualização do Backlog
-- **Ferramenta**: GitHub Projects
-- **Conteúdo**:
-  - Novas tarefas identificadas
-  - Priorização atualizada
-  - Estimativas de esforço
-  - Dependências
+| Tipo | Ferramenta | Conteúdo |
+|------|------------|----------|
+| **Registro de Feedback** | Slack + Documento compartilhado | • Feedback recebido<br>• Ações definidas<br>• Responsáveis<br>• Prazos |
+| **Ata de Reunião** | Google Docs | • Participantes<br>• Funcionalidades apresentadas<br>• Decisões tomadas<br>• Próximos passos |
+| **Atualização do Backlog** | GitHub Projects | • Novas tarefas identificadas<br>• Priorização atualizada<br>• Estimativas de esforço<br>• Dependências |
 
 ## 5.4 Gestão de Expectativas
 
-### Comunicação Transparente
-- Manter cliente informado sobre progresso
-- Comunicar problemas e atrasos prontamente
-- Explicar decisões técnicas de forma clara
-- Documentar todas as decisões importantes
-
-### Alinhamento de Expectativas
-- Validar entendimento dos requisitos
-- Confirmar prioridades regularmente
-- Ajustar cronograma quando necessário
-- Gerenciar mudanças de escopo
-
-### Qualidade das Entregas
-- Garantir que funcionalidades atendam aos requisitos
-- Realizar testes antes das apresentações
-- Preparar demonstrações bem estruturadas
-- Coletar feedback de forma organizada
+| Aspecto | Ações |
+|---------|-------|
+| **Comunicação Transparente** | • Manter cliente informado sobre progresso<br>• Comunicar problemas e atrasos prontamente<br>• Explicar decisões técnicas de forma clara<br>• Documentar todas as decisões importantes |
+| **Alinhamento de Expectativas** | • Validar entendimento dos requisitos<br>• Confirmar prioridades regularmente<br>• Ajustar cronograma quando necessário<br>• Gerenciar mudanças de escopo |
+| **Qualidade das Entregas** | • Garantir que funcionalidades atendam aos requisitos<br>• Realizar testes antes das apresentações<br>• Preparar demonstrações bem estruturadas<br>• Coletar feedback de forma organizada |
 
 ## 5.5 Resolução de Conflitos
 
 ### Identificação de Conflitos
-- Diferentes interpretações de requisitos
-- Prioridades conflitantes
-- Limitações técnicas não previstas
-- Mudanças de escopo
+
+| Tipo de Conflito | Descrição |
+|------------------|-----------|
+| **Interpretações de requisitos** | Diferentes entendimentos sobre especificações |
+| **Prioridades conflitantes** | Disputas sobre o que deve ser priorizado |
+| **Limitações técnicas** | Restrições não previstas no planejamento |
+| **Mudanças de escopo** | Alterações que impactam o projeto |
 
 ### Processo de Resolução
-1. **Identificar o conflito** claramente
-2. **Comunicar** com todas as partes envolvidas
-3. **Analisar** alternativas e impactos
-4. **Propor** soluções viáveis
-5. **Decidir** em conjunto com o cliente
-6. **Documentar** a decisão tomada
+
+| Etapa | Ação |
+|-------|------|
+| **1** | Identificar o conflito claramente |
+| **2** | Comunicar com todas as partes envolvidas |
+| **3** | Analisar alternativas e impactos |
+| **4** | Propor soluções viáveis |
+| **5** | Decidir em conjunto com o cliente |
+| **6** | Documentar a decisão tomada |
 
 ### Escalação
-Se não for possível resolver o conflito no nível da equipe:
-1. Escalar para o gerente do projeto (Yuri)
-2. Se necessário, envolver o cliente
-3. Buscar orientação do professor da disciplina
-4. Documentar todo o processo
+
+| Nível | Ação |
+|-------|------|
+| **1** | Escalar para o gerente do projeto (Yuri) |
+| **2** | Se necessário, envolver o cliente |
+| **3** | Buscar orientação do professor da disciplina |
+| **4** | Documentar todo o processo |

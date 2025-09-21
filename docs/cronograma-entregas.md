@@ -2,109 +2,62 @@
 
 ## Visão Geral
 
-O projeto será desenvolvido em **12 semanas**, de **14/09/2025** a **09/12/2025**, com entregas quinzenais ao cliente e atualizações semanais de progresso. O planejamento segue um modelo incremental, em que cada sprint resulta em funcionalidades validadas.
+| Aspecto | Detalhes |
+|---------|----------|
+| **Duração Total** | 12 semanas (14/09/2025 a 09/12/2025) |
+| **Metodologia** | Desenvolvimento incremental com sprints |
+| **Entregas** | Quinzenais ao cliente |
+| **Atualizações** | Semanais de progresso |
+| **Fase Atual** | Elaboração (refinamento de arquitetura) |
 
-O projeto já superou a fase de Iniciação, na qual foram definidos escopo, objetivos e principais requisitos. Nesse momento, avançamos para a fase de Elaboração, onde o foco está em refinar a arquitetura, validar riscos técnicos e consolidar o protótipo inicial, preparando a base necessária para o desenvolvimento incremental nas próximas etapas.
+### Timeline do Projeto
+
+```mermaid
+gantt
+    title Cronograma do Projeto - Sistema de Gestão de Recursos Softex
+    dateFormat  YYYY-MM-DD
+    section Elaboração
+    Documentação de requisitos    :done, req, 2025-09-14, 2025-09-20
+    Prototipação inicial         :done, proto, 2025-09-14, 2025-09-20
+    Validação com cliente        :done, val, 2025-09-21, 2025-09-27
+    Configuração ambiente        :done, env, 2025-09-28, 2025-10-04
+    section Construção
+    Desenvolvimento inicial      :active, dev1, 2025-10-05, 2025-10-18
+    Validação e ajustes          :dev2, 2025-10-19, 2025-10-25
+    Funcionalidades avançadas    :dev3, 2025-10-26, 2025-11-08
+    Validação intermediária      :dev4, 2025-11-09, 2025-11-15
+    Finalização MVP              :dev5, 2025-11-16, 2025-11-29
+    section Transição
+    Implantação e entrega        :trans, 2025-11-30, 2025-12-06
+```
 
 !!! note "Cronograma Preliminar"
     Este cronograma é preliminar e será atualizado ao longo da disciplina, conforme o andamento das sprints.
 
 ## Fase de Elaboração (Semanas 1 a 3)
 
-### Semana 1 (14/09 – 20/09)
-
-**Atividades:**
-- Documentação de requisitos funcionais e não funcionais
-- Prototipação inicial
-- Backlog inicial
-
-**Entrega:**
-- Documento de requisitos
-- Protótipo de telas
-
-### Semana 2 (21/09 – 27/09)
-
-**Atividades:**
-- Apresentação e ajuste do protótipo com feedback do cliente
-- Organização do repositório GitHub
-
-**Entrega:**
-- Protótipo validado
-- Repositório estruturado
-
-### Semana 3 (28/09 – 04/10)
-
-**Atividades:**
-- Configuração inicial de front-end, back-end, banco de dados e Docker
-
-**Entrega:**
-- Ambiente de desenvolvimento pronto
+| Semana | Período | Atividades | Entrega |
+|--------|---------|------------|---------|
+| **1** | 14/09 – 20/09 | • Documentação de requisitos funcionais e não funcionais<br>• Prototipação inicial<br>• Backlog inicial | • Documento de requisitos<br>• Protótipo de telas |
+| **2** | 21/09 – 27/09 | • Apresentação e ajuste do protótipo com feedback do cliente<br>• Organização do repositório GitHub | • Protótipo validado<br>• Repositório estruturado |
+| **3** | 28/09 – 04/10 | • Configuração inicial de front-end, back-end, banco de dados e Docker | • Ambiente de desenvolvimento pronto |
 
 ## Fase de Construção (Semanas 4 a 11)
 
-### Semanas 4 e 5 (05/10 – 18/10)
-
-**Atividades:**
-- Desenvolvimento inicial (reservas básicas, cadastro de salas/usuários, banco conectado)
-
-**Entrega:**
-- Primeira versão funcional (reserva simples)
-
-### Semana 6 (19/10 – 25/10)
-
-**Atividades:**
-- Testes iniciais, ajustes de arquitetura
-- Mini demo
-
-**Entrega:**
-- Fluxo básico de reserva validado
-
-### Semanas 7 e 8 (26/10 – 08/11)
-
-**Atividades:**
-- Desenvolvimento intermediário (mapa interativo, regras de uso/capacidade, integração inicial com Google Calendar e perfis)
-
-**Entrega:**
-- Versão intermediária com mapa interativo
-
-### Semana 9 (09/11 – 15/11)
-
-**Atividades:**
-- Testes de integração, correções
-- Mini demo com cliente
-
-**Entrega:**
-- Versão validada com mapa e reservas
-
-### Semanas 10 e 11 (16/11 – 29/11)
-
-**Atividades:**
-- Funcionalidades finais para o MVP (relatórios, notificações Slack, ajustes UX)
-
-**Entrega:**
-- MVP completo
+| Semana | Período | Atividades | Entrega |
+|--------|---------|------------|---------|
+| **4-5** | 05/10 – 18/10 | • Desenvolvimento inicial (reservas básicas, cadastro de salas/usuários, banco conectado) | • Primeira versão funcional (reserva simples) |
+| **6** | 19/10 – 25/10 | • Testes iniciais, ajustes de arquitetura<br>• Mini demo | • Fluxo básico de reserva validado |
+| **7-8** | 26/10 – 08/11 | • Desenvolvimento intermediário (mapa interativo, regras de uso/capacidade, integração inicial com Google Calendar e perfis) | • Versão intermediária com mapa interativo |
+| **9** | 09/11 – 15/11 | • Testes de integração, correções<br>• Mini demo com cliente | • Versão validada com mapa e reservas |
+| **10-11** | 16/11 – 29/11 | • Funcionalidades finais para o MVP (relatórios, notificações Slack, ajustes UX) | • MVP completo |
 
 ## Fase de Transição (Semana 12 e Fechamento)
 
-### Semana 12 (30/11 – 06/12)
-
-**Atividades:**
-- Implantação no servidor
-- Testes finais
-- Capacitação da equipe
-
-**Entrega:**
-- Sistema implantado e validado
-
-### Prazo Final (09/12/2025)
-
-**Situação esperada:**
-- Projeto finalizado
-- Validado pelo cliente
-- Documentação publicada no GitPages
-
-**Entrega:**
-- Sistema implantado, validado e equipe treinada
+| Período | Atividades | Entrega |
+|---------|------------|---------|
+| **Semana 12** (30/11 – 06/12) | • Implantação no servidor<br>• Testes finais<br>• Capacitação da equipe | • Sistema implantado e validado |
+| **Prazo Final** (09/12/2025) | • Projeto finalizado<br>• Validado pelo cliente<br>• Documentação publicada no GitPages | • Sistema implantado, validado e equipe treinada |
 
 ## Cronograma Detalhado por Sprint
 
@@ -188,101 +141,59 @@ O projeto já superou a fase de Iniciação, na qual foram definidos escopo, obj
 
 ## Marcos Importantes
 
-### Marco 1: Protótipo Validado (Semana 2)
-- ✅ Protótipo aprovado pelo cliente
-- ✅ Requisitos documentados
-- ✅ Repositório estruturado
-
-### Marco 2: Ambiente Configurado (Semana 3)
-- ✅ Backend funcionando
-- ✅ Frontend conectado
-- ✅ Banco de dados configurado
-- ✅ Docker funcionando
-
-### Marco 3: Primeira Versão Funcional (Semana 5)
-- ✅ Reservas básicas funcionando
-- ✅ Interface de usuário operacional
-- ✅ Testes iniciais passando
-
-### Marco 4: Versão Intermediária (Semana 8)
-- ✅ Mapa interativo implementado
-- ✅ Regras de uso configuradas
-- ✅ Integrações básicas funcionando
-
-### Marco 5: MVP Completo (Semana 11)
-- ✅ Todas as funcionalidades implementadas
-- ✅ Relatórios funcionando
-- ✅ Notificações ativas
-- ✅ Testes finais passando
-
-### Marco 6: Sistema Implantado (Semana 12)
-- ✅ Deploy em produção
-- ✅ Equipe treinada
-- ✅ Documentação completa
-- ✅ Projeto finalizado
+| Marco | Semana | Status | Entregas |
+|-------|--------|--------|----------|
+| **1. Protótipo Validado** | 2 | ✅ | • Protótipo aprovado pelo cliente<br>• Requisitos documentados<br>• Repositório estruturado |
+| **2. Ambiente Configurado** | 3 | ✅ | • Backend funcionando<br>• Frontend conectado<br>• Banco de dados configurado<br>• Docker funcionando |
+| **3. Primeira Versão Funcional** | 5 | ✅ | • Reservas básicas funcionando<br>• Interface de usuário operacional<br>• Testes iniciais passando |
+| **4. Versão Intermediária** | 8 | ✅ | • Mapa interativo implementado<br>• Regras de uso configuradas<br>• Integrações básicas funcionando |
+| **5. MVP Completo** | 11 | ✅ | • Todas as funcionalidades implementadas<br>• Relatórios funcionando<br>• Notificações ativas<br>• Testes finais passando |
+| **6. Sistema Implantado** | 12 | ✅ | • Deploy em produção<br>• Equipe treinada<br>• Documentação completa<br>• Projeto finalizado |
 
 ## Riscos e Mitigações
 
 ### Riscos Identificados
 
-#### Risco 1: Atraso no Mapa Interativo
-**Probabilidade:** Média  
-**Impacto:** Alto  
-**Mitigação:** Priorizar desenvolvimento desde o início, usar bibliotecas prontas quando possível
-
-#### Risco 2: Complexidade das Permissões
-**Probabilidade:** Média  
-**Impacto:** Alto  
-**Mitigação:** Simplificar modelo inicial, implementar versão básica primeiro
-
-#### Risco 3: Problemas de Integração
-**Probabilidade:** Baixa  
-**Impacto:** Médio  
-**Mitigação:** Testar integrações cedo, ter planos alternativos
-
-#### Risco 4: Atraso na Equipe
-**Probabilidade:** Baixa  
-**Impacto:** Alto  
-**Mitigação:** Distribuir responsabilidades, ter membros de backup
+| Risco | Probabilidade | Impacto | Mitigação |
+|-------|---------------|---------|-----------|
+| **Atraso no Mapa Interativo** | Média | Alto | Priorizar desenvolvimento desde o início, usar bibliotecas prontas |
+| **Complexidade das Permissões** | Média | Alto | Simplificar modelo inicial, implementar versão básica primeiro |
+| **Problemas de Integração** | Baixa | Médio | Testar integrações cedo, ter planos alternativos |
+| **Atraso na Equipe** | Baixa | Alto | Distribuir responsabilidades, ter membros de backup |
 
 ### Plano de Contingência
 
-Se houver atrasos significativos:
-1. Priorizar funcionalidades essenciais
-2. Simplificar funcionalidades complexas
-3. Estender prazo se necessário (com aprovação)
-4. Reduzir escopo se crítico
+| Ação | Descrição |
+|------|-----------|
+| **1. Priorizar** | Funcionalidades essenciais |
+| **2. Simplificar** | Funcionalidades complexas |
+| **3. Estender** | Prazo se necessário (com aprovação) |
+| **4. Reduzir** | Escopo se crítico |
 
 ## Métricas de Acompanhamento
 
 ### Métricas de Progresso
-- **Funcionalidades implementadas** vs. planejadas
-- **Testes passando** vs. total de testes
-- **Bugs encontrados** vs. corrigidos
-- **Tempo gasto** vs. estimado
+
+| Métrica | Descrição |
+|---------|-----------|
+| **Funcionalidades** | Implementadas vs. planejadas |
+| **Testes** | Passando vs. total de testes |
+| **Bugs** | Encontrados vs. corrigidos |
+| **Tempo** | Gasto vs. estimado |
 
 ### Métricas de Qualidade
-- **Cobertura de testes** (meta: >80%)
-- **Bugs por funcionalidade** (meta: <5)
-- **Tempo de resposta** da aplicação (meta: <2s)
-- **Satisfação do cliente** (meta: >8/10)
+
+| Métrica | Meta |
+|---------|------|
+| **Cobertura de testes** | >80% |
+| **Bugs por funcionalidade** | <5 |
+| **Tempo de resposta** | <2s |
+| **Satisfação do cliente** | >8/10 |
 
 ## Comunicação e Relatórios
 
-### Relatórios Semanais
-- Status das atividades
-- Bloqueios identificados
-- Próximos passos
-- Riscos e mitigações
-
-### Relatórios Quinzenais (Sprints)
-- Funcionalidades entregues
-- Demonstração para o cliente
-- Feedback recebido
-- Ajustes no planejamento
-
-### Relatórios de Marco
-- Resumo do progresso
-- Lições aprendidas
-- Ajustes no cronograma
-- Próximas prioridades
+| Tipo | Frequência | Conteúdo |
+|------|------------|----------|
+| **Semanais** | Semanal | • Status das atividades<br>• Bloqueios identificados<br>• Próximos passos<br>• Riscos e mitigações |
+| **Quinzenais (Sprints)** | A cada 2 semanas | • Funcionalidades entregues<br>• Demonstração para o cliente<br>• Feedback recebido<br>• Ajustes no planejamento |
+| **Marco** | A cada marco | • Resumo do progresso<br>• Lições aprendidas<br>• Ajustes no cronograma<br>• Próximas prioridades |

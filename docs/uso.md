@@ -2,107 +2,101 @@
 
 ## Navegando pela Documentação
 
-A documentação está organizada em seções principais:
-
 ### 📖 Seções Disponíveis
 
-- **Início**: Página principal com visão geral
-- **Documentação**: Guias detalhados do projeto
-- **API**: Documentação técnica da API
-- **Sobre**: Informações sobre o projeto
+| Seção | Descrição |
+|-------|-----------|
+| **Início** | Página principal com visão geral do projeto |
+| **Documentação** | Guias detalhados do projeto |
+| **API** | Documentação técnica da API |
+| **Sobre** | Informações sobre o projeto |
 
-### 🔍 Busca
+### 🔍 Funcionalidades de Navegação
 
-Use a barra de busca no topo da página para encontrar conteúdo específico.
-
-### 📱 Navegação Mobile
-
-A documentação é totalmente responsiva e funciona perfeitamente em dispositivos móveis.
+| Funcionalidade | Descrição |
+|----------------|-----------|
+| **Busca** | Use a barra de busca no topo da página para encontrar conteúdo específico |
+| **Navegação Mobile** | Documentação totalmente responsiva para dispositivos móveis |
 
 ## Funcionalidades do MkDocs
 
 ### Tema do Material
 
-Este projeto usa o tema Material para MkDocs, que oferece:
-
-- **Modo escuro/claro**: Toggle automático baseado nas preferências do sistema
-- **Navegação por abas**: Organização clara do conteúdo
-- **Busca integrada**: Pesquisa rápida em todo o conteúdo
-- **Código destacado**: Syntax highlighting para código
-- **Ícones**: Suporte a ícones FontAwesome e Material
+| Funcionalidade | Descrição |
+|----------------|-----------|
+| **Modo escuro/claro** | Toggle automático baseado nas preferências do sistema |
+| **Navegação por abas** | Organização clara do conteúdo |
+| **Busca integrada** | Pesquisa rápida em todo o conteúdo |
+| **Código destacado** | Syntax highlighting para código |
+| **Ícones** | Suporte a ícones FontAwesome e Material |
 
 ### Plugins Ativos
 
-- **Git Revision Date**: Mostra a data da última modificação
-- **Git Committers**: Lista os contribuidores
-- **Search**: Busca integrada
-- **Minify**: Otimização dos arquivos estáticos
+| Plugin | Funcionalidade |
+|--------|----------------|
+| **Git Revision Date** | Mostra a data da última modificação |
+| **Git Committers** | Lista os contribuidores |
+| **Search** | Busca integrada |
+| **Minify** | Otimização dos arquivos estáticos |
 
 ## Personalização
 
 ### Adicionando Novas Páginas
 
-1. Crie um novo arquivo `.md` na pasta apropriada
-2. Adicione a entrada no arquivo `mkdocs.yml` na seção `nav`
-3. Execute `mkdocs serve` para visualizar as mudanças
+| Passo | Ação |
+|-------|------|
+| **1** | Crie um novo arquivo `.md` na pasta apropriada |
+| **2** | Adicione a entrada no arquivo `mkdocs.yml` na seção `nav` |
+| **3** | Execute `mkdocs serve` para visualizar as mudanças |
 
 ### Modificando o Tema
 
-Edite o arquivo `mkdocs.yml` na seção `theme` para personalizar:
-
-- Cores
-- Ícones
-- Funcionalidades
-- Layout
+| Aspecto | Localização |
+|---------|-------------|
+| **Cores** | Seção `theme` do `mkdocs.yml` |
+| **Ícones** | Seção `theme` do `mkdocs.yml` |
+| **Funcionalidades** | Seção `theme` do `mkdocs.yml` |
+| **Layout** | Seção `theme` do `mkdocs.yml` |
 
 ### Adicionando Plugins
 
-1. Instale o plugin: `pip install nome-do-plugin`
-2. Adicione na seção `plugins` do `mkdocs.yml`
-3. Configure as opções do plugin
+| Passo | Ação |
+|-------|------|
+| **1** | Instale o plugin: `pip install nome-do-plugin` |
+| **2** | Adicione na seção `plugins` do `mkdocs.yml` |
+| **3** | Configure as opções do plugin |
 
 ## Comandos Úteis
 
-```bash
-# Servidor de desenvolvimento
-mkdocs serve
-
-# Servidor com auto-reload
-mkdocs serve --livereload
-
-# Construir documentação
-mkdocs build
-
-# Deploy para GitHub Pages
-mkdocs gh-deploy
-
-# Ajuda
-mkdocs --help
-```
+| Comando | Descrição |
+|---------|-----------|
+| `mkdocs serve` | Servidor de desenvolvimento |
+| `mkdocs serve --livereload` | Servidor com auto-reload |
+| `mkdocs build` | Construir documentação |
+| `mkdocs gh-deploy` | Deploy para GitHub Pages |
+| `mkdocs --help` | Ajuda |
 
 ## Estrutura de Arquivos
 
-```
-docs/
-├── introducao.md      # Visão geral do projeto
-├── instalacao.md      # Guia de instalação
-└── uso.md            # Este arquivo
-
-api/
-└── referencia.md     # Documentação da API
-
-index.md              # Página inicial
-sobre.md              # Página sobre o projeto
-```
+| Arquivo | Descrição |
+|---------|-----------|
+| `docs/introducao.md` | Visão geral do projeto |
+| `docs/instalacao.md` | Guia de instalação |
+| `docs/uso.md` | Este arquivo |
+| `api/referencia.md` | Documentação da API |
+| `index.md` | Página inicial |
+| `sobre.md` | Página sobre o projeto |
 
 ## Dicas e Truques
 
 ### Markdown Avançado
 
-- Use `===` para títulos de seção
-- Use `---` para separadores
-- Use `!!! note` para blocos de nota
-- Use ````python` para blocos de código
+| Sintaxe | Uso |
+|---------|-----|
+| `===` | Títulos de seção |
+| `---` | Separadores |
+| `!!! note` | Blocos de nota |
+| ````python` | Blocos de código |
 
 ### Exemplo de Bloco de Nota
 
@@ -119,6 +113,8 @@ def exemplo():
 
 ### Links e Referências
 
-- [MkDocs](https://www.mkdocs.org/)
-- [Material Theme](https://squidfunk.github.io/mkdocs-material/)
-- [GitHub Pages](https://pages.github.com/)
+| Link | Descrição |
+|------|-----------|
+| [MkDocs](https://www.mkdocs.org/) | Documentação oficial do MkDocs |
+| [Material Theme](https://squidfunk.github.io/mkdocs-material/) | Tema Material para MkDocs |
+| [GitHub Pages](https://pages.github.com/) | Hospedagem gratuita para documentação |
