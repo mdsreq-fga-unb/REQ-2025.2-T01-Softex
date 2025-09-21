@@ -4,11 +4,11 @@
 
 | Aspecto | Detalhes |
 |---------|----------|
-| **Duração Total** | 12 semanas (14/09/2025 a 09/12/2025) |
+| **Duração Total** | 13 semanas (07/09/2025 a 09/12/2025) |
 | **Metodologia** | Desenvolvimento incremental com sprints |
 | **Entregas** | Quinzenais ao cliente |
 | **Atualizações** | Semanais de progresso |
-| **Fase Atual** | Elaboração (refinamento de arquitetura) |
+| **Fase Atual** | Iniciação (planejamento e definições) |
 
 ### Timeline do Projeto
 
@@ -16,8 +16,11 @@
 gantt
     title Cronograma do Projeto - Sistema de Gestão de Recursos Softex
     dateFormat  YYYY-MM-DD
+    section Iniciação
+    Planejamento do projeto      :done, init1, 2025-09-07, 2025-09-13
+    Definição de escopo          :done, init2, 2025-09-07, 2025-09-13
     section Elaboração
-    Documentação de requisitos    :done, req, 2025-09-14, 2025-09-20
+    Documentação de requisitos   :done, req, 2025-09-14, 2025-09-20
     Prototipação inicial         :done, proto, 2025-09-14, 2025-09-20
     Validação com cliente        :done, val, 2025-09-21, 2025-09-27
     Configuração ambiente        :done, env, 2025-09-28, 2025-10-04
@@ -31,8 +34,11 @@ gantt
     Implantação e entrega        :trans, 2025-11-30, 2025-12-06
 ```
 
-!!! note "Cronograma Preliminar"
-    Este cronograma é preliminar e será atualizado ao longo da disciplina, conforme o andamento das sprints.
+## Fase de Iniciação (Semana 0)
+
+| Semana | Período | Atividades | Entrega |
+|--------|---------|------------|---------|
+| **0** | 07/09 – 13/09 | • Definição do escopo do projeto<br>• Identificação de stakeholders<br>• Planejamento inicial<br>• Definição de metodologia<br>• Estabelecimento de cronograma base | • Termo de abertura do projeto<br>• Plano de gerenciamento<br>• Estrutura analítica do projeto |
 
 ## Fase de Elaboração (Semanas 1 a 3)
 
@@ -60,6 +66,17 @@ gantt
 | **Prazo Final** (09/12/2025) | • Projeto finalizado<br>• Validado pelo cliente<br>• Documentação publicada no GitPages | • Sistema implantado, validado e equipe treinada |
 
 ## Cronograma Detalhado por Sprint
+
+### Sprint 0 (Semana 0)
+**Objetivo:** Iniciação e Planejamento do Projeto
+
+| Atividade | Responsável | Prazo |
+|-----------|-------------|-------|
+| Definição do escopo | Felipe, Yuri | Semana 0 |
+| Identificação de stakeholders | Yuri | Semana 0 |
+| Planejamento inicial | Felipe | Semana 0 |
+| Definição de metodologia | Equipe | Semana 0 |
+| Estabelecimento de cronograma | Felipe | Semana 0 |
 
 ### Sprint 1 (Semanas 1-2)
 **Objetivo:** Planejamento e Prototipação
@@ -143,12 +160,13 @@ gantt
 
 | Marco | Semana | Status | Entregas |
 |-------|--------|--------|----------|
-| **1. Protótipo Validado** | 2 | ✅ | • Protótipo aprovado pelo cliente<br>• Requisitos documentados<br>• Repositório estruturado |
-| **2. Ambiente Configurado** | 3 | ✅ | • Backend funcionando<br>• Frontend conectado<br>• Banco de dados configurado<br>• Docker funcionando |
-| **3. Primeira Versão Funcional** | 5 | ✅ | • Reservas básicas funcionando<br>• Interface de usuário operacional<br>• Testes iniciais passando |
-| **4. Versão Intermediária** | 8 | ✅ | • Mapa interativo implementado<br>• Regras de uso configuradas<br>• Integrações básicas funcionando |
-| **5. MVP Completo** | 11 | ✅ | • Todas as funcionalidades implementadas<br>• Relatórios funcionando<br>• Notificações ativas<br>• Testes finais passando |
-| **6. Sistema Implantado** | 12 | ✅ | • Deploy em produção<br>• Equipe treinada<br>• Documentação completa<br>• Projeto finalizado |
+| **1. Projeto Iniciado** | 0 | ✅ | • Termo de abertura aprovado<br>• Escopo definido<br>• Plano de gerenciamento estabelecido<br>• Equipe alinhada |
+| **2. Protótipo Validado** | 2 | ✅ | • Protótipo aprovado pelo cliente<br>• Requisitos documentados<br>• Repositório estruturado |
+| **3. Ambiente Configurado** | 3 | ✅ | • Backend funcionando<br>• Frontend conectado<br>• Banco de dados configurado<br>• Docker funcionando |
+| **4. Primeira Versão Funcional** | 5 | ✅ | • Reservas básicas funcionando<br>• Interface de usuário operacional<br>• Testes iniciais passando |
+| **5. Versão Intermediária** | 8 | ✅ | • Mapa interativo implementado<br>• Regras de uso configuradas<br>• Integrações básicas funcionando |
+| **6. MVP Completo** | 11 | ✅ | • Todas as funcionalidades implementadas<br>• Relatórios funcionando<br>• Notificações ativas<br>• Testes finais passando |
+| **7. Sistema Implantado** | 12 | ✅ | • Deploy em produção<br>• Equipe treinada<br>• Documentação completa<br>• Projeto finalizado |
 
 ## Riscos e Mitigações
 
