@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Softex Coworking - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    
+    <!-- Login/Register Screen -->
+    <div id="authScreen" class="min-h-screen login-bg flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8">
+                <div class="bg-white p-4 rounded-full w-20 h-20 mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-building text-[#4A2BE1] text-3xl mt-2"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">Softex Coworking</h1>
+                <p class="text-white opacity-90">Sistema de Gestão de Espaços</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="form-container rounded-2xl shadow-2xl p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Entrar na sua conta</h2>
+                
+                <form id="loginFormElement" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-envelope mr-2 text-[#4A2BE1]"></i>Email
+                        </label>
+                        <input type="email" id="loginEmail" required 
+                               class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all"
+                               placeholder="seu@email.com">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-[#4A2BE1]"></i>Senha
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="loginPassword" required 
+                                   class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all pr-12"
+                                   placeholder="••••••••">
+                            <button type="button" onclick="togglePassword('loginPassword')" 
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="rounded border-gray-300 text-[#4A2BE1] focus:ring-[#4A2BE1]">
+                            <span class="ml-2 text-sm text-gray-600">Lembrar de mim</span>
+                        </label>
+                        <a href="#" class="text-sm text-[#4A2BE1] hover:text-[#4A2BE1] hover:opacity-80">
+                            Esqueceu a senha?
+                        </a>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full bg-[#4A2BE1] text-white py-4 px-6 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all font-semibold text-lg">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Entrar
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Não tem uma conta?</p>
+                    <button onclick="showRegisterForm()" 
+                            class="text-[#4A2BE1] hover:text-[#4A2BE1] hover:opacity-80 font-semibold">
+                        Criar conta gratuita
+                    </button>
+                </div>
+
+                <!-- Demo Login -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-center text-sm text-gray-600 mb-3">Acesso rápido para demonstração:</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        <button onclick="demoLogin('admin')" 
+                                class="bg-[#80E4F9] text-[#0A1A3D] py-2 px-4 rounded-lg hover:bg-[#80E4F9] hover:opacity-90 transition-all font-medium text-sm">
+                            <i class="fas fa-user-shield mr-2"></i>Demo Administrador
+                        </button>
+                        <button onclick="demoLogin('user')" 
+                                class="bg-[#F142FB] text-white py-2 px-4 rounded-lg hover:bg-[#F142FB] hover:opacity-90 transition-all font-medium text-sm">
+                            <i class="fas fa-user mr-2"></i>Demo Usuário
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="form-container rounded-2xl shadow-2xl p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Criar nova conta</h2>
+                
+                <form id="registerFormElement" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2 text-[#4A2BE1]"></i>Nome
+                            </label>
+                            <input type="text" id="registerFirstName" required 
+                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all"
+                                   placeholder="João">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Sobrenome</label>
+                            <input type="text" id="registerLastName" required 
+                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all"
+                                   placeholder="Silva">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-envelope mr-2 text-[#4A2BE1]"></i>Email
+                        </label>
+                        <input type="email" id="registerEmail" required 
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all"
+                               placeholder="seu@email.com">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-building mr-2 text-[#4A2BE1]"></i>Departamento
+                        </label>
+                        <select id="registerDepartment" required 
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all">
+                            <option value="">Selecione seu departamento</option>
+                            <option value="desenvolvimento">Desenvolvimento</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="vendas">Vendas</option>
+                            <option value="rh">Recursos Humanos</option>
+                            <option value="financeiro">Financeiro</option>
+                            <option value="operacoes">Operações</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-[#4A2BE1]"></i>Senha
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="registerPassword" required 
+                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all pr-12"
+                                   placeholder="••••••••">
+                            <button type="button" onclick="togglePassword('registerPassword')" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="mt-1 text-xs text-gray-500">
+                            Mínimo 8 caracteres, incluindo letras e números
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-[#4A2BE1]"></i>Confirmar Senha
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="registerConfirmPassword" required 
+                                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A2BE1] focus:border-[#4A2BE1] transition-all pr-12"
+                                   placeholder="••••••••">
+                            <button type="button" onclick="togglePassword('registerConfirmPassword')" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <input type="checkbox" id="termsAccept" required 
+                               class="mt-1 rounded border-gray-300 text-[#4A2BE1] focus:ring-[#4A2BE1]">
+                        <label for="termsAccept" class="ml-2 text-sm text-gray-600">
+                            Eu aceito os <a href="#" class="text-[#4A2BE1] hover:opacity-80">Termos de Uso</a> 
+                            e <a href="#" class="text-[#4A2BE1] hover:opacity-80">Política de Privacidade</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full bg-[#4A2BE1] text-white py-4 px-6 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all font-semibold text-lg">
+                        <i class="fas fa-user-plus mr-2"></i>Criar Conta
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Já tem uma conta?</p>
+                    <button onclick="showLoginForm()" 
+                            class="text-[#4A2BE1] hover:text-[#4A2BE1] hover:opacity-80 font-semibold">
+                        Fazer login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application (Hidden initially) -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-lg border-b-4 border-[#4A2BE1]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-[#4A2BE1] text-white p-3 rounded-lg">
+                            <i class="fas fa-building text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Softex Coworking</h1>
+                            <p class="text-sm text-gray-600">Sistema de Gestão de Espaços</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-900" id="currentUser">João Silva</p>
+                            <p class="text-xs text-gray-600" id="userRole">Administrador</p>
+                        </div>
+                        <div class="w-10 h-10 bg-[#4A2BE1] rounded-full flex items-center justify-center text-white font-bold" id="userAvatar">
+                            JS
+                        </div>
+                        <button onclick="logout()" class="text-gray-500 hover:text-gray-700 p-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8">
+                    <button onclick="showSection('dashboard')" class="nav-btn py-4 px-2 border-b-2 border-[#4A2BE1] text-[#4A2BE1] font-medium">
+                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                    </button>
+                    <button onclick="showSection('map')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-map mr-2"></i>Mapa Interativo
+                    </button>
+                    <button onclick="showSection('reservations')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-calendar-alt mr-2"></i>Reservas
+                    </button>
+                    <button onclick="showSection('reports')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-chart-bar mr-2"></i>Relatórios
+                    </button>
+                    <button onclick="showSection('users')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-users mr-2"></i>Usuários
+                    </button>
+                    <button onclick="showSection('integrations')" class="nav-btn py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-plug mr-2"></i>Integrações
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h2>
+                    <p class="text-gray-600">Visão geral do coworking Softex</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#80E4F9]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Posições Ocupadas</p>
+                                <p class="text-3xl font-bold text-gray-900" id="occupiedSeats">32</p>
+                            </div>
+                            <div class="bg-[#80E4F9] bg-opacity-20 p-3 rounded-full">
+                                <i class="fas fa-chair text-[#0A1A3D] text-xl"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">de 58 posições totais</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#4A2BE1]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Salas em Uso</p>
+                                <p class="text-3xl font-bold text-gray-900" id="occupiedRooms">4</p>
+                            </div>
+                            <div class="bg-[#4A2BE1] bg-opacity-20 p-3 rounded-full">
+                                <i class="fas fa-door-open text-[#4A2BE1] text-xl"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">de 6 salas disponíveis</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#F142FB]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Reservas Hoje</p>
+                                <p class="text-3xl font-bold text-gray-900" id="todayReservations">18</p>
+                            </div>
+                            <div class="bg-[#F142FB] bg-opacity-20 p-3 rounded-full">
+                                <i class="fas fa-calendar-check text-[#F142FB] text-xl"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">reservas ativas</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#0A1A3D]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Taxa de Ocupação</p>
+                                <p class="text-3xl font-bold text-gray-900">78%</p>
+                            </div>
+                            <div class="bg-[#0A1A3D] bg-opacity-20 p-3 rounded-full">
+                                <i class="fas fa-percentage text-[#0A1A3D] text-xl"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">média semanal</p>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Atividade Recente</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                                <div class="bg-green-500 w-2 h-2 rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">Maria Santos reservou Sala Zeus</p>
+                                    <p class="text-xs text-gray-600">14:30 - 16:00 hoje</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                                <div class="bg-blue-500 w-2 h-2 rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">Pedro Lima ocupou Posição A-15</p>
+                                    <p class="text-xs text-gray-600">13:45 hoje</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg">
+                                <div class="bg-yellow-500 w-2 h-2 rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">Sala Apolo liberada</p>
+                                    <p class="text-xs text-gray-600">13:30 hoje</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Próximas Reservas</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Reunião de Projeto</p>
+                                    <p class="text-xs text-gray-600">Sala Hermes - 15:00-16:30</p>
+                                </div>
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Em 30min</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Apresentação Cliente</p>
+                                    <p class="text-xs text-gray-600">Sala Zeus - 16:00-17:00</p>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Em 1h30</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Workshop Técnico</p>
+                                    <p class="text-xs text-gray-600">Sala Apolo - 17:30-19:00</p>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Em 3h</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Section -->
+            <div id="map" class="section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Mapa Interativo</h2>
+                    <p class="text-gray-600">Visualização em tempo real dos espaços</p>
+                </div>
+
+                <!-- Legend -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Legenda</h3>
+                    <div class="flex flex-wrap gap-6">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 bg-green-500 rounded"></div>
+                            <span class="text-sm text-gray-700">Disponível</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 bg-red-500 rounded"></div>
+                            <span class="text-sm text-gray-700">Ocupado</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                            <span class="text-sm text-gray-700">Reservado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coworking Map -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Posições de Coworking (58 posições)</h3>
+                    <div class="grid grid-cols-10 gap-2 mb-6" id="coworkingGrid">
+                        <!-- Seats will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Meeting Rooms -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Salas de Reunião (6 salas)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="meetingRooms">
+                        <!-- Rooms will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Floor Plans -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Plantas Baixas das Salas</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <!-- Sala Zeus - 12 pessoas -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                                Sala Zeus - 12 pessoas
+                            </h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <svg viewBox="0 0 300 200" class="w-full h-32">
+                                    <!-- Paredes -->
+                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
+                                    <!-- Porta -->
+                                    <rect x="10" y="90" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <!-- Mesa principal -->
+                                    <rect x="50" y="60" width="200" height="80" fill="#F59E0B" stroke="#D97706" stroke-width="2" rx="10"/>
+                                    <!-- Cadeiras ao redor da mesa -->
+                                    <circle cx="70" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="110" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="150" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="190" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="230" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="70" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="110" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="150" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="190" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="230" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="40" cy="100" r="8" fill="#4A2BE1"/>
+                                    <circle cx="260" cy="100" r="8" fill="#4A2BE1"/>
+                                    <!-- TV/Projetor -->
+                                    <rect x="260" y="30" width="25" height="15" fill="#1F2937" rx="2"/>
+                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa Executiva</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Sala Hermes - 8 pessoas -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                                Sala Hermes - 8 pessoas
+                            </h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <svg viewBox="0 0 300 200" class="w-full h-32">
+                                    <!-- Paredes -->
+                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
+                                    <!-- Porta -->
+                                    <rect x="130" y="10" width="40" height="15" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <!-- Mesa oval -->
+                                    <ellipse cx="150" cy="100" rx="80" ry="40" fill="#80E4F9" stroke="#0891B2" stroke-width="2"/>
+                                    <!-- Cadeiras -->
+                                    <circle cx="100" cy="80" r="8" fill="#4A2BE1"/>
+                                    <circle cx="120" cy="65" r="8" fill="#4A2BE1"/>
+                                    <circle cx="180" cy="65" r="8" fill="#4A2BE1"/>
+                                    <circle cx="200" cy="80" r="8" fill="#4A2BE1"/>
+                                    <circle cx="200" cy="120" r="8" fill="#4A2BE1"/>
+                                    <circle cx="180" cy="135" r="8" fill="#4A2BE1"/>
+                                    <circle cx="120" cy="135" r="8" fill="#4A2BE1"/>
+                                    <circle cx="100" cy="120" r="8" fill="#4A2BE1"/>
+                                    <!-- Whiteboard -->
+                                    <rect x="20" y="40" width="50" height="30" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-black font-semibold">Mesa Oval</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Sala Apolo - 6 pessoas -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                Sala Apolo - 6 pessoas
+                            </h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <svg viewBox="0 0 300 200" class="w-full h-32">
+                                    <!-- Paredes -->
+                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
+                                    <!-- Porta -->
+                                    <rect x="250" y="80" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <!-- Mesa retangular -->
+                                    <rect x="80" y="70" width="140" height="60" fill="#F142FB" stroke="#C026D3" stroke-width="2" rx="8"/>
+                                    <!-- Cadeiras -->
+                                    <circle cx="100" cy="60" r="8" fill="#4A2BE1"/>
+                                    <circle cx="150" cy="60" r="8" fill="#4A2BE1"/>
+                                    <circle cx="200" cy="60" r="8" fill="#4A2BE1"/>
+                                    <circle cx="100" cy="140" r="8" fill="#4A2BE1"/>
+                                    <circle cx="150" cy="140" r="8" fill="#4A2BE1"/>
+                                    <circle cx="200" cy="140" r="8" fill="#4A2BE1"/>
+                                    <!-- Armário -->
+                                    <rect x="20" y="20" width="40" height="20" fill="#6B7280" stroke="#374151" stroke-width="2"/>
+                                    <!-- Monitor -->
+                                    <rect x="230" y="90" width="15" height="20" fill="#1F2937" rx="2"/>
+                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa Compacta</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Sala Atena - 10 pessoas -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                Sala Atena - 10 pessoas
+                            </h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <svg viewBox="0 0 300 200" class="w-full h-32">
+                                    <!-- Paredes -->
+                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
+                                    <!-- Porta -->
+                                    <rect x="10" y="80" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <!-- Mesa em U -->
+                                    <rect x="60" y="50" width="180" height="30" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
+                                    <rect x="60" y="120" width="180" height="30" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
+                                    <rect x="60" y="80" width="30" height="40" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
+                                    <rect x="210" y="80" width="30" height="40" fill="#0A1A3D" stroke="#1E293B" stroke-width="2" rx="5"/>
+                                    <!-- Cadeiras -->
+                                    <circle cx="80" cy="40" r="8" fill="#4A2BE1"/>
+                                    <circle cx="120" cy="40" r="8" fill="#4A2BE1"/>
+                                    <circle cx="160" cy="40" r="8" fill="#4A2BE1"/>
+                                    <circle cx="200" cy="40" r="8" fill="#4A2BE1"/>
+                                    <circle cx="80" cy="160" r="8" fill="#4A2BE1"/>
+                                    <circle cx="120" cy="160" r="8" fill="#4A2BE1"/>
+                                    <circle cx="160" cy="160" r="8" fill="#4A2BE1"/>
+                                    <circle cx="200" cy="160" r="8" fill="#4A2BE1"/>
+                                    <circle cx="50" cy="100" r="8" fill="#4A2BE1"/>
+                                    <circle cx="250" cy="100" r="8" fill="#4A2BE1"/>
+                                    <!-- Projetor -->
+                                    <rect x="130" y="100" width="40" height="8" fill="#1F2937" rx="4"/>
+                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa em U</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Sala Poseidon - 15 pessoas -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                                Sala Poseidon - 15 pessoas
+                            </h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <svg viewBox="0 0 300 200" class="w-full h-32">
+                                    <!-- Paredes -->
+                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
+                                    <!-- Porta dupla -->
+                                    <rect x="120" y="10" width="30" height="15" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <rect x="150" y="10" width="30" height="15" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <!-- Mesa grande retangular -->
+                                    <rect x="40" y="60" width="220" height="80" fill="#F59E0B" stroke="#D97706" stroke-width="2" rx="10"/>
+                                    <!-- Cadeiras - lado superior -->
+                                    <circle cx="60" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="90" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="120" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="150" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="180" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="210" cy="50" r="8" fill="#4A2BE1"/>
+                                    <circle cx="240" cy="50" r="8" fill="#4A2BE1"/>
+                                    <!-- Cadeiras - lado inferior -->
+                                    <circle cx="60" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="90" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="120" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="150" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="180" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="210" cy="150" r="8" fill="#4A2BE1"/>
+                                    <circle cx="240" cy="150" r="8" fill="#4A2BE1"/>
+                                    <!-- Cadeira da cabeceira -->
+                                    <circle cx="30" cy="100" r="8" fill="#F142FB"/>
+                                    <!-- Sistema A/V -->
+                                    <rect x="270" y="30" width="15" height="25" fill="#1F2937" rx="2"/>
+                                    <rect x="270" y="145" width="15" height="25" fill="#1F2937" rx="2"/>
+                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-white font-semibold">Mesa Diretoria</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Sala Ártemis - 4 pessoas -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                Sala Ártemis - 4 pessoas
+                            </h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <svg viewBox="0 0 300 200" class="w-full h-32">
+                                    <!-- Paredes -->
+                                    <rect x="10" y="10" width="280" height="180" fill="none" stroke="#374151" stroke-width="3"/>
+                                    <!-- Porta -->
+                                    <rect x="10" y="90" width="15" height="40" fill="white" stroke="#374151" stroke-width="2"/>
+                                    <!-- Mesa redonda pequena -->
+                                    <circle cx="150" cy="100" r="40" fill="#80E4F9" stroke="#0891B2" stroke-width="2"/>
+                                    <!-- Cadeiras -->
+                                    <circle cx="150" cy="60" r="8" fill="#4A2BE1"/>
+                                    <circle cx="190" cy="100" r="8" fill="#4A2BE1"/>
+                                    <circle cx="150" cy="140" r="8" fill="#4A2BE1"/>
+                                    <circle cx="110" cy="100" r="8" fill="#4A2BE1"/>
+                                    <!-- Sofá -->
+                                    <rect x="220" y="40" width="60" height="25" fill="#6B7280" stroke="#374151" stroke-width="2" rx="12"/>
+                                    <!-- Mesa de apoio -->
+                                    <rect x="230" y="80" width="40" height="20" fill="#F59E0B" stroke="#D97706" stroke-width="2" rx="5"/>
+                                    <!-- Planta -->
+                                    <circle cx="50" cy="50" r="15" fill="#10B981" stroke="#059669" stroke-width="2"/>
+                                    <text x="150" y="105" text-anchor="middle" class="text-xs fill-black font-semibold">Mesa Íntima</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legenda das plantas baixas -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold text-gray-900 mb-3">Legenda das Plantas Baixas</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div class="flex items-center space-x-2">
+                                <circle class="w-4 h-4 bg-[#4A2BE1] rounded-full"></circle>
+                                <span>Cadeiras</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-4 h-4 bg-[#F59E0B] rounded"></div>
+                                <span>Mesas</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-4 h-4 bg-[#1F2937] rounded"></div>
+                                <span>Equipamentos A/V</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-4 h-4 bg-white border-2 border-gray-400 rounded"></div>
+                                <span>Portas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservations Section -->
+            <div id="reservations" class="section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Sistema de Reservas</h2>
+                    <p class="text-gray-600">Gerencie reservas de posições e salas</p>
+                </div>
+
+                <!-- Quick Reservation -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Nova Reserva</h3>
+                    <form id="reservationForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                            <select id="reservationType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="coworking">Posição Coworking</option>
+                                <option value="room">Sala de Reunião</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+                            <input type="date" id="reservationDate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Horário</label>
+                            <select id="reservationTime" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="08:00-12:00">08:00 - 12:00</option>
+                                <option value="13:00-17:00">13:00 - 17:00</option>
+                                <option value="08:00-17:00">Dia Inteiro</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-[#4A2BE1] text-white py-3 px-4 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all">
+                                <i class="fas fa-plus mr-2"></i>Reservar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Reservations List -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Reservas Ativas</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="filterReservations()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-filter mr-2"></i>Filtrar
+                            </button>
+                            <button onclick="exportReservations()" class="bg-[#80E4F9] text-[#0A1A3D] px-4 py-2 rounded-lg hover:bg-[#80E4F9] hover:opacity-90 transition-all font-medium">
+                                <i class="fas fa-download mr-2"></i>Exportar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuário</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Espaço</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horário</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="reservationsTable">
+                                <!-- Reservations will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="reports" class="section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Relatórios</h2>
+                    <p class="text-gray-600">Análises e métricas de uso</p>
+                </div>
+
+                <!-- Report Filters -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Filtros de Relatório</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Período</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option>Última semana</option>
+                                <option>Último mês</option>
+                                <option>Últimos 3 meses</option>
+                                <option>Personalizado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Espaço</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option>Todos</option>
+                                <option>Coworking</option>
+                                <option>Salas de Reunião</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Departamento</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option>Todos</option>
+                                <option>Desenvolvimento</option>
+                                <option>Marketing</option>
+                                <option>Vendas</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="generateReport()" class="w-full bg-[#4A2BE1] text-white py-3 px-4 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all">
+                                <i class="fas fa-search mr-2"></i>Gerar Relatório
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Ocupação por Horário</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">08:00 - 10:00</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-[#4A2BE1] h-2 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">45%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">10:00 - 12:00</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-[#80E4F9] h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">78%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">14:00 - 16:00</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-[#F142FB] h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">92%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">16:00 - 18:00</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-[#0A1A3D] h-2 rounded-full" style="width: 67%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">67%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Usuários</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-[#4A2BE1] rounded-full flex items-center justify-center text-white text-sm font-bold">MS</div>
+                                    <span class="text-sm font-medium text-gray-900">Maria Santos</span>
+                                </div>
+                                <span class="text-sm text-gray-600">24 reservas</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-[#80E4F9] rounded-full flex items-center justify-center text-[#0A1A3D] text-sm font-bold">PL</div>
+                                    <span class="text-sm font-medium text-gray-900">Pedro Lima</span>
+                                </div>
+                                <span class="text-sm text-gray-600">18 reservas</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-[#F142FB] rounded-full flex items-center justify-center text-white text-sm font-bold">AC</div>
+                                    <span class="text-sm font-medium text-gray-900">Ana Costa</span>
+                                </div>
+                                <span class="text-sm text-gray-600">15 reservas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="users" class="section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Gestão de Usuários</h2>
+                    <p class="text-gray-600">Controle de perfis e permissões</p>
+                </div>
+
+                <!-- User Management -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Usuários Cadastrados</h3>
+                        <button onclick="showAddUserModal()" class="bg-[#4A2BE1] text-white px-4 py-2 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all">
+                            <i class="fas fa-plus mr-2"></i>Novo Usuário
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departamento</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Perfil</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="usersTable">
+                                <!-- Users will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integrations Section -->
+            <div id="integrations" class="section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Integrações</h2>
+                    <p class="text-gray-600">Conecte com Slack e Google Workspace</p>
+                </div>
+
+                <!-- Integration Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="bg-purple-600 p-3 rounded-lg">
+                                <i class="fab fa-slack text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Slack</h3>
+                                <p class="text-sm text-gray-600">Notificações e comandos via Slack</p>
+                            </div>
+                            <div class="ml-auto">
+                                <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Conectado</div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-700">Notificações de reserva</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#4A2BE1] peer-focus:ring-opacity-30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4A2BE1]"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-700">Comandos de reserva</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#4A2BE1] peer-focus:ring-opacity-30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4A2BE1]"></div>
+                                </label>
+                            </div>
+                            <button onclick="configureSlack()" class="w-full bg-[#F142FB] text-white py-2 px-4 rounded-lg hover:bg-[#F142FB] hover:opacity-90 transition-all">
+                                <i class="fas fa-cog mr-2"></i>Configurar Slack
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="bg-blue-600 p-3 rounded-lg">
+                                <i class="fab fa-google text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Google Workspace</h3>
+                                <p class="text-sm text-gray-600">Sincronização com Google Calendar</p>
+                            </div>
+                            <div class="ml-auto">
+                                <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Conectado</div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-700">Sincronizar calendário</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#4A2BE1] peer-focus:ring-opacity-30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4A2BE1]"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-700">Criar eventos automaticamente</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#4A2BE1] peer-focus:ring-opacity-30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4A2BE1]"></div>
+                                </label>
+                            </div>
+                            <button onclick="configureGoogle()" class="w-full bg-[#80E4F9] text-[#0A1A3D] py-2 px-4 rounded-lg hover:bg-[#80E4F9] hover:opacity-90 transition-all font-medium">
+                                <i class="fas fa-cog mr-2"></i>Configurar Google
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Novo Usuário</h3>
+                <button onclick="hideAddUserModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addUserForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+                    <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Departamento</label>
+                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">Selecione...</option>
+                        <option value="desenvolvimento">Desenvolvimento</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="vendas">Vendas</option>
+                        <option value="rh">Recursos Humanos</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Perfil de Acesso</label>
+                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">Selecione...</option>
+                        <option value="admin">Administrador</option>
+                        <option value="manager">Gerente</option>
+                        <option value="user">Usuário</option>
+                    </select>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="button" onclick="hideAddUserModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 bg-[#4A2BE1] text-white py-2 px-4 rounded-lg hover:bg-[#4A2BE1] hover:opacity-90 transition-all">
+                        Adicionar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
