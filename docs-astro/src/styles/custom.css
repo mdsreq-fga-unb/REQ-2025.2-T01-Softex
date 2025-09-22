@@ -58,14 +58,35 @@ html {
 
 /* Links em roxo */
 .sl-markdown-content a {
-  color: var(--softex-purple) !important;
-  text-decoration: none !important;
-  border-bottom: 1px solid transparent !important;
-  transition: all 0.2s ease !important;
+	color: var(--softex-purple) !important;
+	text-decoration: none !important;
+	border-bottom: 1px solid transparent !important;
+	transition: all 0.2s ease !important;
 }
 
 .sl-markdown-content a:hover {
-  border-bottom-color: var(--softex-purple) !important;
+	border-bottom-color: var(--softex-purple) !important;
+}
+
+/* Títulos em branco com roxo */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5,
+.sl-markdown-content h6 {
+	color: white !important;
+	border-bottom: 2px solid var(--softex-purple) !important;
+	padding-bottom: 0.5rem !important;
+	margin-bottom: 1rem !important;
+}
+
+.sl-markdown-content h1 {
+	border-bottom-width: 3px !important;
+}
+
+.sl-markdown-content h2 {
+	border-bottom-width: 2px !important;
 }
 
 /* Cards da Equipe */

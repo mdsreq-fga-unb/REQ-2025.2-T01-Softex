@@ -1,9 +1,8 @@
 ---
-title: Equipe
+title: Equipe do Projeto
 description: Conheça a equipe responsável pelo desenvolvimento do sistema de gestão de recursos da Softex
 ---
 
-# Equipe do Projeto
 
 Nossa equipe é composta por estudantes de Engenharia de Software da Universidade de Brasília, trabalhando em conjunto para desenvolver uma solução eficiente para gestão de recursos físicos da Softex.
 
