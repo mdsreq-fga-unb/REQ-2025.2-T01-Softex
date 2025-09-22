@@ -1,0 +1,126 @@
+/* Estilo Softex - Fundo preto com toques roxos */
+
+/* Importar fontes Geist como no projeto PPBM */
+@import '@fontsource/geist-sans/400.css';
+@import '@fontsource/geist-sans/500.css';
+@import '@fontsource/geist-sans/600.css';
+@import '@fontsource/geist-mono/400.css';
+@import '@fontsource/geist-mono/500.css';
+
+/* Aplicar fontes Geist */
+body {
+  font-family: 'Geist Sans', system-ui, sans-serif;
+}
+
+code, pre {
+  font-family: 'Geist Mono', 'Fira Code', monospace;
+}
+
+/* Variáveis de cores da Softex */
+:root {
+  --softex-purple: #8B5CF6;
+  --softex-purple-dark: #7C3AED;
+  --softex-purple-light: #A78BFA;
+}
+
+/* Forçar fundo preto em ambos os temas */
+html {
+  background-color: #000000 !important;
+}
+
+/* Botões de ação com toque roxo */
+.sl-hero .sl-hero-actions a {
+  background-color: var(--softex-purple) !important;
+  color: white !important;
+  border: 2px solid var(--softex-purple) !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.sl-hero .sl-hero-actions a:hover {
+  background-color: var(--softex-purple-dark) !important;
+  border-color: var(--softex-purple-dark) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Botão secundário (GitHub) */
+.sl-hero .sl-hero-actions a[data-variant="minimal"] {
+  background-color: transparent !important;
+  color: var(--softex-purple) !important;
+  border-color: var(--softex-purple) !important;
+}
+
+.sl-hero .sl-hero-actions a[data-variant="minimal"]:hover {
+  background-color: var(--softex-purple) !important;
+  color: white !important;
+}
+
+/* Links em roxo */
+.sl-markdown-content a {
+  color: var(--softex-purple) !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+.sl-markdown-content a:hover {
+  border-bottom-color: var(--softex-purple) !important;
+}
+
+/* Cards da Equipe */
+.team-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1.5rem;
+	margin: 2rem 0;
+}
+
+.team-card {
+	background: var(--sl-color-accent-low);
+	border: 1px solid var(--sl-color-accent);
+	border-radius: 12px;
+	padding: 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	transition: all 0.3s ease;
+}
+
+.team-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
+	border-color: var(--softex-purple);
+}
+
+.team-photo {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 3px solid var(--softex-purple);
+}
+
+.team-info h3 {
+	margin: 0 0 0.5rem 0;
+	color: var(--sl-color-text);
+	font-size: 1.25rem;
+	font-weight: 600;
+}
+
+.team-role {
+	margin: 0 0 0.5rem 0;
+	color: var(--sl-color-text-accent);
+	font-size: 0.9rem;
+}
+
+.team-github {
+	color: var(--softex-purple) !important;
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+.team-github:hover {
+	text-decoration: underline;
+}

@@ -11,12 +11,21 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.36.0
         version: 0.36.0(astro@5.13.9(@types/node@24.5.2)(rollup@4.52.0)(typescript@5.9.2))
+      '@fontsource/geist-mono':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/geist-sans':
+        specifier: ^5.2.5
+        version: 5.2.5
       astro:
         specifier: ^5.6.1
         version: 5.13.9(@types/node@24.5.2)(rollup@4.52.0)(typescript@5.9.2)
       sharp:
         specifier: ^0.34.2
         version: 0.34.4
+      starlight-theme-rapide:
+        specifier: ^0.5.1
+        version: 0.5.1(@astrojs/starlight@0.36.0(astro@5.13.9(@types/node@24.5.2)(rollup@4.52.0)(typescript@5.9.2)))
     devDependencies:
       prettier:
         specifier: ^3.6.2
@@ -256,6 +265,12 @@ packages:
 
   '@expressive-code/plugin-text-markers@0.41.3':
     resolution: {integrity: sha512-SN8tkIzDpA0HLAscEYD2IVrfLiid6qEdE9QLlGVSxO1KEw7qYvjpbNBQjUjMr5/jvTJ7ys6zysU2vLPHE0sb2g==}
+
+  '@fontsource/geist-mono@5.2.7':
+    resolution: {integrity: sha512-xVPVFISJg/K0VVd+aQN0Y7X/sw9hUcJPyDWFJ5GpyU3bHELhoRsJkPSRSHXW32mOi0xZCUQDOaPj1sqIFJ1FGg==}
+
+  '@fontsource/geist-sans@5.2.5':
+    resolution: {integrity: sha512-anllOHyJbElRs9fV15TeDRqAeb1IKm4bSknPl6ZMoyPTx1BBy7logudcUwpNjmQLkzn4Q0JGQLRCUKJYoyST6A==}
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -1520,6 +1535,12 @@ packages:
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
 
+  starlight-theme-rapide@0.5.1:
+    resolution: {integrity: sha512-QRF6mzcYHLEX5UpUvOPXVVwISS298siIJLcKextoMLhXcnF12nX+IYJ0LNxFk9XaPbX9uDXIieSBJf5Pztkteg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.34.0'
+
   stream-replace-string@2.0.0:
     resolution: {integrity: sha512-TlnjJ1C0QrmxRNrON00JvaFFlNh5TTG00APw23j74ET7gkQpTASi6/L2fuiav8pzK715HXtUeClpBTw2NPSn6w==}
 
@@ -2063,6 +2084,10 @@ snapshots:
   '@expressive-code/plugin-text-markers@0.41.3':
     dependencies:
       '@expressive-code/core': 0.41.3
+
+  '@fontsource/geist-mono@5.2.7': {}
+
+  '@fontsource/geist-sans@5.2.5': {}
 
   '@img/colour@1.0.0': {}
 
@@ -3884,6 +3909,10 @@ snapshots:
   source-map@0.7.6: {}
 
   space-separated-tokens@2.0.2: {}
+
+  starlight-theme-rapide@0.5.1(@astrojs/starlight@0.36.0(astro@5.13.9(@types/node@24.5.2)(rollup@4.52.0)(typescript@5.9.2))):
+    dependencies:
+      '@astrojs/starlight': 0.36.0(astro@5.13.9(@types/node@24.5.2)(rollup@4.52.0)(typescript@5.9.2))
 
   stream-replace-string@2.0.0: {}
 
