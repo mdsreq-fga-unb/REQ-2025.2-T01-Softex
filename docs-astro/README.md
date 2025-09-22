@@ -64,3 +64,20 @@ Sistema de gestão de recursos físicos desenvolvido para a Softex como parte da
 
 - [Documentação Online](https://mdsreq-fga-unb.github.io/REQ-2025.2-T01-Softex/)
 - [Repositório GitHub](https://github.com/mdsreq-fga-unb/REQ-2025.2-T01-Softex)
+
+## 🚀 Deploy no GitHub Pages
+
+O site é automaticamente deployado no GitHub Pages através de GitHub Actions.
+
+### Configuração
+
+1. **Ative o GitHub Pages** no repositório:
+   - Vá em Settings > Pages
+   - Source: GitHub Actions
+
+2. **Workflow automático** já configurado em `.github/workflows/deploy.yml`
+
+### URL Final
+
+Após o primeiro deploy, o site estará disponível em:
+**https://mdsreq-fga-unb.github.io/REQ-2025.2-T01-Softex/**
