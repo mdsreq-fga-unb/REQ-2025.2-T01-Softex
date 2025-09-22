@@ -13,7 +13,7 @@ Nossa equipe é composta por estudantes de Engenharia de Software da Universidad
     <img src="https://github.com/y123yuri.png" alt="Yuri Andrade" class="team-photo">
     <div class="team-info">
       <h3>Yuri Andrade</h3>
-      <p class="team-role">Gerência do Projeto & DevOps</p>
+      <p class="team-role">Gerência do Projeto & DevOps/Infraestrutura</p>
       <a href="https://github.com/y123yuri" class="team-github">@y123yuri</a>
     </div>
   </div>
@@ -30,7 +30,7 @@ Nossa equipe é composta por estudantes de Engenharia de Software da Universidad
     <img src="https://github.com/darkymeubem.png" alt="Felipe Pedroza" class="team-photo">
     <div class="team-info">
       <h3>Felipe Pedroza</h3>
-      <p class="team-role">Backend (Python/DRF) & Análise de Requisitos</p>
+      <p class="team-role">Backend (Python/DRF) & Analista de Requisitos</p>
       <a href="https://github.com/darkymeubem" class="team-github">@darkymeubem</a>
     </div>
   </div>
@@ -48,7 +48,7 @@ Nossa equipe é composta por estudantes de Engenharia de Software da Universidad
     <img src="https://github.com/Pietrocv.png" alt="Pietro Calegari" class="team-photo">
     <div class="team-info">
       <h3>Pietro Calegari</h3>
-      <p class="team-role">Backend (Python/DRF)</p>
+      <p class="team-role">Backend (Python/DRF) & Arquiteto de Software</p>
       <a href="https://github.com/Pietrocv" class="team-github">@Pietrocv</a>
     </div>
   </div>

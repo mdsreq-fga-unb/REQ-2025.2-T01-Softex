@@ -1,3 +1,0 @@
----
-title: Metodologia e Tecnologias
----

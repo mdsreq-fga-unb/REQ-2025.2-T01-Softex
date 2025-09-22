@@ -4,7 +4,6 @@ import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightThemeRapidePlugin from "starlight-theme-rapide";
 
-
 export default defineConfig({
 	site: "https://mdsreq-fga-unb.github.io",
 	base: "/REQ-2025.2-T01-Softex",
@@ -46,8 +45,8 @@ export default defineConfig({
 							slug: "visao/solucao",
 						},
 						{
-							label: "Metodologia e Tecnologias",
-							slug: "visao/estrategias",
+							label: "Tecnologias a Serem Utilizadas",
+							slug: "visao/metodologia",
 						},
 						{
 							label: "Requisitos do Sistema",
@@ -73,6 +72,15 @@ export default defineConfig({
 					],
 				},
 				{
+					label: "Documentação",
+					items: [
+						{
+							label: "Teste",
+							slug: "documentacao/teste",
+						},
+					],
+				},
+				{
 					label: "Entregas",
 					items: [
 						{
@@ -80,7 +88,7 @@ export default defineConfig({
 							slug: "entregas/unidade-1",
 						},
 					],
-				}
+				},
 			],
 		}),
 	],
