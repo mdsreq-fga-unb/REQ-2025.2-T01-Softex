@@ -35,32 +35,52 @@ export default defineConfig({
 					],
 				},
 				{
-					label: "Sistema",
+					label: "Planejamento e Desenvolvimento",
 					items: [
 						{
-							label: "Visão Geral",
-							slug: "sistema/visao-geral",
+							label: "Contexto e Necessidades",
+							slug: "visao/cenario",
 						},
 						{
-							label: "Funcionalidades",
-							slug: "sistema/funcionalidades",
+							label: "Solução Proposta",
+							slug: "visao/solucao",
+						},
+						{
+							label: "Metodologia e Tecnologias",
+							slug: "visao/estrategias",
+						},
+						{
+							label: "Requisitos do Sistema",
+							slug: "visao/levantamento-parcial",
+						},
+						{
+							label: "Cronograma e Entregas",
+							slug: "visao/cronograma",
+						},
+						{
+							label: "Comunicação e Colaboração",
+							slug: "visao/interacao",
 						},
 					],
 				},
 				{
-					label: "Guia",
+					label: "Lições Aprendidas",
 					items: [
 						{
-							label: "Instalação",
-							slug: "guia/instalacao",
+							label: "Unidade 1",
+							slug: "licoes/unidade-1",
 						},
+					],
+				},
+				{
+					label: "Entregas",
+					items: [
 						{
-							label: "Uso",
-							slug: "guia/uso",
+							label: "Unidade 1",
+							slug: "entregas/unidade-1",
 						},
 					],
 				}
-				
 			],
 		}),
 	],

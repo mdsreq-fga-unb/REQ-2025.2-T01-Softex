@@ -145,3 +145,27 @@ html {
 .team-github:hover {
 	text-decoration: underline;
 }
+
+/* Container do vídeo responsivo */
+.video-container {
+	position: relative;
+	width: 100%;
+	max-width: 800px;
+	margin: 2rem auto;
+	padding-bottom: 56.25%; /* Proporção 16:9 */
+	height: 0;
+	overflow: hidden;
+	border-radius: 12px;
+	box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+	border: 2px solid var(--softex-purple);
+}
+
+.video-container iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+	border-radius: 10px;
+}
