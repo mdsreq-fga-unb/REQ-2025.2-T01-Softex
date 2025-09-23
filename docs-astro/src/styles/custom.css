@@ -346,6 +346,16 @@ html {
 	padding-bottom: 0 !important;
 }
 
+/* Heading colors for light theme inside markdown content */
+[data-theme="light"] .sl-markdown-content h1,
+[data-theme="light"] .sl-markdown-content h2,
+[data-theme="light"] .sl-markdown-content h3,
+[data-theme="light"] .sl-markdown-content h4,
+[data-theme="light"] .sl-markdown-content h5,
+[data-theme="light"] .sl-markdown-content h6 {
+	color: var(--sl-color-gray-12) !important;
+}
+
 /* Cards da Equipe */
 .team-grid {
 	display: grid;
