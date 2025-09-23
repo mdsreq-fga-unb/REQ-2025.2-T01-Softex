@@ -34,7 +34,7 @@ export default defineConfig({
 					],
 				},
 				{
-					label: "Planejamento e Desenvolvimento",
+					label: "Visões de Produto e de Projeto",
 					items: [
 						{
 							label: "Contexto e Necessidades",
@@ -44,10 +44,7 @@ export default defineConfig({
 							label: "Solução Proposta",
 							slug: "visao/solucao",
 						},
-						{
-							label: "Tecnologias a Serem Utilizadas",
-							slug: "visao/metodologia",
-						},
+					
 						{
 							label: "Requisitos do Sistema",
 							slug: "visao/levantamento-parcial",

@@ -1,0 +1,112 @@
+---
+// Componente interativo para a tabela de ferramentas
+---
+
+<div class="interactive-table-container">
+  <table class="interactive-table">
+    <thead>
+      <tr>
+        <th>Ferramenta</th>
+        <th>Uso</th>
+        <th>Frequência</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="tool-row" data-tool="whatsapp">
+        <td>📱 <strong>WhatsApp</strong></td>
+        <td>Comunicação instantânea da equipe</td>
+        <td>Diário</td>
+      </tr>
+      <tr class="tool-row" data-tool="discord">
+        <td>🎮 <strong>Discord</strong></td>
+        <td>Reuniões internas e aulas</td>
+        <td>Semanal</td>
+      </tr>
+      <tr class="tool-row" data-tool="slack">
+        <td>💬 <strong>Slack</strong></td>
+        <td>Canal direto com cliente</td>
+        <td>Contínuo</td>
+      </tr>
+      <tr class="tool-row" data-tool="meet">
+        <td>📹 <strong>Google Meet</strong></td>
+        <td>Reuniões oficiais quinzenais</td>
+        <td>Quinzenal</td>
+      </tr>
+      <tr class="tool-row" data-tool="github">
+        <td>🐙 <strong>GitHub</strong></td>
+        <td>Gestão de projeto e código</td>
+        <td>Diário</td>
+      </tr>
+      <tr class="tool-row" data-tool="gitpages">
+        <td>📚 <strong>GitPages</strong></td>
+        <td>Documentação centralizada</td>
+        <td>Contínuo</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .interactive-table-container {
+    margin: 1rem 0;
+  }
+  
+  .interactive-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: transparent;
+  }
+  
+  .interactive-table th,
+  .interactive-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid var(--sl-color-gray-4);
+  }
+  
+  .interactive-table th {
+    background: #8B5CF6;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9em;
+  }
+  
+  .interactive-table td {
+    font-size: 0.95em;
+    background: transparent;
+  }
+  
+  .tool-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .tool-row:hover {
+    background: rgba(139, 92, 246, 0.1);
+  }
+  
+  .tool-row.active {
+    background: rgba(139, 92, 246, 0.15);
+  }
+</style>
+
+<script>
+  // Interatividade para a tabela
+  document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('.tool-row');
+    
+    rows.forEach(row => {
+      row.addEventListener('click', function(this: HTMLTableRowElement) {
+        // Remove active class from all rows
+        rows.forEach(r => r.classList.remove('active'));
+        // Add active class to clicked row
+        this.classList.add('active');
+        
+        // Show tool info
+        const tool = this.getAttribute('data-tool');
+        console.log(`Ferramenta selecionada: ${tool}`);
+      });
+    });
+  });
+</script>

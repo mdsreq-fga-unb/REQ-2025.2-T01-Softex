@@ -1,0 +1,148 @@
+---
+title: Requisitos do Sistema
+description: Requisitos funcionais e não funcionais do Sistema de Gestão de Salas e Coworking
+---
+
+
+## Requisitos Funcionais
+
+<div class="softex-process">
+> Os requisitos funcionais definem **o que o sistema deve fazer** para atender às necessidades dos usuários
+</div>
+
+### RF01 – Cadastrar usuários
+
+<ul class="softex-list">
+  <li>O sistema deverá permitir que os usuários se cadastrem utilizando o e-mail corporativo da Softex</li>
+  <li>O sistema deverá validar se o e-mail informado pertence ao domínio da empresa</li>
+</ul>
+
+### RF02 – Visualizar mapa interativo
+
+<div class="softex-process">
+> **Funcionalidades principais:**
+</div>
+
+<ul class="softex-list">
+  <li>O sistema deverá exibir um mapa interativo da planta baixa do coworking</li>
+  <li>O usuário deverá conseguir identificar salas e estações disponíveis em tempo real</li>
+</ul>
+
+### RF03 – Reservar salas e cadeiras
+
+<div class="fases-container">
+  <div class="fase-item">
+    <h4>Reserva Completa</h4>
+    <p>O sistema deverá permitir a reserva de salas e cadeiras em tempo real, registrando horário de início, horário de término e finalidade da reserva.</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Confirmação Visual</h4>
+    <p>O sistema deverá permitir que o usuário visualize e confirme a reserva antes de finalizá-la.</p>
+  </div>
+</div>
+
+### RF04 – Visualizar detalhamento de reservas
+
+<div class="softex-process">
+> Ao clicar em uma sala, o sistema deverá exibir:
+</div>
+
+<ul class="softex-list">
+  <li>**Usuário responsável** pela reserva</li>
+  <li>**Horário de início e término**</li>
+  <li>**Descrição breve** do uso</li>
+</ul>
+
+### RF05 – Filtrar reservas
+
+<p>O sistema deverá permitir filtrar reservas por sala, horário e dias da semana.</p>
+
+### RF06 – Editar e cancelar reservas
+
+<ul class="softex-flow">
+  <li>O sistema deverá permitir que os usuários editem ou cancelem reservas já realizadas</li>
+  <li>O sistema deverá respeitar regras de permissões para edição e cancelamento</li>
+</ul>
+
+### RF07 – Notificar e alertar usuários
+
+<div class="softex-process">
+> **Sistema de notificações:**
+</div>
+
+<ul class="softex-list">
+  <li>O sistema deverá enviar notificações de confirmação de reservas via e-mail corporativo ou alertas internos</li>
+  <li>O sistema deverá alertar sobre conflitos de reservas e sobre reservas próximas do horário de início</li>
+</ul>
+
+### RF08 – Gerar relatórios e histórico de ocupação
+
+<div class="fases-container">
+  <div class="fase-item">
+    <h4>Relatórios de Ocupação</h4>
+    <p>O sistema deverá gerar relatórios de ocupação por sala.</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Estatísticas de Uso</h4>
+    <p>O sistema deverá apresentar estatísticas de horários mais utilizados.</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Histórico Individual</h4>
+    <p>O sistema deverá disponibilizar o histórico de reservas por usuário.</p>
+  </div>
+</div>
+
+## Requisitos Não Funcionais
+
+<div class="softex-process">
+> Os requisitos não funcionais definem **como o sistema deve funcionar** em termos de qualidade, performance e restrições técnicas
+</div>
+
+### Requisitos de Produto
+
+<ul class="softex-list">
+  <li>O sistema deverá atualizar todas as reservas em tempo real, garantindo consistência entre usuários</li>
+  <li>O sistema deverá controlar permissões de reserva, permitindo que usuários com autoridade máxima definam e alterem quem pode reservar determinadas salas ou estações</li>
+  <li>O sistema deverá apresentar alta disponibilidade (99%) durante o horário de operação do coworking</li>
+  <li>O sistema deverá apresentar tempo de resposta inferior a 2 segundos para ações críticas (reserva e cancelamento)</li>
+</ul>
+
+### Requisitos Organizacionais
+
+<div class="softex-process">
+> **Stack tecnológico definido:**
+</div>
+
+<ul class="softex-flow">
+  <li>O sistema deverá possuir front-end desenvolvido em <strong>Vue.js</strong></li>
+  <li>O sistema deverá possuir back-end desenvolvido em <strong>Python com Django REST Framework (DRF)</strong></li>
+  <li>O sistema deverá utilizar banco de dados <strong>PostgreSQL</strong></li>
+  <li>O sistema deverá utilizar <strong>Git</strong> e repositório no <strong>GitHub</strong> para versionamento de código</li>
+  <li>O sistema deverá ser empacotado e implantado utilizando <strong>Docker</strong> em ambiente <strong>AWS</strong></li>
+</ul>
+
+### Requisitos Externos
+
+<div class="fases-container">
+  <div class="fase-item">
+    <h4>Compatibilidade</h4>
+    <p>O sistema deverá ser compatível com os navegadores <strong>Chrome</strong>, <strong>Firefox</strong> e <strong>Edge</strong>.</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Responsividade</h4>
+    <p>O sistema deverá ser adaptável para dispositivos <strong>desktop</strong> e <strong>mobile</strong>.</p>
+  </div>
+</div>
+
+<div class="softex-process">
+> **Conformidade e acessibilidade:**
+</div>
+
+<ul class="softex-list">
+  <li>O sistema deverá atender às diretrizes de acessibilidade <strong>WCAG</strong>, permitindo navegação por teclado e alto contraste de cores</li>
+  <li>O sistema deverá estar em conformidade com a <strong>LGPD</strong>, criptografando dados sensíveis e solicitando consentimento para uso de informações pessoais</li>
+</ul>

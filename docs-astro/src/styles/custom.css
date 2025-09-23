@@ -1,11 +1,257 @@
-/* Estilo Softex - Fundo preto com toques roxos */
-
 /* Importar fontes Geist como no projeto PPBM */
 @import '@fontsource/geist-sans/400.css';
 @import '@fontsource/geist-sans/500.css';
 @import '@fontsource/geist-sans/600.css';
 @import '@fontsource/geist-mono/400.css';
 @import '@fontsource/geist-mono/500.css';
+
+/* Estilo Softex - Fundo preto com toques roxos */
+
+/* Softex Card Styles */
+.softex-card {
+  border: 2px solid #8B5CF6;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(124, 58, 237, 0.02));
+  transition: all 0.3s ease;
+}
+
+.softex-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(139, 92, 246, 0.3);
+  border-color: #7C3AED;
+}
+
+.softex-card h3 {
+  color: #8B5CF6 !important;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Fix for light mode text visibility */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: var(--sl-color-gray-12) !important;
+}
+
+[data-theme="light"] .softex-card h3 {
+  color: #8B5CF6 !important;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Fix for light mode table text */
+[data-theme="light"] .interactive-table td {
+  color: var(--sl-color-gray-12) !important;
+}
+
+[data-theme="light"] .interactive-table th {
+  color: white !important;
+}
+
+/* Fix for light mode list text */
+[data-theme="light"] .softex-list li,
+[data-theme="light"] .softex-flow li {
+  color: var(--sl-color-gray-12) !important;
+}
+
+/* Fix for light mode blockquote text */
+[data-theme="light"] .softex-process blockquote {
+  color: var(--sl-color-gray-12) !important;
+}
+
+/* Softex Table Styles */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--sl-color-gray-4);
+}
+
+table th {
+  background: #8B5CF6;
+  color: white;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--sl-color-gray-4);
+  font-size: 0.95em;
+}
+
+table tbody tr:hover {
+  background: rgba(139, 92, 246, 0.05);
+}
+
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Cronograma Card Styles */
+.cronograma-card {
+  border: 2px solid #8B5CF6;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(124, 58, 237, 0.02));
+  transition: all 0.3s ease;
+}
+
+.cronograma-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(139, 92, 246, 0.3);
+  border-color: #7C3AED;
+}
+
+.cronograma-card h3 {
+  color: #8B5CF6 !important;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Fases Container Styles */
+.fases-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.fase-item {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(124, 58, 237, 0.02));
+  border: 2px solid #8B5CF6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.fase-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(139, 92, 246, 0.3);
+  border-color: #7C3AED;
+}
+
+.fase-item h4 {
+  color: #8B5CF6;
+  margin: 0 0 1rem 0;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.fase-item p {
+  margin: 0.5rem 0;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.fase-item strong {
+  color: #8B5CF6;
+  font-weight: 600;
+}
+
+/* Marcos Importantes Styles */
+.marcos-container {
+  margin: 1.5rem 0;
+}
+
+.marco-item {
+  display: flex;
+  align-items: flex-start;
+  margin: 1rem 0;
+  padding: 0.5rem 0;
+}
+
+.marco-bola {
+  color: #10B981;
+  font-size: 1.2em;
+  margin-right: 1rem;
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+.marco-content {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.marco-content strong {
+  color: #8B5CF6;
+  font-weight: 600;
+}
+
+.marco-item:hover .marco-bola {
+  color: #059669;
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+/* Softex Process Styles */
+.softex-process blockquote {
+  border-left: 4px solid #8B5CF6;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.05));
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  font-size: 1.1em;
+  font-weight: 500;
+}
+
+/* Softex List Styles */
+.softex-list li {
+  padding: 0.5rem 0;
+  border-left: 3px solid transparent;
+  padding-left: 1rem;
+  transition: all 0.3s ease;
+}
+
+.softex-list li:hover {
+  border-left-color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.05);
+  padding-left: 1.5rem;
+}
+
+/* Softex Flow Styles */
+.softex-flow li {
+  padding: 0.5rem 0;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.softex-flow li::before {
+  content: counter(list-item);
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+
+.softex-flow li:hover {
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 6px;
+  padding-left: 2.5rem;
+}
 
 /* Aplicar fontes Geist */
 body {
@@ -85,7 +331,7 @@ html {
 	padding-bottom: 0.5rem !important;
 }
 
-.sl-markdown-content h2 {
+.sl-markdown-content h2,h3 {
 	border-bottom: 1px solid var(--softex-purple) !important;
 	padding-bottom: 0.3rem !important;
 	opacity: 0.7;
@@ -179,4 +425,9 @@ html {
 	height: 100%;
 	border: none;
 	border-radius: 10px;
+}
+
+/* Estilos para o cronograma */
+.sprint-container {
+  position: relative;
 }

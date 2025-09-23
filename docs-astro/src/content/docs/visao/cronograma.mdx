@@ -1,0 +1,266 @@
+---
+title: Cronograma e Entregas
+description: Cronograma detalhado do projeto Sistema de Gestão de Recursos Softex com marcos e entregas planejadas.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
+Cronograma XP + Scrum (12 sprints, validação quinzenal)
+
+## Timeline do Projeto
+
+### Fases do Projeto
+
+<div class="fases-container">
+  <div class="fase-item">
+    <h4>📋 Preparação</h4>
+    <p><strong>Período:</strong> Setembro</p>
+    <p><strong>Sprints:</strong> 0, 1, 2</p>
+    <p><strong>Foco:</strong> Planejamento e prototipagem</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>🚀 Desenvolvimento</h4>
+    <p><strong>Período:</strong> Outubro</p>
+    <p><strong>Sprints:</strong> 3, 4, 5, 6</p>
+    <p><strong>Foco:</strong> Construção das funcionalidades</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>🔧 Finalização</h4>
+    <p><strong>Período:</strong> Novembro</p>
+    <p><strong>Sprints:</strong> 7, 8, 9, 10</p>
+    <p><strong>Foco:</strong> Refinamento e preparação MVP</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>🎯 Entrega</h4>
+    <p><strong>Período:</strong> Dezembro</p>
+    <p><strong>Sprints:</strong> 11, 12</p>
+    <p><strong>Foco:</strong> Deploy e encerramento</p>
+  </div>
+</div>
+
+### Marcos Importantes
+
+<div class="marcos-container">
+  <div class="marco-item">
+    <div class="marco-bola">●</div>
+    <div class="marco-content">
+      <strong>Sprint 2 (27/09)</strong>: Protótipo validado e repo estruturado
+    </div>
+  </div>
+  
+  <div class="marco-item">
+    <div class="marco-bola">●</div>
+    <div class="marco-content">
+      <strong>Sprint 4 (11/10)</strong>: Fluxo de reservas simples funcionando
+    </div>
+  </div>
+  
+  <div class="marco-item">
+    <div class="marco-bola">●</div>
+    <div class="marco-content">
+      <strong>Sprint 5 (18/10)</strong>: Versão com mapa básico implementada
+    </div>
+  </div>
+  
+  <div class="marco-item">
+    <div class="marco-bola">●</div>
+    <div class="marco-content">
+      <strong>Sprint 7 (01/11)</strong>: Notificações e relatórios iniciais
+    </div>
+  </div>
+  
+  <div class="marco-item">
+    <div class="marco-bola">●</div>
+    <div class="marco-content">
+      <strong>Sprint 10 (22/11)</strong>: MVP funcional fechado
+    </div>
+  </div>
+  
+  <div class="marco-item">
+    <div class="marco-bola">●</div>
+    <div class="marco-content">
+      <strong>Sprint 12 (06/12)</strong>: MVP em produção
+    </div>
+  </div>
+  
+  <div class="marco-item">
+    <div class="marco-bola">●</div>
+    <div class="marco-content">
+      <strong>Encerramento (09/12)</strong>: Sistema finalizado e documentado
+    </div>
+  </div>
+</div>
+
+## Sprints Detalhadas
+
+<CardGrid>
+  <Card title="Sprint 0" icon="play" class="cronograma-card">
+    **07/09 – 13/09**
+    
+    **Atividades principais:**
+    - Reunião inicial com cliente
+    - Escopo de alto nível  
+    - Product Backlog inicial
+    - Acordos de time (DoR/DoD)
+    - Setup básico do pipeline
+    
+    **Entrega:** Backlog priorizado + escopo alinhado
+  </Card>
+
+  <Card title="Sprint 1" icon="target" class="cronograma-card">
+    **14/09 – 20/09**
+    
+    **Atividades principais:**
+    - Protótipo rápido (fluxos críticos)
+    - Setup do ambiente (front/back/DB/Docker)
+    - Repo/branches/CI/CD
+    
+    **Entrega:** Protótipo navegável + ambiente pronto
+  </Card>
+
+  <Card title="Sprint 2" icon="check-circle" class="cronograma-card">
+    **21/09 – 27/09**
+    
+    **Atividades principais:**
+    - Apresentação do protótipo ao cliente
+    - Ajustes/refino de UX
+    - Refatorar pages
+    - Organização do repositório
+    - Finalizar esteira CI/CD
+    
+    **Entrega:** Protótipo validado + repo estruturado  
+    **Validação:** –
+  </Card>
+
+  <Card title="Sprint 3" icon="settings" class="cronograma-card">
+    **28/09 – 04/10**
+    
+    **Atividades principais:**
+    - Modelagem de dados
+    - Cadastro de salas e usuários
+    - Autenticação básica
+    - Testes unitários iniciais
+    
+    **Entrega:** Versão 0.1 com cadastro e API base
+  </Card>
+
+  <Card title="Sprint 4" icon="laptop" class="cronograma-card">
+    **05/10 – 11/10**
+    
+    **Atividades principais:**
+    - Reservas básicas (criar/cancelar)
+    - Checagem de conflito
+    - Logs/auditoria
+    - Hardening do backend
+    
+    **Entrega:** Fluxo de reservas simples  
+    **Validação:** –
+  </Card>
+
+  <Card title="Sprint 5" icon="map" class="cronograma-card">
+    **12/10 – 18/10**
+    
+    **Atividades principais:**
+    - Mapa interativo (visual das salas)
+    - Integração inicial com Google Calendar (read-only)
+    - Perfis de usuário
+    
+    **Entrega:** Versão com mapa básico
+  </Card>
+
+  <Card title="Sprint 6" icon="wrench" class="cronograma-card">
+    **19/10 – 25/10**
+    
+    **Atividades principais:**
+    - Regras de uso/capacidade
+    - Testes de integração
+    - Refatoração contínua
+    
+    **Entrega:** Regras de negócio ativas  
+    **Validação:** –
+  </Card>
+
+  <Card title="Sprint 7" icon="bell" class="cronograma-card">
+    **26/10 – 01/11**
+    
+    **Atividades principais:**
+    - Notificações no Slack
+    - Relatórios básicos
+    - Melhorias de UX
+    
+    **Entrega:** Versão com notificações e relatórios iniciais
+  </Card>
+
+  <Card title="Sprint 8" icon="edit" class="cronograma-card">
+    **02/11 – 08/11**
+    
+    **Atividades principais:**
+    - Ajustes de interface
+    - Acessibilidade
+    - Feedback do cliente aplicado
+    
+    **Entrega:** Versão intermediária refinada  
+    **Validação:** –
+  </Card>
+
+  <Card title="Sprint 9" icon="gauge" class="cronograma-card">
+    **09/11 – 15/11**
+    
+    **Atividades principais:**
+    - Preparação para MVP
+    - Performance
+    - Observabilidade (métricas/monitoramento)
+    
+    **Entrega:** Build estável pré-MVP
+  </Card>
+
+  <Card title="Sprint 10" icon="shield" class="cronograma-card">
+    **16/11 – 22/11**
+    
+    **Atividades principais:**
+    - Funcionalidades finais do MVP
+    - QA
+    - Testes de carga/segurança
+    - Backup/restore
+    
+    **Entrega:** MVP funcional fechado  
+    **Validação:** –
+  </Card>
+
+  <Card title="Sprint 11" icon="upload" class="cronograma-card">
+    **23/11 – 29/11**
+    
+    **Atividades principais:**
+    - Implantação em staging → plano de rollout
+    - Treinamento parcial
+    
+    **Entrega:** MVP implantado em staging
+  </Card>
+
+  <Card title="Sprint 12" icon="rocket" class="cronograma-card">
+    **30/11 – 06/12**
+    
+    **Atividades principais:**
+    - Implantação em produção
+    - Treinamento final
+    - Estabilização
+    - Retro geral
+    
+    **Entrega:** MVP em produção  
+    **Validação:** –
+  </Card>
+
+  <Card title="Encerramento" icon="check" class="cronograma-card">
+    **até 09/12**
+    
+    **Atividades principais:**
+    - Documentação no GitPages
+    - Entrega formal
+    
+    **Entrega:** Sistema finalizado e documentado  
+    **Validação:** –
+  </Card>
+</CardGrid>

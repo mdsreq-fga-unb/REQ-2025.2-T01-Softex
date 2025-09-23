@@ -1,0 +1,280 @@
+---
+title: Solução Proposta
+description: Sistema de gestão de recursos físicos para ambiente híbrido
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
+
+###  Objetivo do Produto
+
+O objetivo do produto é modernizar e centralizar o processo de reservas de salas e estações de trabalho, que atualmente é feito de forma manual, por meio de planilhas pouco utilizadas e da atuação de uma pessoa responsável pelas marcações. Esse modelo consome tempo, gera conflitos de uso e dificulta o planejamento do espaço físico.
+
+#### Objetivos Específicos
+
+- **Eliminar ineficiências do processo atual**: reduzir dependência de planilhas (modo que é feito atualmente) e do trabalho manual de uma única pessoa.
+
+- **Otimizar a utilização do espaço**: permitir que colaboradores planejem com antecedência sua presença no escritório, garantindo previsibilidade e reduzindo conflitos.
+
+- **Aumentar a produtividade interna**: liberar tempo dos colaboradores que hoje gastam em tarefas administrativas e resolução de conflitos de reserva.
+
+- **Proporcionar autonomia e conveniência**: criar um processo centralizado e acessível de agendamento de recursos, sem necessidade de intermediários.
+
+- **Ampliar a visibilidade estratégica para a gestão**: disponibilizar dados consistentes sobre taxa de ocupação e padrões de uso do escritório, apoiando decisões sobre infraestrutura e custos operacionais.
+
+- **Apoiar a adesão ao modelo híbrido**: tornar o trabalho presencial mais organizado e eficiente, fortalecendo a integração entre equipes.
+
+###  Características da Solução
+
+A solução proposta terá como foco apoiar a organização e o planejamento do modelo híbrido da empresa, garantindo o uso eficiente das salas e ambientes de trabalho. De forma preliminar, destacam-se as seguintes características:
+
+- **Reserva de Salas e Estações de Trabalho**: reservas online simples e rápidas, com prevenção automática de conflitos e maior controle do uso dos espaços.
+
+- **Mapa Interativo de Ocupação**: visualização em tempo real de salas e estações disponíveis/ocupadas, apoiando decisões imediatas.
+
+- **Gestão de Capacidade e Regras de Uso**: definição de limites por sala conforme políticas internas e normas de segurança, garantindo uso adequado.
+
+- **Relatórios e Indicadores de Utilização**: métricas de frequência de uso, horários de pico e uso por equipe, apoiando reorganização ou expansão da infraestrutura.
+
+- **Controle de Permissões e Perfis de Acesso**: perfis por cargo/setor/equipe, com possibilidade de bloqueio ou prioridade de uso em situações específicas.
+
+- **Integração com Ferramentas Corporativas**: sincronização com calendários (Google Workspace) para evitar conflitos, além de notificações automáticas em canais como Slack.
+
+- **Flexibilidade para Diferentes Ambientes**: funcionamento adaptado para coworking interno, salas de reunião, hubs de inovação e escritórios satélites, escalável para múltiplas unidades da empresa.
+
+###  Métodos e Tecnologias
+
+O desenvolvimento da solução seguirá uma metodologia ágil, utilizando tecnologias modernas e já consolidadas na infraestrutura da empresa, garantindo eficiência, confiabilidade e facilidade de manutenção.
+
+#### Stack Tecnológico
+
+<CardGrid>
+  <Card title="Vue.js" icon="vue">
+    **Framework Frontend Moderno**
+    
+    - Facilidade de uso e curva de aprendizado rápida
+    - Interface moderna e responsiva
+    - Simplicidade de manutenção
+    - Performance otimizada
+  </Card>
+  
+  <Card title="Python + Django REST Framework" icon="python">
+    **API Robusta e Escalável**
+    
+    - Linguagem já consolidada na Softex
+    - Facilidade na geração de relatórios
+    - Amplo ecossistema de bibliotecas
+    - Recursos avançados para análise de dados
+  </Card>
+  
+  <Card title="PostgreSQL" icon="database">
+    **Banco de Dados Confiável**
+    
+    - Já consolidado na infraestrutura da empresa
+    - Confiabilidade e robustez
+    - Recursos avançados para consultas
+    - Otimizado para relatórios complexos
+  </Card>
+  
+  <Card title="Docker" icon="container">
+    **Containerização e Deploy**
+    
+    - Empacotamento padronizado
+    - Redução de problemas de compatibilidade
+    - Agilidade no processo de deploy
+    - Experiência consolidada na empresa
+  </Card>
+  
+  <Card title="Git + GitHub" icon="github">
+    **Versionamento e Colaboração**
+    
+    - Controle de versão robusto
+    - Issues e Projects para organização
+    - Colaboração em equipe
+    - Acompanhamento de desenvolvimento
+  </Card>
+</CardGrid>
+
+#### Integrações Corporativas
+
+<CardGrid>
+  <Card title="Google Calendar" icon="calendar">
+    **Sincronização de Reservas**
+    
+    - Bloqueios automáticos
+    - Atualizações em tempo real
+    - Cancelamentos sincronizados
+    - Integração nativa com workspace
+  </Card>
+  
+  <Card title="Slack" icon="slack">
+    **Comunicação e Lembretes**
+    
+    - Confirmações de agendamento
+    - Lembretes automáticos
+    - Notificações em tempo real
+    - Integração com equipes
+  </Card>
+  
+  <Card title="Google Workspace SSO" icon="shield">
+    **Autenticação Segura**
+    
+    - Single Sign-On integrado
+    - Ambiente organizacional unificado
+    - Segurança corporativa
+    - Gerenciamento centralizado de usuários
+  </Card>
+</CardGrid>
+
+## Metodologia de Desenvolvimento
+
+<CardGrid>
+  <Card title="Sprints" icon="clock">
+    **Desenvolvimento Iterativo**
+    
+    - Ciclos de 2 semanas
+    - Revisões regulares
+    - Feedback contínuo
+    - Entregas incrementais
+  </Card>
+  
+  <Card title="GitHub Projects" icon="kanban">
+    **Gestão de Tarefas**
+    
+    - Backlog organizado
+    - Categorização por prioridade
+    - Atribuição de responsáveis
+    - Acompanhamento de progresso
+  </Card>
+  
+  <Card title="Code Review" icon="search">
+    **Qualidade de Código**
+    
+    - Revisões obrigatórias
+    - Testes automatizados
+    - Documentação atualizada
+    - Padrões de qualidade
+  </Card>
+</CardGrid>
+
+## Benefícios da Abordagem
+
+<CardGrid>
+  <Card title="Integração" icon="link">
+    **Tecnologias Consolidadas**
+    
+    - Stack já conhecido pela empresa
+    - Redução de curva de aprendizado
+    - Suporte interno disponível
+  </Card>
+  
+  <Card title="Eficiência" icon="zap">
+    **Otimização do Negócio**
+    
+    - Stack otimizado para o domínio
+    - Desenvolvimento acelerado
+    - Manutenção simplificada
+  </Card>
+  
+  <Card title="Escalabilidade" icon="trending-up">
+    **Crescimento Sustentável**
+    
+    - Arquitetura preparada para expansão
+    - Processo automatizado
+    - Deploy confiável
+  </Card>
+</CardGrid>
+
+###  Viabilidade da Solução
+
+#### Viabilidade Técnica
+Tecnologias definidas (Vue.js, Python/DRF, PostgreSQL, Docker em AWS) são maduras e bem documentadas; Python facilita integrações e geração de relatórios; arquitetura por APIs permite evolução. 
+
+**Riscos**: mapa interativo (UI/UX + tempo de backend), permissões granulares (modelagem/segurança), responsividade/PWA (testes multiplataforma). 
+
+**Conclusão**: viável com time full-stack e integração de APIs.
+
+#### Viabilidade de Prazo
+Meta de MVP até início de novembro com escopo claro e sprints quinzenais. 
+
+**Risco principal**: mapa interativo e permissões podem alongar cronograma se não priorizados desde o início. 
+
+**Conclusão**: viável com planejamento de sprints e foco no essencial do MVP.
+
+#### Viabilidade Financeira
+Evita contratação de ferramenta externa (economia estimada R$ 10–20 mil/ano); uso de AWS já disponível reduz custo inicial; projeto universitário reduz custo de desenvolvimento. 
+
+**Custos potenciais**: horas de desenvolvimento, manutenção evolutiva e variação de custo AWS conforme uso. 
+
+**Conclusão**: alto custo-benefício.
+
+#### Viabilidade de Mercado
+Necessidade já comprovada internamente (58 posições de coworking e 6 salas); solução aderente às políticas da organização e replicável em outras unidades. 
+
+**Conclusão**: alinhada à demanda, com potencial de expansão.
+
+#### Sustentabilidade
+Stack amplamente suportada, código sob domínio da Softex, implantação padronizada via Docker e escala em nuvem (AWS). 
+
+**Conclusão**: sustentável e escalável no longo prazo.
+
+## Conclusão Geral
+A ferramenta de gestão de coworking e salas de reunião é tecnicamente viável, financeiramente vantajosa, executável dentro do prazo e atende à demanda real da Softex. O maior desafio será garantir o desenvolvimento do mapa interativo e do sistema de permissões dentro do cronograma, mas, com uma abordagem ágil e priorização correta, o projeto tem alto potencial de sucesso e retorno sobre investimento positivo.
+
+##  Impacto da Solução
+
+<CardGrid>
+  <Card title="Operacional" icon="settings">
+    **Eficiência do Processo**
+    
+    - Redução do tempo de agendamento
+    - Eliminação de conflitos de reserva
+    - Confirmação imediata e automática
+    - Prevenção de duplicidades
+  </Card>
+  
+  <Card title="Experiência do Usuário" icon="user">
+    **Autonomia e Conveniência**
+    
+    - Disponibilidade em tempo real
+    - Planejamento antecipado
+    - Menos interrupções
+    - Processo autoatendimento
+  </Card>
+  
+  <Card title="Gestão e Relatórios" icon="chart">
+    **Visibilidade Estratégica**
+    
+    - Métricas de ocupação
+    - Padrões de uso identificados
+    - Otimização do espaço físico
+    - Base para decisões gerenciais
+  </Card>
+  
+  <Card title="Integração Corporativa" icon="link">
+    **Ecossistema Unificado**
+    
+    - Sincronização com Google Calendar
+    - Notificações via Slack
+    - SSO integrado
+    - Processo oficial consolidado
+  </Card>
+  
+  <Card title="Custo-benefício" icon="dollar-sign">
+    **Economia e Produtividade**
+    
+    - Economia de R$ 10-20 mil/ano
+    - Liberação de tempo administrativo
+    - Redução de retrabalho
+    - ROI positivo comprovado
+  </Card>
+  
+  <Card title="Escalabilidade" icon="trending-up">
+    **Crescimento Sustentável**
+    
+    - Arquitetura preparada para expansão
+    - Replicação em outras unidades
+    - Deploy padronizado
+    - Evolução contínua
+  </Card>
+</CardGrid>
