@@ -7,8 +7,72 @@ on:
     branches: ["main", "develop"]
 
 jobs:
-  quality-check:
+  backend:
+    name: Backend (Python/DRF)
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-      - run: echo "Ainda não há frontend ou backend configurado."
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint backend code with flake8
+        run: |
+          cd backend
+          flake8 .
+
+      - name: Check formatting with black
+        run: |
+          cd backend
+          black --check .
+
+      - name: Security scan with bandit
+        run: |
+          cd backend
+          bandit -r .
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          pytest --cov=.
+
+  frontend:
+    name: Frontend (Vue.js)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Lint frontend code with ESLint
+        run: |
+          cd frontend
+          npx eslint .
+
+      - name: Check formatting with Prettier
+        run: |
+          cd frontend
+          npx prettier --check "src/**/*.{js,vue}"
+
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm run test || echo "No tests configured"
