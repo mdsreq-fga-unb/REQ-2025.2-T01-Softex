@@ -10,3 +10,4 @@ if __name__ == "__main__":
             "Couldn't import Django."
         ) from exc
     execute_from_command_line(sys.argv)
+

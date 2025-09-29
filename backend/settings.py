@@ -32,3 +32,4 @@ MIDDLEWARE = [
 ROOT_URLCONF = "backend.urls"
 
 STATIC_URL = "static/"
+
