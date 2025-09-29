@@ -7,34 +7,8 @@ on:
     branches: ["main", "develop"]
 
 jobs:
-  frontend:
-    name: Frontend (Astro)
+  quality-check:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
-
-      - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Run ESLint
-        run: |
-          cd frontend
-          npx eslint .
-
-      - name: Check formatting with Prettier
-        run: |
-          cd frontend
-          npx prettier --check "src/**/*.{js,ts,jsx,tsx,vue}"
-
-      - name: Run unit tests
-        run: |
-          cd frontend
-          npm run test
+      - run: echo "Ainda não há frontend ou backend configurado."
