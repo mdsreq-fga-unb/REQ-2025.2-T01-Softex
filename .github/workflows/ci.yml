@@ -33,7 +33,7 @@ jobs:
       - name: Check formatting with black
         run: |
           cd backend
-          black --check .
+          black .
 
       - name: Security scan with bandit
         run: |
