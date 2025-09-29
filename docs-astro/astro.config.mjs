@@ -68,15 +68,7 @@ export default defineConfig({
 						},
 					],
 				},
-				{
-					label: "Documentação",
-					items: [
-						{
-							label: "Teste",
-							slug: "documentacao/teste",
-						},
-					],
-				},
+			
 				{
 					label: "Entregas",
 					items: [
