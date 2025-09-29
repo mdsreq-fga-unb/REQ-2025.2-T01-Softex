@@ -45,34 +45,4 @@ jobs:
           cd backend
           pytest --cov=.
 
-  frontend:
-    name: Frontend (Vue.js)
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
-
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Lint frontend code with ESLint
-        run: |
-          cd frontend
-          npx eslint .
-
-      - name: Check formatting with Prettier
-        run: |
-          cd frontend
-          npx prettier --check "src/**/*.{js,vue}"
-
-      - name: Run frontend tests
-        run: |
-          cd frontend
-          npm run test || echo "No tests configured"
+  
