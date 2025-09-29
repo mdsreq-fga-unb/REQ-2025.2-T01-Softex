@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   # Trigger the workflow every time you push to the `main` or `gh-pages` branches
   push:
-    branches: [ main, gh-pages ]
+    branches: [ gh-pages ]
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
