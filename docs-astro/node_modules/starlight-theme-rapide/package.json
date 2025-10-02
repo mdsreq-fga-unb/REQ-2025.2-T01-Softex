@@ -1,0 +1,49 @@
+{
+  "name": "starlight-theme-rapide",
+  "version": "0.5.1",
+  "license": "MIT",
+  "description": "Starlight theme inspired by the Visual Studio Code Vitesse theme.",
+  "author": "HiDeoo <github@hideoo.dev> (https://hideoo.dev)",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./overrides/LanguageSelect.astro": "./overrides/LanguageSelect.astro",
+    "./overrides/Pagination.astro": "./overrides/Pagination.astro",
+    "./overrides/ThemeSelect.astro": "./overrides/ThemeSelect.astro",
+    "./styles/anchors": "./styles/anchors.css",
+    "./styles/base": "./styles/base.css",
+    "./styles/layers": "./styles/layers.css",
+    "./styles/theme": "./styles/theme.css",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@astrojs/starlight": ">=0.34.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "keywords": [
+    "starlight",
+    "theme",
+    "rapide",
+    "vitesse",
+    "plugin",
+    "documentation",
+    "astro"
+  ],
+  "homepage": "https://github.com/HiDeoo/starlight-theme-rapide",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HiDeoo/starlight-theme-rapide.git",
+    "directory": "packages/starlight-theme-rapide"
+  },
+  "bugs": "https://github.com/HiDeoo/starlight-theme-rapide/issues",
+  "scripts": {
+    "lint": "eslint . --cache --max-warnings=0"
+  }
+}
