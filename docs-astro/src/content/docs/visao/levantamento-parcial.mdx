@@ -3,6 +3,8 @@ title: Requisitos do Sistema
 description: Requisitos funcionais e não funcionais do Sistema de Gestão de Salas e Coworking
 ---
 
+import requisitosFigma from '../../../assets/requisitos.jpeg';
+
 
 ## Requisitos Funcionais
 
@@ -10,14 +12,14 @@ description: Requisitos funcionais e não funcionais do Sistema de Gestão de Sa
 > Os requisitos funcionais definem **o que o sistema deve fazer** para atender às necessidades dos usuários
 </div>
 
-### RF01 – Cadastrar usuários
+### RF01 – Cadastrar usuários <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>O sistema deverá permitir que os usuários se cadastrem utilizando o e-mail corporativo da Softex</li>
   <li>O sistema deverá validar se o e-mail informado pertence ao domínio da empresa</li>
 </ul>
 
-### RF02 – Visualizar mapa interativo
+### RF02 – Visualizar mapa interativo da planta baixa <span class="badge badge--critica">Crítica</span>
 
 <div class="softex-process">
 > **Funcionalidades principais:**
@@ -28,7 +30,7 @@ description: Requisitos funcionais e não funcionais do Sistema de Gestão de Sa
   <li>O usuário deverá conseguir identificar salas e estações disponíveis em tempo real</li>
 </ul>
 
-### RF03 – Reservar salas e cadeiras
+### RF03 – Reservar salas e cadeiras <span class="badge badge--critica">Crítica</span>
 
 <div class="fases-container">
   <div class="fase-item">
@@ -42,7 +44,7 @@ description: Requisitos funcionais e não funcionais do Sistema de Gestão de Sa
   </div>
 </div>
 
-### RF04 – Visualizar detalhamento de reservas
+### RF04 – Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
 
 <div class="softex-process">
 > Ao clicar em uma sala, o sistema deverá exibir:
@@ -58,14 +60,14 @@ description: Requisitos funcionais e não funcionais do Sistema de Gestão de Sa
 
 <p>O sistema deverá permitir filtrar reservas por sala, horário e dias da semana.</p>
 
-### RF06 – Editar e cancelar reservas
+### RF06 – Editar e cancelar reservas <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-flow">
   <li>O sistema deverá permitir que os usuários editem ou cancelem reservas já realizadas</li>
   <li>O sistema deverá respeitar regras de permissões para edição e cancelamento</li>
 </ul>
 
-### RF07 – Notificar e alertar usuários
+### RF07 – Notificar e alertar usuários <span class="badge badge--critica">Crítica</span>
 
 <div class="softex-process">
 > **Sistema de notificações:**
@@ -76,7 +78,7 @@ description: Requisitos funcionais e não funcionais do Sistema de Gestão de Sa
   <li>O sistema deverá alertar sobre conflitos de reservas e sobre reservas próximas do horário de início</li>
 </ul>
 
-### RF08 – Gerar relatórios e histórico de ocupação
+### RF08 – Gerar relatórios e histórico de ocupação <span class="badge badge--media">Média</span>
 
 <div class="fases-container">
   <div class="fase-item">
@@ -104,10 +106,10 @@ description: Requisitos funcionais e não funcionais do Sistema de Gestão de Sa
 ### Requisitos de Produto
 
 <ul class="softex-list">
-  <li>O sistema deverá atualizar todas as reservas em tempo real, garantindo consistência entre usuários</li>
-  <li>O sistema deverá controlar permissões de reserva, permitindo que usuários com autoridade máxima definam e alterem quem pode reservar determinadas salas ou estações</li>
-  <li>O sistema deverá apresentar alta disponibilidade (99%) durante o horário de operação do coworking</li>
-  <li>O sistema deverá apresentar tempo de resposta inferior a 2 segundos para ações críticas (reserva e cancelamento)</li>
+  <li><strong>Atualização em tempo real</strong> <span class="badge badge--critica">Crítica</span> — O sistema deverá atualizar todas as reservas em tempo real, garantindo consistência entre usuários</li>
+  <li><strong>Controle de permissões</strong> <span class="badge badge--alta">Alta</span> — O sistema deverá controlar permissões de reserva, permitindo que usuários com autoridade máxima definam e alterem quem pode reservar determinadas salas ou estações</li>
+  <li><strong>Disponibilidade</strong> <span class="badge badge--alta">Alta</span> — O sistema deverá apresentar alta disponibilidade (99%) durante o horário de operação do coworking</li>
+  <li><strong>Performance</strong> <span class="badge badge--alta">Alta</span> — O sistema deverá apresentar tempo de resposta inferior a 2 segundos para ações críticas (reserva e cancelamento)</li>
 </ul>
 
 ### Requisitos Organizacionais
@@ -150,7 +152,13 @@ description: Requisitos funcionais e não funcionais do Sistema de Gestão de Sa
 ### Mapa de requisitos (Figma)
 
 <iframe
+  title="Embed do Figma - Mapa de Requisitos"
   style={{ border: '1px solid #ddd', borderRadius: '8px', width: '100%', height: '640px' }}
-  src={`https://www.figma.com/board/NvgFffhUVPQNWu9lsVYpMZ/Mapa-de-Requisitos?node-id=0-1&p=f&t=BcWzTa9m6j6TULiw-0`}
+  loading="lazy"
+  referrerPolicy="no-referrer"
+  src="https://www.figma.com/embed?embed_host=astro&url=https%3A%2F%2Fwww.figma.com%2Fboard%2FNvgFffhUVPQNWu9lsVYpMZ%2FMapa-de-Requisitos%3Fnode-id%3D0-1%26p%3Df%26t%3DBcWzTa9m6j6TULiw-0"
   allowFullScreen
-/>
+></iframe>  
+<p style={{ marginTop: '8px' }}>
+  <a href="https://www.figma.com/board/NvgFffhUVPQNWu9lsVYpMZ/Mapa-de-Requisitos?node-id=0-1&p=f&t=BcWzTa9m6j6TULiw-0" target="_blank" rel="noreferrer noopener">Abrir no Figma</a>
+</p>
