@@ -33,8 +33,8 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 #### RF03 – Reservar locais de trabalho <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
-  <li>O sistema deverá permitir a reserva de salas e estações de trabalho</li>
-  <li>O sistema deverá conferir disponibilidade e evitar conflitos antes de finalizar a reserva</li>
+  <li>O sistema deverá permitir reservar salas e estações</li>
+  <li>O sistema deverá conferir disponibilidade e evitar conflitos antes de finalizar</li>
 </ul>
 
 #### RF04 – Editar reservas <span class="badge badge--critica">Crítica</span>
@@ -44,16 +44,22 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>O sistema deverá impedir conflitos e respeitar regras de negócio definidas</li>
 </ul>
 
+#### RF05 – Adicionar estações de trabalho <span class="badge badge--media">Média</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá permitir adicionar estações de trabalho</li>
+</ul>
+
 ### **Objetivo 3** — Visualização e Busca
 
-#### RF05 – Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
+#### RF06 – Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>O sistema deverá exibir mapa da planta para consulta</li>
   <li>O sistema deverá identificar salas/estações disponíveis em tempo real</li>
 </ul>
 
-#### RF06 – Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
+#### RF07 – Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
 
 <div class="softex-process">
 > Ao selecionar uma sala/estação, o sistema deverá exibir:
@@ -66,7 +72,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>**Descrição/uso** da reserva</li>
 </ul>
 
-#### RF07 – Filtrar busca e visualização <span class="badge badge--media">Média</span>
+#### RF08 – Filtrar Reserva <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
   <li>O sistema deverá permitir filtrar reservas por dia</li>
@@ -76,27 +82,27 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### **Objetivo 4** — Comunicação e Alertas
 
-#### RF08 – Alertar sistemas internos da empresa  <span class="badge badge--media">Média</span>
+#### RF09 – Alertar sistemas internos da empresa <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
-  <li>O sistema deverá enviar confirmações e cancelamentos por e-mail e sistemas internos</li>
+  <li>O sistema deverá enviar confirmações e cancelamentos por e-mail e sistemas internos, como o Slack</li>
   <li>O sistema deverá alertar sobre conflitos de reservas</li>
   <li>O sistema deverá alertar sobre início iminente de reservas</li>
 </ul>
 
 ### **Objetivo 5** — Relatórios e Histórico
 
-#### RF09 – Relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
+#### RF10 – Gerar relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
 
 <div class="fases-container">
   <div class="fase-item">
     <h4>Relatórios de Uso</h4>
-    <p>O sistema deverá gerar relatórios de uso e ocupação por período.</p>
+    <p>O sistema deverá gerar relatórios de uso/ocupação por período e por sala/estação.</p>
   </div>
   
   <div class="fase-item">
-    <h4> Análise por Espaço</h4>
-    <p>O sistema deverá gerar relatórios por sala e estação.</p>
+    <h4>Análise por Espaço</h4>
+    <p>O sistema deverá gerar relatórios detalhados por sala e estação.</p>
   </div>
   
   <div class="fase-item">
@@ -198,4 +204,4 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 | 06/10/2025 | 1.1 | Update do documento de requisito. | Yuri Andrade/Júlia Santana/ Pietro | Todos |
 | 13/10/2025 | 1.2 | Refatoração dos Requisitos. | Felipe/ Yuri Andrade/Júlia Santana/ Pietro | Todos |
 | 14/10/2025 | 2.0 | Reorganização completa dos requisitos por objetivos e categorias. | Felipe Pedroza | Todos |
-| 14/10/2025 | 2.1 | Movido RNF02 (Controle de permissões) para RF02 no Objetivo 1. Renumeração completa dos requisitos. | Felipe Pedroza | Todos |
+| 14/10/2025 | 2.2 | Adicionado RF05 (Adicionar estações de trabalho). Renumeração de RF06-RF10. Ajustes em descrições. | Felipe Pedroza | Todos |

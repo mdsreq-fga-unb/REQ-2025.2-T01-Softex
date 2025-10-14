@@ -2,3 +2,119 @@
 title: Backlog do Produto
 description: Backlog e descrição dos itens do backlog
 ---
+
+## Backlog Geral
+
+<div class="softex-process">
+> No contexto do sistema de reservas de salas e estações da Softex, o **Product Backlog** é uma lista dinâmica e priorizada de funcionalidades, melhorias e ajustes. Ele guia a equipe para entregar valor cedo a usuários-chave (colaboradores, gestores e administradores) e evolui com feedback, uso real e mudanças de processo.
+</div>
+
+## Features
+
+| **Nome** | **Título** | **Descrição** |
+|----------|------------|---------------|
+| **F01** | Reservas de salas e estações | Criar, editar/cancelar e solicitar reservas (salas e estações), com prevenção de conflitos e confirmações. |
+| **F02** | Visualização e mapa de ocupação | Mapa interativo em tempo real, filtros por andar/setor e estado de ocupação. |
+| **F03** | Integrações externas | Sincronizar com enviar notificações/alertas via Slack. |
+| **F04** | Relatórios e gestão | Relatórios de uso/ocupação, métricas e monitoramento de capacidade com alertas. |
+| **F05** | Administração e permissões | Gestão de usuários, papéis/perfis e cadastro/edição de recursos (salas, estações, equipamentos). |
+
+## Histórias de Usuário
+
+### Tabela de User Stories
+
+| **Código** | **Feature** | **Requisito** | **Declaração** |
+|------------|-------------|---------------|----------------|
+| **US-001** | F01 | RF03 | Como usuário, quero reservar uma sala para garantir espaço disponível no horário que preciso. |
+| **US-002** | F01 | RF04 | Como usuário, quero editar ou cancelar minhas reservas para corrigir informações ou liberar a sala. |
+| **US-003** | F01 | RF03 | Como colaborador, quero reservar uma estação de trabalho para garantir onde trabalhar no escritório. |
+| **US-004** | F02 | RF06 | Como usuário, quero visualizar um mapa interativo em tempo real para ver estações livres. |
+| **US-005** | F03 | RF09 | Como usuário, quero receber notificações no Slack sobre criação/edição/cancelamento e lembrete pré-reunião. |
+| **US-006** | F04 | RF10 | Como gestor, quero relatórios de uso (período, ocupação, picos) e exportação em Excel. |
+| **US-007** | F04 | RF10 | Como administrador, quero monitorar capacidade em tempo real e receber alertas quando atingir X%. |
+| **US-008** | F05 | RF01 | Como administrador, quero cadastrar e gerenciar usuários e seus dados. |
+| **US-009** | F05 | RF05 | Como administrador, quero cadastrar/editar recursos (salas, estações, equipamentos) e desativar temporariamente. |
+
+## Critérios de Aceitação
+
+<div class="softex-process">
+> Os critérios de aceitação definem quando uma história de usuário está completa e atende aos requisitos esperados.
+</div>
+
+### US-001 — Reservar Sala
+
+<ul class="softex-list">
+  <li>O sistema deve listar salas disponíveis por data/horário</li>
+  <li>O sistema deve bloquear reservas com conflito de horário</li>
+  <li>O sistema deve confirmar a reserva com sucesso</li>
+</ul>
+
+### US-002 — Editar ou Cancelar Reserva
+
+<ul class="softex-list">
+  <li>O sistema deve permitir editar data/hora/participantes até X minutos antes do início</li>
+  <li>O sistema deve cancelar reserva com aviso de confirmação</li>
+  <li>O sistema deve enviar notificação após alteração</li>
+</ul>
+
+### US-003 — Reservar Estação de Trabalho
+
+<ul class="softex-list">
+  <li>O sistema deve listar estações por setor/andar</li>
+  <li>O sistema deve exibir capacidade e recursos disponíveis</li>
+  <li>O sistema deve reservar pelo mesmo fluxo das salas</li>
+</ul>
+
+### US-004 — Visualizar Mapa Interativo
+
+<ul class="softex-list">
+  <li>O sistema deve exibir estações ocupadas em vermelho e livres em verde</li>
+  <li>O sistema deve atualizar automaticamente a cada alteração</li>
+  <li>O sistema deve permitir filtros por andar/setor</li>
+</ul>
+
+### US-005 — Receber Notificações no Slack
+
+<ul class="softex-list">
+  <li>O sistema deve enviar DM/alerta no Slack para criar/editar/cancelar reservas</li>
+  <li>O sistema deve enviar lembrete 15 minutos antes do início da reserva</li>
+  <li>O sistema deve evitar duplicidade de notificações</li>
+</ul>
+
+### US-006 — Gerar Relatórios de Uso
+
+<ul class="softex-list">
+  <li>O sistema deve gerar relatórios por período (dia/semana/mês)</li>
+  <li>O sistema deve exibir taxa de ocupação e horários de pico</li>
+  <li>O sistema deve permitir exportar em PDF/Excel</li>
+</ul>
+
+### US-007 — Monitorar Capacidade
+
+<ul class="softex-list">
+  <li>O sistema deve exibir painel com métricas em tempo real</li>
+  <li>O sistema deve enviar alerta quando capacidade atingir ≥ X%</li>
+  <li>O sistema deve permitir parametrização do limiar de alerta</li>
+</ul>
+
+### US-008 — Cadastrar e Gerenciar Usuários
+
+<ul class="softex-list">
+  <li>O sistema deve permitir CRUD (criar, ler, atualizar, deletar) de usuários</li>
+  <li>O sistema deve permitir definição de papéis (usuário, gestor, admin)</li>
+  <li>O sistema deve validar e-mail corporativo no cadastro</li>
+</ul>
+
+### US-009 — Cadastrar e Editar Recursos
+
+<ul class="softex-list">
+  <li>O sistema deve permitir CRUD de salas/estações/equipamentos</li>
+  <li>O sistema deve permitir edição de capacidade/recursos/localização</li>
+  <li>O sistema deve permitir desativar recurso temporariamente</li>
+</ul>
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 13/10/2025 | 1.0 | Criação do backlog do produto com features e histórias de usuário. | Felipe Pedroza | Todos |
