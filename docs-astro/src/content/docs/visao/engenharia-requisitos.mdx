@@ -1,0 +1,215 @@
+---
+title: Engenharia de Requisitos
+description: Processo de Engenharia de Requisitos vinculado ao processo de Engenharia de Software
+---
+
+<div class="softex-process">
+> O **Processo de Engenharia de Requisitos** está vinculado ao processo de Engenharia de Software (ESW) e abrange atividades desde a descoberta das necessidades até a validação e gestão de mudanças dos requisitos ao longo do ciclo de vida do projeto.
+</div>
+
+## Atividades de Engenharia de Requisitos
+
+### 1. Elicitação e Descoberta
+
+#### Técnicas de Entrevista e Questionários
+
+<ul class="softex-list">
+  <li>Realizar sessões de **entrevistas** (estruturadas ou abertas) com stakeholders chave (clientes, usuários finais) para capturar suas necessidades, dores e expectativas</li>
+  <li>Utilizar **questionários** para coletar dados de um público maior de forma padronizada</li>
+</ul>
+
+#### Workshops de Requisitos e Brainstorming
+
+<ul class="softex-list">
+  <li>Conduzir **sessões colaborativas** com grupos mistos de stakeholders para discutir ideias</li>
+  <li>Explorar **cenários de uso** e gerar um conjunto inicial de requisitos de forma dinâmica e interativa</li>
+</ul>
+
+### 2. Análise e Consenso
+
+#### Priorização de Requisitos (Técnica MoSCoW)
+
+<div class="softex-process">
+> Classificar os requisitos levantados para definir o escopo e garantir o alinhamento entre stakeholders
+</div>
+
+<ul class="softex-flow">
+  <li>**Must-have** (essencial) — Requisitos críticos que devem estar presentes</li>
+  <li>**Should-have** (importante) — Requisitos importantes mas não críticos</li>
+  <li>**Could-have** (desejável) — Requisitos que agregam valor mas podem ser adiados</li>
+  <li>**Won't-have** (não terá nesta versão) — Requisitos fora do escopo atual</li>
+</ul>
+
+#### Identificação e Resolução de Conflitos
+
+<ul class="softex-list">
+  <li>Analisar os requisitos para encontrar **inconsistências, ambiguidades ou contradições** entre as solicitações dos diferentes stakeholders</li>
+  <li>Facilitar **negociações** para chegar a um acordo e garantir um conjunto de requisitos coeso</li>
+</ul>
+
+### 3. Declaração de Requisitos
+
+#### Escrita de Histórias de Usuário (User Stories)
+
+<div class="softex-process">
+> Descrever as funcionalidades sob a perspectiva do usuário final seguindo o formato:
+> 
+> **"Como um [tipo de usuário], eu quero [realizar uma ação] para que [eu obtenha um benefício]"**
+</div>
+
+<ul class="softex-list">
+  <li>Forma ágil e focada no valor para o usuário</li>
+  <li>Facilita o entendimento do propósito de cada funcionalidade</li>
+</ul>
+
+#### Elaboração de Casos de Uso (Use Cases)
+
+<ul class="softex-list">
+  <li>Detalhar as **interações passo a passo** entre um ator (usuário ou outro sistema) e o software</li>
+  <li>Incluir **fluxo principal, fluxos alternativos e exceções**</li>
+  <li>Oferecer uma visão mais completa da funcionalidade</li>
+</ul>
+
+### 4. Representação de Requisitos
+
+#### Prototipação de Interface (Wireframes e Mockups)
+
+<ul class="softex-list">
+  <li>Criar **representações visuais** de baixa ou alta fidelidade das telas do sistema</li>
+  <li>Ajudar os stakeholders a **visualizar a solução** e validar o fluxo de navegação</li>
+  <li>Fornecer **feedback tangível** antes do início da codificação</li>
+</ul>
+
+#### Modelagem com Diagramas (UML)
+
+<ul class="softex-list">
+  <li>Utilizar **UML** (Unified Modeling Language) para representar aspectos do sistema</li>
+  <li>**Diagramas de Atividades** podem ilustrar fluxos de trabalho</li>
+  <li>**Diagramas de Classes** podem definir a estrutura de dados</li>
+</ul>
+
+### 5. Verificação e Validação de Requisitos
+
+#### Sessões de Revisão e Inspeção (Walkthroughs)
+
+<ul class="softex-list">
+  <li>Apresentar a **documentação de requisitos** para a equipe do projeto e stakeholders</li>
+  <li>Análise em conjunto para encontrar **erros, omissões e ambiguidades** (Verificação)</li>
+</ul>
+
+#### Validação com Protótipos e Provas de Conceito (PoC)
+
+<ul class="softex-list">
+  <li>Apresentar um **modelo interativo** ou versão funcional mínima da solução</li>
+  <li>Confirmar se os requisitos especificados atendem às **necessidades reais** no ambiente de uso (Validação)</li>
+</ul>
+
+### 6. Organização e Atualização de Requisitos
+
+#### Controle de Versão e Gestão de Mudanças
+
+<ul class="softex-list">
+  <li>Utilizar ferramentas como **Git/GitHub Issues** para documentar e controlar versões dos requisitos</li>
+  <li>Gerenciar um **processo formal** para solicitação, análise de impacto, aprovação ou rejeição de alterações</li>
+</ul>
+
+## Integração com as Fases do Processo de Engenharia de Software
+
+<div class="softex-process">
+> A tabela abaixo mostra como as atividades de Engenharia de Requisitos estão integradas às fases do processo de desenvolvimento
+</div>
+
+<div style={{ overflowX: 'auto', marginTop: '1rem', marginBottom: '1rem', width: '100%', maxWidth: 'none' }}>
+<table style={{ width: '100%', minWidth: '1200px', tableLayout: 'auto', whiteSpace: 'normal' }}>
+<thead>
+<tr>
+<th style={{ minWidth: '200px', width: '15%' }}>Fase ESW</th>
+<th style={{ minWidth: '180px', width: '15%' }}>Atividades ER</th>
+<th style={{ minWidth: '250px', width: '20%' }}>Prática</th>
+<th style={{ minWidth: '350px', width: '28%' }}>Técnica</th>
+<th style={{ minWidth: '280px', width: '22%' }}>Resultado Esperado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Planejamento / Iniciação</strong></td>
+<td>Elicitação de Requisitos</td>
+<td>Levantamento inicial das necessidades e do escopo do projeto com o cliente.</td>
+<td>Entrevistas (Google Meet), Brainstorming, Análise de Cenários.</td>
+<td>Documento de Visão, Lista preliminar de requisitos e funcionalidades (épicos).</td>
+</tr>
+<tr>
+<td><strong>2. Análise e Especificação</strong></td>
+<td>Análise e Refinamento de Requisitos</td>
+<td>Refinamento, classificação e priorização das funcionalidades levantadas.</td>
+<td>Priorização MoSCoW, Workshops de refinamento (Discord).</td>
+<td>Backlog do Produto priorizado, Requisitos detalhados e consistentes.</td>
+</tr>
+<tr>
+<td><strong>2. Análise e Especificação</strong></td>
+<td>Documentação de Histórias de Usuário</td>
+<td>Documentação clara e estruturada das funcionalidades a serem desenvolvidas na sprint.</td>
+<td>Escrita de Histórias de Usuário, Definição de Critérios de Aceite.</td>
+<td>Histórias de Usuário prontas para o desenvolvimento no GitHub Projects.</td>
+</tr>
+<tr>
+<td><strong>3. Projeto (Design)</strong></td>
+<td>Validação de Requisitos</td>
+<td>Validação da proposta de solução e da experiência do usuário antes da implementação.</td>
+<td>Prototipação de interfaces (Wireframes/Mockups), Revisão de diagramas de arquitetura.</td>
+<td>Protótipos validados pelo cliente, confirmação do alinhamento da solução técnica com a necessidade.</td>
+</tr>
+<tr>
+<td><strong>4. Implementação</strong></td>
+<td>Gerenciamento de Requisitos</td>
+<td>Manter a conexão entre o requisito especificado e o código que o implementa.</td>
+<td>Rastreabilidade via Issues e Commits (GitHub), branches por feature.</td>
+<td>Código-fonte rastreável a uma História de Usuário específica, garantindo que tudo que é desenvolvido tem um propósito.</td>
+</tr>
+<tr>
+<td><strong>5. Teste e Validação</strong></td>
+<td>Verificação e Validação de Requisitos</td>
+<td>Garantir que a funcionalidade implementada atende aos critérios de aceite e às expectativas do cliente.</td>
+<td>Sprint Review (apresentação via Google Meet), Testes de Aceitação do Usuário (UAT), Testes automatizados.</td>
+<td>Incremento de software aprovado pelo cliente, Coleta de feedback para o próximo ciclo, Relatórios de QA.</td>
+</tr>
+<tr>
+<td><strong>6. Implantação e Entrega</strong></td>
+<td>Gerenciamento de Requisitos</td>
+<td>Garantir que o conjunto de requisitos da entrega (MVP) está completo e foi aprovado.</td>
+<td>Checklist de funcionalidades do MVP, Versionamento de releases.</td>
+<td>MVP funcional em ambiente de produção contendo todas as funcionalidades validadas e aceitas.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+## Ferramentas Utilizadas
+
+<div class="fases-container">
+  <div class="fase-item">
+    <h4>Comunicação</h4>
+    <p><strong>Google Meet</strong> — Entrevistas e reuniões com stakeholders</p>
+    <p><strong>Discord</strong> — Workshops e comunicação da equipe</p>
+    <p><strong>Slack</strong> — Integrações e notificações</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Gestão e Controle</h4>
+    <p><strong>GitHub Projects</strong> — Backlog e gestão de tarefas</p>
+    <p><strong>GitHub Issues</strong> — Rastreamento de requisitos e mudanças</p>
+    <p><strong>Git</strong> — Controle de versão de código e documentação</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Prototipação e Design</h4>
+    <p><strong>Figma</strong> — Wireframes, mockups e protótipos interativos</p>
+    <p><strong>UML</strong> — Diagramas de atividades e classes</p>
+  </div>
+</div>
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 14/10/2025 | 1.0 | Criação do documento de Engenharia de Requisitos integrado ao processo de ESW. | Felipe Pedroza | Todos |

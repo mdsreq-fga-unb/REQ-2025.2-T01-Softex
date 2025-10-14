@@ -23,17 +23,19 @@ description: Backlog e descrição dos itens do backlog
 
 ### Tabela de User Stories
 
-| **Código** | **Feature** | **Requisito** | **Declaração** |
-|------------|-------------|---------------|----------------|
+| **Código** | **Feature** | **Requisito** | **Declaração (User Story)** |
+|------------|-------------|---------------|----------------------------|
 | **US-001** | F01 | RF03 | Como usuário, quero reservar uma sala para garantir espaço disponível no horário que preciso. |
 | **US-002** | F01 | RF04 | Como usuário, quero editar ou cancelar minhas reservas para corrigir informações ou liberar a sala. |
 | **US-003** | F01 | RF03 | Como colaborador, quero reservar uma estação de trabalho para garantir onde trabalhar no escritório. |
-| **US-004** | F02 | RF06 | Como usuário, quero visualizar um mapa interativo em tempo real para ver estações livres. |
-| **US-005** | F03 | RF09 | Como usuário, quero receber notificações no Slack sobre criação/edição/cancelamento e lembrete pré-reunião. |
-| **US-006** | F04 | RF10 | Como gestor, quero relatórios de uso (período, ocupação, picos) e exportação em Excel. |
-| **US-007** | F04 | RF10 | Como administrador, quero monitorar capacidade em tempo real e receber alertas quando atingir X%. |
-| **US-008** | F05 | RF01 | Como administrador, quero cadastrar e gerenciar usuários e seus dados. |
-| **US-009** | F05 | RF05 | Como administrador, quero cadastrar/editar recursos (salas, estações, equipamentos) e desativar temporariamente. |
+| **US-004** | F02 | RF06 | Como usuário, quero visualizar um mapa interativo em tempo real para ver salas/estações livres. |
+| **US-005** | F02 | RF07 | Como usuário, quero ver o detalhamento da reserva (usuário, localização, início/término, descrição/uso) ao selecionar uma sala/estação. |
+| **US-006** | F02 | RF08 | Como usuário, quero filtrar reservas por dia, período e dia da semana para encontrar rapidamente o que preciso. |
+| **US-007** | F03 | RF09 | Como usuário, quero receber notificações (Slack/e-mail) ao criar/editar/cancelar reservas e lembrete próximo do horário. |
+| **US-008** | F04 | RF10 | Como gestor, quero relatórios de uso/ocupação por período, com taxa de ocupação e picos, e exportação em Excel. |
+| **US-009** | F05 | RF01 | Como administrador, quero cadastrar e gerenciar usuários e seus dados. |
+| **US-010** | F05 | RF02 | Como administrador, quero controlar perfis e permissões (restrições e exceções para agentes) para garantir acessos adequados. |
+| **US-011** | F05 | RF05 | Como administrador, quero cadastrar/editar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. |
 
 ## Critérios de Aceitação
 
@@ -73,39 +75,55 @@ description: Backlog e descrição dos itens do backlog
   <li>O sistema deve permitir filtros por andar/setor</li>
 </ul>
 
-### US-005 — Receber Notificações no Slack
+### US-005 — Ver Detalhamento de Reserva
 
 <ul class="softex-list">
-  <li>O sistema deve enviar DM/alerta no Slack para criar/editar/cancelar reservas</li>
-  <li>O sistema deve enviar lembrete 15 minutos antes do início da reserva</li>
+  <li>O sistema deve exibir usuário responsável ao selecionar uma sala/estação</li>
+  <li>O sistema deve mostrar localização, horário de início/término e descrição/uso</li>
+  <li>O sistema deve atualizar informações em tempo real</li>
+</ul>
+
+### US-006 — Filtrar Reservas
+
+<ul class="softex-list">
+  <li>O sistema deve permitir filtrar reservas por dia específico</li>
+  <li>O sistema deve permitir filtrar por período (manhã, tarde, noite)</li>
+  <li>O sistema deve permitir filtrar por dia da semana</li>
+</ul>
+
+### US-007 — Receber Notificações
+
+<ul class="softex-list">
+  <li>O sistema deve enviar notificações via Slack e e-mail ao criar/editar/cancelar reservas</li>
+  <li>O sistema deve enviar lembrete próximo ao horário da reserva</li>
   <li>O sistema deve evitar duplicidade de notificações</li>
 </ul>
 
-### US-006 — Gerar Relatórios de Uso
+### US-008 — Gerar Relatórios de Uso
 
 <ul class="softex-list">
-  <li>O sistema deve gerar relatórios por período (dia/semana/mês)</li>
+  <li>O sistema deve gerar relatórios por período customizável</li>
   <li>O sistema deve exibir taxa de ocupação e horários de pico</li>
-  <li>O sistema deve permitir exportar em PDF/Excel</li>
+  <li>O sistema deve permitir exportar em Excel</li>
 </ul>
 
-### US-007 — Monitorar Capacidade
-
-<ul class="softex-list">
-  <li>O sistema deve exibir painel com métricas em tempo real</li>
-  <li>O sistema deve enviar alerta quando capacidade atingir ≥ X%</li>
-  <li>O sistema deve permitir parametrização do limiar de alerta</li>
-</ul>
-
-### US-008 — Cadastrar e Gerenciar Usuários
+### US-009 — Cadastrar e Gerenciar Usuários
 
 <ul class="softex-list">
   <li>O sistema deve permitir CRUD (criar, ler, atualizar, deletar) de usuários</li>
-  <li>O sistema deve permitir definição de papéis (usuário, gestor, admin)</li>
+  <li>O sistema deve permitir gerenciar dados dos usuários</li>
   <li>O sistema deve validar e-mail corporativo no cadastro</li>
 </ul>
 
-### US-009 — Cadastrar e Editar Recursos
+### US-010 — Controlar Perfis e Permissões
+
+<ul class="softex-list">
+  <li>O sistema deve permitir definição de perfis (usuário, gestor, admin)</li>
+  <li>O sistema deve permitir que administradores definam restrições para agentes</li>
+  <li>O sistema deve permitir criar exceções de permissões quando necessário</li>
+</ul>
+
+### US-011 — Cadastrar e Editar Recursos
 
 <ul class="softex-list">
   <li>O sistema deve permitir CRUD de salas/estações/equipamentos</li>
@@ -113,8 +131,23 @@ description: Backlog e descrição dos itens do backlog
   <li>O sistema deve permitir desativar recurso temporariamente</li>
 </ul>
 
+### Mapa de requisitos (Figma)
+
+<iframe
+  title="Embed do Figma - Moscow Softex"
+  style={{ border: '1px solid #ddd', borderRadius: '8px', width: '100%', height: '640px' }}
+  loading="lazy"
+  referrerPolicy="no-referrer"
+  src="https://www.figma.com/embed?embed_host=astro&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FoJWKwn4bVaWkYsAnbr3cZ4%2FMoscow---Softex%3Fnode-id%3D4001-492%26t%3DVKcumwVJrB5cjFSG-0"
+  allowFullScreen
+></iframe>  
+<p style={{ marginTop: '8px' }}>
+  <a href="https://www.figma.com/design/oJWKwn4bVaWkYsAnbr3cZ4/Moscow---Softex?node-id=4001-492&t=VKcumwVJrB5cjFSG-0" target="_blank" rel="noreferrer noopener">Abrir no Figma</a>
+</p>
+
 ## Histórico de Versão
 
 | Data | Versão | Descrição | Autor(es) | Revisor(es) |
 |------|--------|-----------|-----------|-------------|
 | 13/10/2025 | 1.0 | Criação do backlog do produto com features e histórias de usuário. | Felipe Pedroza | Todos |
+| 14/10/2025 | 1.1 | Atualização das User Stories (US-001 a US-011) e critérios de aceitação. | Felipe Pedroza e Yuri Andrade| Todos |
