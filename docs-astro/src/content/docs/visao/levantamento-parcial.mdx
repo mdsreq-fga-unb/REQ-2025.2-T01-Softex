@@ -12,92 +12,89 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 > Os requisitos funcionais definem **o que o sistema deve fazer** para atender às necessidades dos usuários
 </div>
 
-### RF01 – Cadastrar usuários <span class="badge badge--alta">Alta</span>
+### **Objetivo 1** — Gestão de Usuários e Perfis
+
+#### RF01 – Cadastrar usuários <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>O sistema deverá permitir que os usuários se cadastrem utilizando o e-mail corporativo da Softex</li>
   <li>O sistema deverá validar se o e-mail informado pertence ao domínio da empresa</li>
 </ul>
 
-### RF02 – Visualizar mapa interativo da planta baixa <span class="badge badge--critica">Crítica</span>
+### **Objetivo 2** — Reserva e Edição de Espaços
 
-<div class="softex-process">
-> **Funcionalidades principais:**
-</div>
+#### RF02 – Reservar locais de trabalho <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
-  <li>O sistema deverá exibir um mapa interativo da planta baixa do coworking</li>
-  <li>O usuário deverá conseguir identificar salas e estações disponíveis em tempo real</li>
+  <li>O sistema deverá permitir a reserva de salas e estações de trabalho</li>
+  <li>O sistema deverá conferir disponibilidade e evitar conflitos antes de finalizar a reserva</li>
 </ul>
 
-### RF03 – Reservar salas e cadeiras <span class="badge badge--critica">Crítica</span>
+#### RF03 – Editar reservas <span class="badge badge--critica">Crítica</span>
 
-<div class="fases-container">
-  <div class="fase-item">
-    <h4>Reserva Completa</h4>
-    <p>O sistema deverá permitir a reserva de salas e cadeiras em tempo real, registrando horário de início, horário de término e finalidade da reserva.</p>
-  </div>
-  
-  <div class="fase-item">
-    <h4>Confirmação Visual</h4>
-    <p>O sistema deverá permitir que o usuário visualize e confirme a reserva antes de finalizá-la.</p>
-  </div>
-</div>
+<ul class="softex-list">
+  <li>O sistema deverá permitir atualizar, cancelar ou reagendar reservas</li>
+  <li>O sistema deverá impedir conflitos e respeitar regras de negócio definidas</li>
+</ul>
 
-### RF04 – Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
+### **Objetivo 3** — Visualização e Busca
+
+#### RF04 – Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá exibir mapa da planta para consulta</li>
+  <li>O sistema deverá identificar salas/estações disponíveis em tempo real</li>
+</ul>
+
+#### RF05 – Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
 
 <div class="softex-process">
-> Ao clicar em uma sala, o sistema deverá exibir:
+> Ao selecionar uma sala/estação, o sistema deverá exibir:
 </div>
 
 <ul class="softex-list">
   <li>**Usuário responsável** pela reserva</li>
+  <li>**Localização** da sala/estação</li>
   <li>**Horário de início e término**</li>
-  <li>**Descrição breve** do uso</li>
+  <li>**Descrição/uso** da reserva</li>
 </ul>
 
-### RF05 – Filtrar busca e visualização <span class="badge badge--media">Média</span>
+#### RF06 – Filtrar busca e visualização <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
-  <li>O sistema deverá permitir filtrar reservas por sala.</li>
-  <li>O O sistema deverá permitir filtrar reservas por horário.</li>
-  <li>O sistema deverá permitir filtrar reservas por dias da semana.</li>
+  <li>O sistema deverá permitir filtrar reservas por dia</li>
+  <li>O sistema deverá permitir filtrar reservas por período</li>
+  <li>O sistema deverá permitir filtrar reservas por dia da semana</li>
 </ul>
 
-### RF06 – Editar e cancelar reservas <span class="badge badge--alta">Alta</span>
+### **Objetivo 4** — Comunicação e Alertas
 
-<ul class="softex-flow">
-  <li>O sistema deverá permitir que os usuários editem ou cancelem reservas já realizadas</li>
-  <li>O sistema deverá respeitar regras de permissões para edição e cancelamento</li>
-</ul>
-
-### RF07 – Notificar e alertar usuários <span class="badge badge--critica">Crítica</span>
-
-<div class="softex-process">
-> **Sistema de notificações:**
-</div>
+#### RF07 – Alertar sistemas internos da empresa  <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
-  <li>O sistema deverá enviar notificações de confirmação de reservas via e-mail corporativo ou alertas internos</li>
-  <li>O sistema deverá alertar sobre conflitos de reservas e sobre reservas próximas do horário de início</li>
+  <li>O sistema deverá enviar confirmações e cancelamentos por e-mail e sistemas internos</li>
+  <li>O sistema deverá alertar sobre conflitos de reservas</li>
+  <li>O sistema deverá alertar sobre início iminente de reservas</li>
 </ul>
 
-### RF08 – Gerar relatórios e histórico de ocupação <span class="badge badge--media">Média</span>
+### **Objetivo 5** — Relatórios e Histórico
+
+#### RF08 – Relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
 
 <div class="fases-container">
   <div class="fase-item">
-    <h4>Relatórios de Ocupação</h4>
-    <p>O sistema deverá gerar relatórios de ocupação por sala.</p>
+    <h4>Relatórios de Uso</h4>
+    <p>O sistema deverá gerar relatórios de uso e ocupação por período.</p>
   </div>
   
   <div class="fase-item">
-    <h4>Estatísticas de Uso</h4>
-    <p>O sistema deverá apresentar estatísticas de horários mais utilizados.</p>
+    <h4> Análise por Espaço</h4>
+    <p>O sistema deverá gerar relatórios por sala e estação.</p>
   </div>
   
   <div class="fase-item">
-    <h4>Histórico Individual</h4>
-    <p>O sistema deverá disponibilizar o histórico de reservas por usuário.</p>
+    <h4>Visão Organizacional</h4>
+    <p>O sistema deverá disponibilizar visão geral e por unidade/ambiente.</p>
   </div>
 </div>
 
@@ -109,48 +106,73 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### Requisitos de Produto
 
+#### RNF01 – Atualização em tempo real <span class="badge badge--critica">Crítica</span>
+
 <ul class="softex-list">
-  <li><strong>Atualização em tempo real</strong> <span class="badge badge--critica">Crítica</span> — O sistema deverá atualizar todas as reservas em tempo real, garantindo consistência entre usuários</li>
-  <li><strong>Controle de permissões</strong> <span class="badge badge--alta">Alta</span> — O sistema deverá controlar permissões de reserva, permitindo que usuários com autoridade máxima definam e alterem quem pode reservar determinadas salas ou estações</li>
-  <li><strong>Disponibilidade</strong> <span class="badge badge--alta">Alta</span> — O sistema deverá apresentar alta disponibilidade (99%) durante o horário de operação do coworking</li>
-  <li><strong>Performance</strong> <span class="badge badge--alta">Alta</span> — O sistema deverá apresentar tempo de resposta inferior a 2 segundos para ações críticas (reserva e cancelamento)</li>
+  <li>As reservas devem refletir alterações instantaneamente para todos os usuários</li>
 </ul>
 
-### Requisitos Organizacionais
+#### RNF02 – Controle de permissões <span class="badge badge--alta">Alta</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá controlar acesso por perfis</li>
+  <li>Administradores devem poder definir restrições e exceções para agentes</li>
+</ul>
+
+#### RNF03 – Disponibilidade <span class="badge badge--alta">Alta</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá garantir alta disponibilidade, especialmente nos horários de maior uso</li>
+</ul>
+
+#### RNF04 – Performance <span class="badge badge--alta">Alta</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá ser performático em ações críticas (reservar e cancelar)</li>
+</ul>
+
+#### RNF05 – Rapidez <span class="badge badge--alta">Alta</span>
+
+<ul class="softex-list">
+  <li>O sistema deve ser rápido e responder prontamente às solicitações</li>
+</ul>
+
+### Requisitos Organizacionais (Portabilidade/Tecnologia/Processo)
 
 <div class="softex-process">
 > **Stack tecnológico definido:**
 </div>
 
 <ul class="softex-flow">
-  <li>O sistema deverá possuir front-end desenvolvido em <strong>Vue.js</strong></li>
-  <li>O sistema deverá possuir back-end desenvolvido em <strong>Python com Django REST Framework (DRF)</strong></li>
-  <li>O sistema deverá utilizar banco de dados <strong>PostgreSQL</strong></li>
-  <li>O sistema deverá utilizar <strong>Git</strong> e repositório no <strong>GitHub</strong> para versionamento de código</li>
-  <li>O sistema deverá ser empacotado e implantado utilizando <strong>Docker</strong> em ambiente <strong>AWS</strong></li>
+  <li><strong>RNF06</strong> — Front-end: <strong>Vue.js</strong></li>
+  <li><strong>RNF07</strong> — Back-end: <strong>Python com Django REST Framework (DRF)</strong></li>
+  <li><strong>RNF08</strong> — Banco de dados: <strong>PostgreSQL</strong></li>
+  <li><strong>RNF09</strong> — Versionamento: <strong>Git</strong> com repositório no <strong>GitHub</strong></li>
+  <li><strong>RNF10</strong> — Empacotamento/Implantação: <strong>Docker</strong> em <strong>AWS</strong></li>
 </ul>
 
 ### Requisitos Externos
 
-<div class="fases-container">
-  <div class="fase-item">
-    <h4>Compatibilidade</h4>
-    <p>O sistema deverá ser compatível com os navegadores <strong>Chrome</strong>, <strong>Firefox</strong> e <strong>Edge</strong>.</p>
-  </div>
-  
-  <div class="fase-item">
-    <h4>Responsividade</h4>
-    <p>O sistema deverá ser adaptável para dispositivos <strong>desktop</strong> e <strong>mobile</strong>.</p>
-  </div>
-</div>
-
-<div class="softex-process">
-> **Conformidade e acessibilidade:**
-</div>
+#### RNF11 – Compatibilidade <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
-  <li>O sistema deverá atender às diretrizes de acessibilidade <strong>WCAG</strong>, permitindo navegação por teclado e alto contraste de cores</li>
-  <li>O sistema deverá estar em conformidade com a <strong>LGPD</strong>, criptografando dados sensíveis e solicitando consentimento para uso de informações pessoais</li>
+  <li>O sistema deverá ter suporte a desktop e mobile</li>
+  <li>O sistema deverá ser compatível com os navegadores <strong>Chrome</strong>, <strong>Firefox</strong> e <strong>Edge</strong></li>
+</ul>
+
+#### RNF12 – Acessibilidade <span class="badge badge--media">Média</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá atender <strong>WCAG nível A</strong></li>
+  <li>Navegação por teclado</li>
+  <li>Contraste adequado</li>
+  <li>Textos alternativos em imagens</li>
+</ul>
+
+#### RNF13 – Conformidade legal <span class="badge badge--critica">Crítica</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá atender à <strong>LGPD</strong>: segurança, consentimento e uso adequado de dados pessoais</li>
 </ul>
 
 ### Mapa de requisitos (Figma)
@@ -173,4 +195,6 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 | Data | Versão | Descrição | Autor(es) | Revisor(es) |
 |------|--------|-----------|-----------|-------------|
 | 22/09/2025 | 1.0 | Criação inicial do documento de requisitos através do pages. | Felipe Pedroza | Todos |
-| 06/10/2025 | 1.1 | Update do documento de requisito. | Yuri Andrade & Júlia Santana & Pietro | Todos |
+| 06/10/2025 | 1.1 | Update do documento de requisito. | Yuri Andrade/Júlia Santana/ Pietro | Todos |
+| 13/10/2025 | 1.2 | Refatoração dos Requisitos. | Felipe/ Yuri Andrade/Júlia Santana/ Pietro | Todos |
+| 14/10/2025 | 2.0 | Reorganização completa dos requisitos por objetivos e categorias. | Felipe Pedroza | Todos |
