@@ -57,6 +57,10 @@ export default defineConfig({
 							label: "Comunicação e Colaboração",
 							slug: "visao/interacao",
 						},
+						{
+							label: "Backlog do Produto",
+							slug: "visao/backlog",
+						},
 					],
 				},
 				{

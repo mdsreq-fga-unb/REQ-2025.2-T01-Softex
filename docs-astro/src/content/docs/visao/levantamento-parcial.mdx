@@ -21,16 +21,23 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>O sistema deverá validar se o e-mail informado pertence ao domínio da empresa</li>
 </ul>
 
+#### RF02 – Controlar permissões <span class="badge badge--alta">Alta</span>
+
+<ul class="softex-list">
+  <li>O sistema deverá controlar acesso por perfis</li>
+  <li>Administradores devem poder definir restrições e exceções para agentes</li>
+</ul>
+
 ### **Objetivo 2** — Reserva e Edição de Espaços
 
-#### RF02 – Reservar locais de trabalho <span class="badge badge--critica">Crítica</span>
+#### RF03 – Reservar locais de trabalho <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>O sistema deverá permitir a reserva de salas e estações de trabalho</li>
   <li>O sistema deverá conferir disponibilidade e evitar conflitos antes de finalizar a reserva</li>
 </ul>
 
-#### RF03 – Editar reservas <span class="badge badge--critica">Crítica</span>
+#### RF04 – Editar reservas <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>O sistema deverá permitir atualizar, cancelar ou reagendar reservas</li>
@@ -39,14 +46,14 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### **Objetivo 3** — Visualização e Busca
 
-#### RF04 – Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
+#### RF05 – Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>O sistema deverá exibir mapa da planta para consulta</li>
   <li>O sistema deverá identificar salas/estações disponíveis em tempo real</li>
 </ul>
 
-#### RF05 – Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
+#### RF06 – Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
 
 <div class="softex-process">
 > Ao selecionar uma sala/estação, o sistema deverá exibir:
@@ -59,7 +66,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>**Descrição/uso** da reserva</li>
 </ul>
 
-#### RF06 – Filtrar busca e visualização <span class="badge badge--media">Média</span>
+#### RF07 – Filtrar busca e visualização <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
   <li>O sistema deverá permitir filtrar reservas por dia</li>
@@ -69,7 +76,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### **Objetivo 4** — Comunicação e Alertas
 
-#### RF07 – Alertar sistemas internos da empresa  <span class="badge badge--media">Média</span>
+#### RF08 – Alertar sistemas internos da empresa  <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
   <li>O sistema deverá enviar confirmações e cancelamentos por e-mail e sistemas internos</li>
@@ -79,7 +86,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### **Objetivo 5** — Relatórios e Histórico
 
-#### RF08 – Relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
+#### RF09 – Relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
 
 <div class="fases-container">
   <div class="fase-item">
@@ -112,26 +119,19 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>As reservas devem refletir alterações instantaneamente para todos os usuários</li>
 </ul>
 
-#### RNF02 – Controle de permissões <span class="badge badge--alta">Alta</span>
-
-<ul class="softex-list">
-  <li>O sistema deverá controlar acesso por perfis</li>
-  <li>Administradores devem poder definir restrições e exceções para agentes</li>
-</ul>
-
-#### RNF03 – Disponibilidade <span class="badge badge--alta">Alta</span>
+#### RNF02 – Disponibilidade <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>O sistema deverá garantir alta disponibilidade, especialmente nos horários de maior uso</li>
 </ul>
 
-#### RNF04 – Performance <span class="badge badge--alta">Alta</span>
+#### RNF03 – Performance <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>O sistema deverá ser performático em ações críticas (reservar e cancelar)</li>
 </ul>
 
-#### RNF05 – Rapidez <span class="badge badge--alta">Alta</span>
+#### RNF04 – Rapidez <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>O sistema deve ser rápido e responder prontamente às solicitações</li>
@@ -144,23 +144,23 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 </div>
 
 <ul class="softex-flow">
-  <li><strong>RNF06</strong> — Front-end: <strong>Vue.js</strong></li>
-  <li><strong>RNF07</strong> — Back-end: <strong>Python com Django REST Framework (DRF)</strong></li>
-  <li><strong>RNF08</strong> — Banco de dados: <strong>PostgreSQL</strong></li>
-  <li><strong>RNF09</strong> — Versionamento: <strong>Git</strong> com repositório no <strong>GitHub</strong></li>
-  <li><strong>RNF10</strong> — Empacotamento/Implantação: <strong>Docker</strong> em <strong>AWS</strong></li>
+  <li><strong>RNF05</strong> — Front-end: <strong>Vue.js</strong></li>
+  <li><strong>RNF06</strong> — Back-end: <strong>Python com Django REST Framework (DRF)</strong></li>
+  <li><strong>RNF07</strong> — Banco de dados: <strong>PostgreSQL</strong></li>
+  <li><strong>RNF08</strong> — Versionamento: <strong>Git</strong> com repositório no <strong>GitHub</strong></li>
+  <li><strong>RNF09</strong> — Empacotamento/Implantação: <strong>Docker</strong> em <strong>AWS</strong></li>
 </ul>
 
 ### Requisitos Externos
 
-#### RNF11 – Compatibilidade <span class="badge badge--alta">Alta</span>
+#### RNF10 – Compatibilidade <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>O sistema deverá ter suporte a desktop e mobile</li>
   <li>O sistema deverá ser compatível com os navegadores <strong>Chrome</strong>, <strong>Firefox</strong> e <strong>Edge</strong></li>
 </ul>
 
-#### RNF12 – Acessibilidade <span class="badge badge--media">Média</span>
+#### RNF11 – Acessibilidade <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
   <li>O sistema deverá atender <strong>WCAG nível A</strong></li>
@@ -169,7 +169,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>Textos alternativos em imagens</li>
 </ul>
 
-#### RNF13 – Conformidade legal <span class="badge badge--critica">Crítica</span>
+#### RNF12 – Conformidade legal <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>O sistema deverá atender à <strong>LGPD</strong>: segurança, consentimento e uso adequado de dados pessoais</li>
@@ -198,3 +198,4 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 | 06/10/2025 | 1.1 | Update do documento de requisito. | Yuri Andrade/Júlia Santana/ Pietro | Todos |
 | 13/10/2025 | 1.2 | Refatoração dos Requisitos. | Felipe/ Yuri Andrade/Júlia Santana/ Pietro | Todos |
 | 14/10/2025 | 2.0 | Reorganização completa dos requisitos por objetivos e categorias. | Felipe Pedroza | Todos |
+| 14/10/2025 | 2.1 | Movido RNF02 (Controle de permissões) para RF02 no Objetivo 1. Renumeração completa dos requisitos. | Felipe Pedroza | Todos |
