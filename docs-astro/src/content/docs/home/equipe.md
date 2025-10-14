@@ -13,7 +13,7 @@ Nossa equipe é composta por estudantes de Engenharia de Software da Universidad
     <img src="https://github.com/y123yuri.png" alt="Yuri Andrade" class="team-photo">
     <div class="team-info">
       <h3>Yuri Andrade</h3>
-      <p class="team-role">Gerência do Projeto & DevOps/Infraestrutura</p>
+      <p class="team-role">Scrum Master & DevOps/Infraestrutura</p>
       <a href="https://github.com/y123yuri" class="team-github">@y123yuri</a>
     </div>
   </div>
@@ -39,7 +39,7 @@ Nossa equipe é composta por estudantes de Engenharia de Software da Universidad
     <img src="https://github.com/camposs04.png" alt="Júlia Santana" class="team-photo">
     <div class="team-info">
       <h3>Júlia Santana</h3>
-      <p class="team-role">Modelagem de Dados</p>
+      <p class="team-role">Project Owner & Modelagem de Dados</p>
       <a href="https://github.com/camposs04" class="team-github">@camposs04</a>
     </div>
   </div>
