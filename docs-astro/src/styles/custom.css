@@ -489,13 +489,57 @@ html {
   }
 }
 
-/* Highlight especial para spans com id (características da solução) */
+/* Links clicáveis para voltar aos requisitos - estilo normal */
+.clickable-target {
+  text-decoration: none !important;
+  color: inherit;
+  pointer-events: none;
+}
+
+.clickable-target span {
+  display: inline;
+}
+
+/* Quando está destacado (:target), o link fica ativo e clicável */
+a.clickable-target:target {
+  animation: highlight-pulse 2.5s ease-in-out;
+  padding: 0.3rem 0.6rem;
+  margin: -0.3rem -0.6rem;
+  display: inline-block;
+  background: rgba(139, 92, 246, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Adiciona indicador visual sutil quando destacado */
+a.clickable-target:target::after {
+  content: " 🔙";
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin-left: 0.5rem;
+}
+
+/* Hover no elemento destacado */
+a.clickable-target:target:hover {
+  background: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4);
+  transform: translateX(-2px);
+}
+
+a.clickable-target:target:hover::after {
+  opacity: 1;
+}
+
+/* Highlight para spans sem link */
 span:target {
   animation: highlight-pulse 2.5s ease-in-out;
   padding: 0.2rem 0.5rem;
   margin: -0.2rem -0.5rem;
   display: inline-block;
-  /* Mantém destaque permanente */
   background: rgba(139, 92, 246, 0.12);
   border-radius: 6px;
   box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
