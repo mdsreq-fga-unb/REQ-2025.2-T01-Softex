@@ -460,3 +460,62 @@ html {
 
 /* Ajustes quando usados em listas */
 .softex-list li .badge { margin-right: 0.5rem; margin-left: 0; }
+
+/* Highlight quando navega por âncora (link) */
+:target {
+  animation: highlight-fade 3s ease-in-out;
+  scroll-margin-top: 2rem;
+  /* Mantém destaque sutil permanente */
+  background: rgba(139, 92, 246, 0.08);
+  border-left: 4px solid var(--softex-purple);
+  padding-left: 1rem;
+  margin-left: -1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+}
+
+@keyframes highlight-fade {
+  0% {
+    background: rgba(139, 92, 246, 0.35);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3), 0 4px 12px rgba(139, 92, 246, 0.2);
+  }
+  50% {
+    background: rgba(139, 92, 246, 0.25);
+    box-shadow: 0 0 0 8px rgba(139, 92, 246, 0.2), 0 4px 12px rgba(139, 92, 246, 0.15);
+  }
+  100% {
+    background: rgba(139, 92, 246, 0.08);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+  }
+}
+
+/* Highlight especial para spans com id (características da solução) */
+span:target {
+  animation: highlight-pulse 2.5s ease-in-out;
+  padding: 0.2rem 0.5rem;
+  margin: -0.2rem -0.5rem;
+  display: inline-block;
+  /* Mantém destaque permanente */
+  background: rgba(139, 92, 246, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+@keyframes highlight-pulse {
+  0% {
+    background: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.3);
+  }
+  20%, 80% {
+    background: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25);
+  }
+  50% {
+    background: rgba(139, 92, 246, 0.35);
+    box-shadow: 0 0 0 8px rgba(139, 92, 246, 0.2);
+  }
+  100% {
+    background: rgba(139, 92, 246, 0.12);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+  }
+}
