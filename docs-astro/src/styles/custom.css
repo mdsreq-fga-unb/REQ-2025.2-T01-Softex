@@ -489,45 +489,56 @@ html {
   }
 }
 
+/* Todos os títulos em negrito na seção de características ficam roxos */
+li strong {
+  color: var(--softex-purple) !important;
+  font-weight: 700 !important;
+}
+
 /* Links clicáveis para voltar aos requisitos - estilo normal */
 .clickable-target {
   text-decoration: none !important;
-  color: inherit;
   pointer-events: none;
 }
 
-.clickable-target span {
-  display: inline;
+.clickable-target,
+.clickable-target *,
+.clickable-target span,
+.clickable-target span *,
+.clickable-target strong,
+.clickable-target em {
+  color: var(--softex-purple) !important;
+  font-weight: 700 !important;
 }
 
 /* Quando está destacado (:target), o link fica ativo e clicável */
 a.clickable-target:target {
-  animation: highlight-pulse 2.5s ease-in-out;
-  padding: 0.3rem 0.6rem;
-  margin: -0.3rem -0.6rem;
+  animation: highlight-pulse 2s ease-in-out;
+  padding: 0.15rem 0.4rem;
+  margin: -0.15rem -0.4rem;
   display: inline-block;
-  background: rgba(139, 92, 246, 0.12);
-  border-radius: 6px;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+  background: rgba(139, 92, 246, 0.08);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.25);
   cursor: pointer;
   pointer-events: auto;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
 }
 
 /* Adiciona indicador visual sutil quando destacado */
 a.clickable-target:target::after {
   content: " 🔙";
-  font-size: 0.85em;
-  opacity: 0.7;
-  margin-left: 0.5rem;
+  font-size: 0.8em;
+  opacity: 0.6;
+  margin-left: 0.4rem;
 }
 
 /* Hover no elemento destacado */
 a.clickable-target:target:hover {
-  background: rgba(139, 92, 246, 0.2);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4);
-  transform: translateX(-2px);
+  background: rgba(139, 92, 246, 0.15);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35);
+  transform: translateX(-1px);
 }
 
 a.clickable-target:target:hover::after {
