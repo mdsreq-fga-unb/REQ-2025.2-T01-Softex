@@ -9,33 +9,34 @@ description: Backlog e descrição dos itens do backlog
 > No contexto do sistema de reservas de salas e estações da Softex, o **Product Backlog** é uma lista dinâmica e priorizada de funcionalidades, melhorias e ajustes. Ele guia a equipe para entregar valor cedo a usuários-chave (colaboradores, gestores e administradores) e evolui com feedback, uso real e mudanças de processo.
 </div>
 
-## Features
+## Características da Solução
+[🔗 Ver na Solução Proposta](/REQ-2025.2-T01-Softex/visao/solucao#características-da-solução)
 
-| **Nome** | **Título** | **Descrição** |
-|----------|------------|---------------|
-| **F01** | Reservas de salas e estações | Criar, editar/cancelar e solicitar reservas (salas e estações), com prevenção de conflitos e confirmações. |
-| **F02** | Visualização e mapa de ocupação | Mapa interativo em tempo real, filtros por andar/setor e estado de ocupação. |
-| **F03** | Integrações externas | Sincronizar com enviar notificações/alertas via Slack. |
-| **F04** | Relatórios e gestão | Relatórios de uso/ocupação, métricas e monitoramento de capacidade com alertas. |
-| **F05** | Administração e permissões | Gestão de usuários, papéis/perfis e cadastro/edição de recursos (salas, estações, equipamentos). |
+| **ID** | **Característica** | **Descrição** | **User Stories** |
+|--------|-------------------|---------------|------------------|
+| <span id="c01">**[C01](/REQ-2025.2-T01-Softex/visao/solucao#reserva-salas-estacoes)**</span> | Reservas de salas e estações | Criar, editar/cancelar e solicitar reservas (salas e estações), com prevenção de conflitos e confirmações. | [US-001](#us-001), [US-002](#us-002), [US-003](#us-003) |
+| <span id="c02">**[C02](/REQ-2025.2-T01-Softex/visao/solucao#mapa-interativo)**</span> | Visualização e mapa de ocupação | Mapa interativo em tempo real, filtros por andar/setor e estado de ocupação. | [US-004](#us-004), [US-005](#us-005), [US-006](#us-006) |
+| <span id="c03">**[C03](/REQ-2025.2-T01-Softex/visao/solucao#integracao-ferramentas)**</span> | Integrações externas | Sincronizar com enviar notificações/alertas via Slack. | [US-007](#us-007) |
+| <span id="c04">**[C04](/REQ-2025.2-T01-Softex/visao/solucao#relatorios-indicadores)**</span> | Relatórios e gestão | Relatórios de uso/ocupação, métricas e monitoramento de capacidade com alertas. | [US-008](#us-008) |
+| <span id="c05">**[C05](/REQ-2025.2-T01-Softex/visao/solucao#controle-permissoes)**</span> | Administração e permissões | Gestão de usuários, papéis/perfis e cadastro/edição de recursos (salas, estações, equipamentos). | [US-009](#us-009), [US-010](#us-010), [US-011](#us-011) |
 
 ## Histórias de Usuário
 
 ### Tabela de User Stories
 
-| **Código** | **Feature** | **Requisito** | **Declaração (User Story)** |
-|------------|-------------|---------------|----------------------------|
-| **US-001** | F01 | RF03 | Como usuário, quero reservar uma sala para garantir espaço disponível no horário que preciso. |
-| **US-002** | F01 | RF04 | Como usuário, quero editar ou cancelar minhas reservas para corrigir informações ou liberar a sala. |
-| **US-003** | F01 | RF03 | Como colaborador, quero reservar uma estação de trabalho para garantir onde trabalhar no escritório. |
-| **US-004** | F02 | RF06 | Como usuário, quero visualizar um mapa interativo em tempo real para ver salas/estações livres. |
-| **US-005** | F02 | RF07 | Como usuário, quero ver o detalhamento da reserva (usuário, localização, início/término, descrição/uso) ao selecionar uma sala/estação. |
-| **US-006** | F02 | RF08 | Como usuário, quero filtrar reservas por dia, período e dia da semana para encontrar rapidamente o que preciso. |
-| **US-007** | F03 | RF09 | Como usuário, quero receber notificações (Slack/e-mail) ao criar/editar/cancelar reservas e lembrete próximo do horário. |
-| **US-008** | F04 | RF10 | Como gestor, quero relatórios de uso/ocupação por período, com taxa de ocupação e picos, e exportação em Excel. |
-| **US-009** | F05 | RF01 | Como administrador, quero cadastrar e gerenciar usuários e seus dados. |
-| **US-010** | F05 | RF02 | Como administrador, quero controlar perfis e permissões (restrições e exceções para agentes) para garantir acessos adequados. |
-| **US-011** | F05 | RF05 | Como administrador, quero cadastrar/editar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. |
+| **Código** | **Característica** | **Requisito** | **Declaração (User Story)** | **Critérios** |
+|------------|-------------------|---------------|----------------------------|---------------|
+| <span id="us-001">**US-001**</span> | [C01](#c01) | [RF-04](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-04--reservar-locais-de-trabalho-) | Como usuário, quero reservar uma sala para garantir espaço disponível no horário que preciso. | [Ver](#us-001--reservar-sala) |
+| <span id="us-002">**US-002**</span> | [C01](#c01) | [RF-05](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-05--editar-reservas-) | Como usuário, quero editar ou cancelar minhas reservas para corrigir informações ou liberar a sala. | [Ver](#us-002--editar-ou-cancelar-reserva) |
+| <span id="us-003">**US-003**</span> | [C01](#c01) | [RF-04](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-04--reservar-locais-de-trabalho-) | Como colaborador, quero reservar uma estação de trabalho para garantir onde trabalhar no escritório. | [Ver](#us-003--reservar-estação-de-trabalho) |
+| <span id="us-004">**US-004**</span> | [C02](#c02) | [RF-07](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-07--visualizar-mapa-interativo-da-planta-) | Como usuário, quero visualizar um mapa interativo em tempo real para ver salas/estações livres. | [Ver](#us-004--visualizar-mapa-interativo) |
+| <span id="us-005">**US-005**</span> | [C02](#c02) | [RF-08](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-08--visualizar-detalhamento-de-reservas-) | Como usuário, quero ver o detalhamento da reserva (usuário, localização, início/término, descrição/uso) ao selecionar uma sala/estação. | [Ver](#us-005--ver-detalhamento-de-reserva) |
+| <span id="us-006">**US-006**</span> | [C02](#c02) | [RF-09](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-09--filtrar-reserva-) | Como usuário, quero filtrar reservas por dia, período e dia da semana para encontrar rapidamente o que preciso. | [Ver](#us-006--filtrar-reservas) |
+| <span id="us-007">**US-007**</span> | [C03](#c03) | [RF-10](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-10--alertar-sistemas-internos-da-empresa-) | Como usuário, quero receber notificações (Slack/e-mail) ao criar/editar/cancelar reservas e lembrete próximo do horário. | [Ver](#us-007--receber-notificações) |
+| <span id="us-008">**US-008**</span> | [C04](#c04) | [RF-11](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-11--gerar-relatórios-de-histórico-de-ocupação-) | Como gestor, quero relatórios de uso/ocupação por período, com taxa de ocupação e picos, e exportação em Excel. | [Ver](#us-008--gerar-relatórios-de-uso) |
+| <span id="us-009">**US-009**</span> | [C05](#c05) | [RF-01](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-01--cadastrar-usuários-) | Como administrador, quero cadastrar e gerenciar usuários e seus dados. | [Ver](#us-009--cadastrar-e-gerenciar-usuários) |
+| <span id="us-010">**US-010**</span> | [C05](#c05) | [RF-03](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-03--controle-de-permissões-) | Como administrador, quero controlar perfis e permissões (restrições e exceções para agentes) para garantir acessos adequados. | [Ver](#us-010--controlar-perfis-e-permissões) |
+| <span id="us-011">**US-011**</span> | [C05](#c05) | [RF-06](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-06--adicionar-estações-de-trabalho-) | Como administrador, quero cadastrar/editar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. | [Ver](#us-011--cadastrar-e-editar-recursos) |
 
 ## Critérios de Aceitação
 
@@ -44,6 +45,7 @@ description: Backlog e descrição dos itens do backlog
 </div>
 
 ### US-001 — Reservar Sala
+**[↑ Voltar para US-001](#us-001)** | **Característica:** [C01 - Reservas de salas e estações](#c01) | **Requisito:** [RF-04](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-04--reservar-locais-de-trabalho-)
 
 <ul class="softex-list">
   <li>O sistema deve listar salas disponíveis por data/horário</li>
@@ -52,6 +54,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-002 — Editar ou Cancelar Reserva
+**[↑ Voltar para US-002](#us-002)** | **Característica:** [C01 - Reservas de salas e estações](#c01) | **Requisito:** [RF-05](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-05--editar-reservas-)
 
 <ul class="softex-list">
   <li>O sistema deve permitir editar data/hora/participantes até X minutos antes do início</li>
@@ -60,6 +63,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-003 — Reservar Estação de Trabalho
+**[↑ Voltar para US-003](#us-003)** | **Característica:** [C01 - Reservas de salas e estações](#c01) | **Requisito:** [RF-04](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-04--reservar-locais-de-trabalho-)
 
 <ul class="softex-list">
   <li>O sistema deve listar estações por setor/andar</li>
@@ -68,6 +72,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-004 — Visualizar Mapa Interativo
+**[↑ Voltar para US-004](#us-004)** | **Característica:** [C02 - Visualização e mapa de ocupação](#c02) | **Requisito:** [RF-07](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-07--visualizar-mapa-interativo-da-planta-)
 
 <ul class="softex-list">
   <li>O sistema deve exibir estações ocupadas em vermelho e livres em verde</li>
@@ -76,6 +81,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-005 — Ver Detalhamento de Reserva
+**[↑ Voltar para US-005](#us-005)** | **Característica:** [C02 - Visualização e mapa de ocupação](#c02) | **Requisito:** [RF-08](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-08--visualizar-detalhamento-de-reservas-)
 
 <ul class="softex-list">
   <li>O sistema deve exibir usuário responsável ao selecionar uma sala/estação</li>
@@ -84,6 +90,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-006 — Filtrar Reservas
+**[↑ Voltar para US-006](#us-006)** | **Característica:** [C02 - Visualização e mapa de ocupação](#c02) | **Requisito:** [RF-09](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-09--filtrar-reserva-)
 
 <ul class="softex-list">
   <li>O sistema deve permitir filtrar reservas por dia específico</li>
@@ -92,6 +99,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-007 — Receber Notificações
+**[↑ Voltar para US-007](#us-007)** | **Característica:** [C03 - Integrações externas](#c03) | **Requisito:** [RF-10](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-10--alertar-sistemas-internos-da-empresa-)
 
 <ul class="softex-list">
   <li>O sistema deve enviar notificações via Slack e e-mail ao criar/editar/cancelar reservas</li>
@@ -100,6 +108,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-008 — Gerar Relatórios de Uso
+**[↑ Voltar para US-008](#us-008)** | **Característica:** [C04 - Relatórios e gestão](#c04) | **Requisito:** [RF-11](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-11--gerar-relatórios-de-histórico-de-ocupação-)
 
 <ul class="softex-list">
   <li>O sistema deve gerar relatórios por período customizável</li>
@@ -108,6 +117,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-009 — Cadastrar e Gerenciar Usuários
+**[↑ Voltar para US-009](#us-009)** | **Característica:** [C05 - Administração e permissões](#c05) | **Requisito:** [RF-01](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-01--cadastrar-usuários-)
 
 <ul class="softex-list">
   <li>O sistema deve permitir CRUD (criar, ler, atualizar, deletar) de usuários</li>
@@ -116,6 +126,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-010 — Controlar Perfis e Permissões
+**[↑ Voltar para US-010](#us-010)** | **Característica:** [C05 - Administração e permissões](#c05) | **Requisito:** [RF-03](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-03--controle-de-permissões-)
 
 <ul class="softex-list">
   <li>O sistema deve permitir definição de perfis (usuário, gestor, admin)</li>
@@ -124,6 +135,7 @@ description: Backlog e descrição dos itens do backlog
 </ul>
 
 ### US-011 — Cadastrar e Editar Recursos
+**[↑ Voltar para US-011](#us-011)** | **Característica:** [C05 - Administração e permissões](#c05) | **Requisito:** [RF-06](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-06--adicionar-estações-de-trabalho-)
 
 <ul class="softex-list">
   <li>O sistema deve permitir CRUD de salas/estações/equipamentos</li>
@@ -173,3 +185,7 @@ O foco foi garantir que os colaboradores tenham uma jornada simples e funcional 
 | 13/10/2025 | 1.0 | Criação do backlog do produto com features e histórias de usuário. | Felipe Pedroza | Todos |
 | 14/10/2025 | 1.1 | Atualização das User Stories (US-001 a US-011) e critérios de aceitação. | Felipe Pedroza e Yuri Andrade| Todos |
 | 14/10/2025 | 1.2 | Adição da seção MVP (Produto Mínimo Viável) com histórias de usuário prioritárias. | Felipe Pedroza | Todos |
+| 21/10/2025 | 1.3 | Alteração de "Features" para "Características da Solução" com identificadores C01 a C05 e descrições detalhadas. | Felipe Pedroza | Todos |
+| 21/10/2025 | 2.0 | Implementação de sistema completo de navegação com links bidirecionais entre User Stories, Características da Solução, Requisitos e Critérios de Aceitação. | Felipe Pedroza, Guilherme Gusmao | Todos | Pietro Vinsenti
+| 21/10/2025 | 2.1 | Alinhamento dos títulos das características com as features originais para consistência entre documentos (backlog.mdx e solucao.mdx). | Felipe Pedroza | Todos |
+| 21/10/2025 | 2.2 | Implementação de link unidirecional limpo do Backlog para Solução Proposta (padrão similar aos Requisitos). | Felipe Pedroza, Guilherme Gusmao, Pietro Vinsenti, Yuri Andrade | Todos |
