@@ -12,81 +12,48 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 > Os requisitos funcionais definem **o que o sistema deve fazer** para atender às necessidades dos usuários
 </div>
 
-### Objetivo 1 — Gestão de Usuários e Perfis
+### Objetivo — Administração e permissões
 
-#### RF-01 — Cadastrar usuários <span class="badge badge--alta">Alta</span>
-
-<div class="softex-process">
-> **Funcionalidades de cadastro:**
-</div>
+#### RF-001 — Cadastrar usuários <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>Permitir cadastro de usuários utilizando e-mail corporativo</li>
-  <li>Validar que o e-mail pertence ao domínio da empresa</li>
+  <li>Permitir que usuários com permissão (Administradores) editem perfis de outros usuários</li>
 </ul>
 
-#### RF-02 — Editar usuários <span class="badge badge--alta">Alta</span>
-
-<div class="softex-process">
-> **Edição com permissões controladas:**
-</div>
+#### RF-002 — Controle de permissões <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
-  <li>Permitir edição de usuários utilizando e-mail corporativo de pessoas com tal permissão</li>
-  <li>Validar que o e-mail pertence ao domínio da empresa</li>
+  <li>Controlar acesso por perfis; administradores definem restrições e exceções para agentes</li>
+  <li>Administradores definem restrições e exceções para os demais perfis</li>
 </ul>
 
-#### RF-03 — Controle de permissões <span class="badge badge--alta">Alta</span>
+### Objetivo — Reservas de salas e estações
 
-<div class="fases-container">
-  <div class="fase-item">
-    <h4>Gestão de Acesso</h4>
-    <p>Controlar acesso por perfis; administradores definem restrições e exceções para agentes.</p>
-  </div>
-  
-  <div class="fase-item">
-    <h4>Perfis de Usuário</h4>
-    <p>Perfis: <strong>Gerência</strong>, <strong>Administrador</strong>, <strong>Colaboradores</strong></p>
-  </div>
-</div>
+#### RF-003 — Reservar locais de trabalho <span class="badge badge--critica">Crítica</span>
 
-### Objetivo 2 — Reserva e Edição de Espaços
-
-#### RF-04 — Reservar locais de trabalho <span class="badge badge--critica">Crítica</span>
+<ul class="softex-list">
+  <li>Permitir reservar salas e estações</li>
+</ul>
 
 <div class="softex-process">
-  <div class="fase-item">
-    <h4>Reserva de Espaços</h4>
-    <p>Permitir reservar salas e estações em tempo real.</p>
-  </div>
-  
-  <div class="fase-item">
-    <h4>Validação de Conflitos</h4>
-    <p>Conferir disponibilidade e evitar conflitos antes de finalizar:</p>
-    <ul>
-      <li>Duas reservas não podem colidir no mesmo espaço e horário</li>
-      <li>Assegurar se existe a reserva disponível ou não</li>
-    </ul>
-  </div>
-</div>
-
-#### RF-05 — Editar reservas <span class="badge badge--critica">Crítica</span>
-
-<div class="softex-process">
-> **Sistema de gerenciamento de reservas:**
+> **Conferir disponibilidade e evitar conflitos antes de finalizar:**
 </div>
 
 <ul class="softex-flow">
-  <li>Permitir atualizar, cancelar ou reagendar reservas</li>
-  <li>Impedir conflitos e respeitar regras de negócio definidas</li>
-  <li>O sistema deverá registrar histórico das alterações de reserva</li>
+  <li>Duas reservas não podem colidir no mesmo espaço e horário</li>
+  <li>Assegurar se existe a reserva disponível ou não</li>
 </ul>
 
-#### RF-06 — Adicionar estações de trabalho <span class="badge badge--alta">Alta</span>
+#### RF-004 — Editar reservas <span class="badge badge--critica">Crítica</span>
 
-<div class="softex-process">
-> **Gerenciamento de infraestrutura** (exclusivo para liderança):
-</div>
+<ul class="softex-list">
+  <li>Permitir ao proprietário da reserva (ou um Administrador) atualizar, cancelar ou reagendar reservas</li>
+  <li>Impedir conflitos e respeitar regras de negócio definidas</li>
+  <li>O sistema poderá registrar histórico das alterações de reserva</li>
+</ul>
+
+#### RF-005 — Adicionar estações de trabalho <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>Recurso permitido apenas aos membros de carga de liderança</li>
@@ -94,53 +61,56 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>Adicionar salas de reunião</li>
 </ul>
 
-### Objetivo 3 — Visualização e Busca
-
-#### RF-07 — Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
+#### RF-006 — Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
 
 <div class="softex-process">
-> **Mapa interativo do coworking:**
+> **Ao selecionar uma sala/estação, exibir:**
 </div>
+
+<ul class="softex-list">
+  <li>Usuário</li>
+  <li>Localização</li>
+  <li>Início/término</li>
+  <li>Descrição/uso</li>
+</ul>
+
+#### RF-007 — Filtrar Reserva <span class="badge badge--media">Média</span>
+
+<ul class="softex-list">
+  <li>Filtrar reservas por dia, período e dia da semana</li>
+  <li>O sistema deverá ter combinação de filtros</li>
+</ul>
+
+### Objetivo — Visualização e mapa de ocupação
+
+#### RF-008 — Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>Exibir mapa da planta para consulta</li>
   <li>Identificar salas/estações disponíveis em tempo real</li>
 </ul>
 
-#### RF-08 — Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
-
-<div class="softex-process">
-> Ao selecionar uma sala/estação, o sistema deverá exibir:
-</div>
+#### RF-009 — Adicionar estações de trabalho <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
-  <li>**Usuário** responsável pela reserva</li>
-  <li>**Localização** da reserva</li>
-  <li>**Início/término** do período reservado</li>
-  <li>**Descrição/uso** da reserva</li>
+  <li>Recurso permitido apenas aos membros de carga de liderança</li>
+  <li>Adicionar estações de trabalho</li>
+  <li>Adicionar salas de reunião</li>
 </ul>
 
-#### RF-09 — Filtrar Reserva <span class="badge badge--media">Média</span>
+### Objetivo — Relatórios e gestão
 
-<div class="fases-container">
-  <div class="fase-item">
-    <h4>Sistema de Filtros</h4>
-    <p>Filtrar reservas por dia, período e dia da semana.</p>
-  </div>
-  
-  <div class="fase-item">
-    <h4>Filtros Combinados</h4>
-    <p>O sistema deverá permitir a combinação de múltiplos filtros para busca refinada.</p>
-  </div>
-</div>
+#### RF-010 — Gerar relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
 
-### Objetivo 4 — Comunicação e Alertas
+<ul class="softex-list">
+  <li>Gerar relatórios de uso/ocupação por período e por sala/estação</li>
+  <li>Disponibilizar visão geral e por unidade/ambiente</li>
+  <li>Relatórios poderão ser exportados</li>
+</ul>
 
-#### RF-10 — Alertar sistemas internos da empresa <span class="badge badge--media">Média</span>
+### Objetivo — Integrações externas
 
-<div class="softex-process">
-> **Sistema de notificações e alertas:**
-</div>
+#### RF-011 — Alertar sistemas internos da empresa <span class="badge badge--media">Média</span>
 
 <ul class="softex-flow">
   <li>Enviar confirmações/cancelamentos por e-mail e sistemas internos</li>
@@ -148,27 +118,6 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>Alertas serão gerados automaticamente</li>
   <li>Alertas serão encaminhados à pessoa que marcar, estes dados estarão disponíveis aos cargas de liderança</li>
 </ul>
-
-### Objetivo 5 — Relatórios e Histórico
-
-#### RF-11 — Gerar relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
-
-<div class="fases-container">
-  <div class="fase-item">
-    <h4>Relatórios de Ocupação</h4>
-    <p>Gerar relatórios de uso/ocupação por período e por sala/estação.</p>
-  </div>
-  
-  <div class="fase-item">
-    <h4>Visão Consolidada</h4>
-    <p>Disponibilizar visão geral e por unidade/ambiente.</p>
-  </div>
-  
-  <div class="fase-item">
-    <h4>Exportação</h4>
-    <p>Relatórios poderão ser exportados para análise externa.</p>
-  </div>
-</div>
 
 ## Requisitos Não Funcionais
 
@@ -280,3 +229,4 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 | 14/10/2025 | 2.0 | Reorganização completa dos requisitos por objetivos e categorias. | Felipe Pedroza | Todos |
 | 14/10/2025 | 2.2 | Adicionado RF05 (Adicionar estações de trabalho). Renumeração de RF06-RF10. Ajustes em descrições. | Felipe Pedroza | Todos |
 | 20/10/2025 | 2.5 | Ajuste nos RF, refatorado e detalhado com mais clareza. | Felipe Pedroza | Todos |
+| 21/10/2025 | 3.0 | Reestruturação completa dos objetivos alinhados com as Características da Solução. RF renumerados (RF-001 a RF-011). | Felipe Pedroza, Yuri Andrade, Pietro Vinsenti | Todos |
