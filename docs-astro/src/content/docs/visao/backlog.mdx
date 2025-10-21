@@ -3,6 +3,8 @@ title: Backlog do Produto
 description: Backlog e descrição dos itens do backlog
 ---
 
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
 ## Backlog Geral
 
 <div class="softex-process">
@@ -150,28 +152,125 @@ description: Backlog e descrição dos itens do backlog
   <li>O sistema deve reservar pelo mesmo fluxo das salas</li>
 </ul>
 
+## Priorização MoSCoW
 
+<div class="softex-process">
+> O **método MoSCoW** é uma técnica de priorização que classifica funcionalidades em quatro categorias, ajudando a equipe a focar no que é essencial para o sucesso do projeto.
+</div>
+
+### Critérios de Classificação
+
+<div class="fases-container">
+  <div class="fase-item">
+    <h4>Must Have (Deve ter)</h4>
+    <p>Se ausente, falha o objetivo principal do projeto, não entregando as funcionalidades necessárias para a empresa utilizar o projeto.</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Should Have (Deveria ter)</h4>
+    <p>Alto valor, há um tempo de trabalho aceitável e ainda agrega valor ao produto para a empresa.</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Could Have (Poderia ter)</h4>
+    <p>A empresa classifica as funcionalidades listadas como não necessárias, mas que seriam boas.</p>
+  </div>
+  
+  <div class="fase-item">
+    <h4>Won't Have (Não terá agora)</h4>
+    <p>Fora do escopo do release atual.</p>
+  </div>
+</div>
+
+### Pontuação de Esforço (Planning Poker)
+
+<div class="softex-process">
+> A pontuação de esforço (story points) vai de **0 a 20**, sendo:
+</div>
+
+<ul class="softex-flow">
+  <li>**0–5**: Simples</li>
+  <li>**8–13**: Médio</li>
+  <li>**15–20**: Complexo</li>
+</ul>
+
+### Must Have
+
+| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Must'** | **Prioridade (Planning Poker)** |
+|-------------------|----------------|--------------------------------------|--------------------------------|
+| Reservar locais de trabalho (salas e estações) | US-005, US-012 | É o core do produto — o cliente precisa garantir o uso do espaço físico. Sem essa função, o sistema não tem propósito. | 13 |
+| Editar ou cancelar reservas | US-010 | O cliente quer evitar retrabalho e erros operacionais. Impacta diretamente a usabilidade e confiança no sistema. | 8 |
+| Visualizar mapa interativo da planta | US-011 | O cliente solicitou a visualização intuitiva das salas e estações livres. Facilita tomada de decisão e reduz suporte. | 8 |
+| Gerar relatórios de histórico/ocupação | US-006 | O gestor precisa justificar o uso dos espaços e mensurar eficiência. Solicitação explícita do cliente para avaliação de ROI. | 5 |
+
+### Should Have
+
+| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Should'** | **Prioridade (Planning Poker)** |
+|-------------------|----------------|---------------------------------------|--------------------------------|
+| Cadastrar usuários | US-001 | Necessário para controle interno, mas pode começar com importação manual no MVP. | 5 |
+| Disponibilidade e performance | — | Importante para escalabilidade, mas não impede o uso inicial. | 3 |
+| Adicionar novas estações de trabalho | US-003 | Gestão de espaços é relevante, mas pode ser manual no início. | 5 |
+| Controlar permissões de usuários | US-002 | Essencial para segurança, mas pode ser simplificado no MVP (admin único). | 5 |
+
+### Could Have
+
+| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Could'** | **Prioridade (Planning Poker)** |
+|-------------------|----------------|--------------------------------------|--------------------------------|
+| Filtrar reservas | US-009 | Melhora a experiência, mas é possível operar o MVP sem filtros avançados. | 3 |
+| Alertar sistemas internos (Slack/e-mail) | US-007 | Boa automação, mas o cliente aceitou notificações simples no MVP. | 2 |
+
+### Won't Have
+
+| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Won't'** |
+|-------------------|----------------|---------------------------------------|
+| Otimização de performance | — | MVP busca validar hipóteses de uso, não escalabilidade. Somente após feedback e métricas reais. |
+
+### Ligação com o Cronograma
+
+<CardGrid>
+<Card title="Sprint 1" icon="🚀">
+**Foco:** Reserva e Edição básica  
+**User Stories:** US-005, US-010 → Must Have
+</Card>
+
+<Card title="Sprint 2" icon="📊">
+**Foco:** Visualização de mapa e relatórios  
+**User Stories:** US-011, US-006 → Must Have
+</Card>
+
+<Card title="Sprint 3" icon="👥">
+**Foco:** Cadastro e permissões de usuários  
+**User Stories:** US-001, US-002 → Should Have
+</Card>
+
+<Card title="Sprint 4" icon="🔔">
+**Foco:** Filtros e notificações  
+**User Stories:** US-009, US-007 → Could Have
+</Card>
+
+<Card title="Sprint 5" icon="⚡">
+**Foco:** Ajustes de performance e testes  
+**User Stories:** Won't Have (revisão futura)
+</Card>
+</CardGrid>
 
 ## MVP — Produto Mínimo Viável
 
-O MVP (Produto Mínimo Viável) do sistema de reservas da Softex foi definido com base nos requisitos funcionais considerados essenciais para validar a proposta de valor junto aos colaboradores e gestores da empresa. A seleção dos itens priorizou as funcionalidades **Must Have**, indispensáveis para o funcionamento básico do sistema, além de algumas **Should Have** que complementam a experiência do usuário sem comprometer a viabilidade técnica inicial.
+<div class="softex-process">
+> O **MVP** (Produto Mínimo Viável) do sistema de reservas da Softex foi definido com base nas funcionalidades **Must Have** e **Should Have** da priorização MoSCoW, garantindo o mínimo de funcionalidades necessárias para validar a proposta de valor junto aos colaboradores e gestores da empresa.
+</div>
 
-O foco foi garantir que os colaboradores tenham uma jornada simples e funcional para visualizar a disponibilidade de salas e estações, realizar reservas e receber confirmações, enquanto os gestores e administradores possam monitorar a ocupação, gerenciar recursos e gerar relatórios básicos de forma segura e organizada. Dessa forma, o MVP permitirá validar rapidamente se a solução atende às expectativas de eficiência e usabilidade, possibilitando iterações futuras para evolução do produto.
+O foco é garantir que os colaboradores possam visualizar a disponibilidade de salas e estações, realizar reservas e receber confirmações, enquanto os gestores e administradores possam monitorar a ocupação, gerenciar recursos e gerar relatórios básicos de forma segura e organizada.
 
-### Histórias de Usuário do MVP
+### Escopo do MVP
 
-| **Código** | **Descrição** |
-|------------|---------------|
-| **US-001** | Como administrador quero cadastrar os usuários |
-| **US-002** | Como administrador, quero controlar perfis e permissões (restrições e exceções para agentes) para garantir acessos adequados. |
-| **US-003** | Como administrador, quero cadastrar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. |
-| **US-005** | Como usuário, quero reservar uma sala para garantir espaço disponível no horário que preciso. |
-| **US-006** | Como gestor, quero relatórios de uso/ocupação por período, com taxa de ocupação e picos, e exportação em Excel. |
-| **US-007** | Como usuário, quero receber notificações (Slack/e-mail) ao criar/editar/cancelar reservas e lembrete próximo do horário. |
-| **US-008** | Como usuário, quero ver o detalhamento da reserva (usuário, localização, início/término, descrição/uso) ao selecionar uma sala/estação. |
-| **US-010** | Como usuário, quero editar ou cancelar minhas reservas para corrigir informações ou liberar a sala. |
-| **US-011** | Como usuário, quero visualizar um mapa interativo em tempo real para ver salas/estações livres. |
-| **US-012** | Como colaborador, quero reservar uma estação de trabalho para garantir onde trabalhar no escritório. |
+**Total de Story Points: 52 pontos** (Must Have: 34 | Should Have: 18)
+
+<ul class="softex-flow">
+  <li>**Must Have** (4 funcionalidades) — 34 pontos</li>
+  <li>**Should Have** (4 funcionalidades) — 18 pontos</li>
+  <li>**Total de User Stories no MVP**: 10 (US-001, US-002, US-003, US-005, US-006, US-007, US-010, US-011, US-012)</li>
+</ul>
 
 ## Histórico de Versão
 
@@ -185,3 +284,4 @@ O foco foi garantir que os colaboradores tenham uma jornada simples e funcional 
 | 21/10/2025 | 2.1 | Alinhamento dos títulos das características com as features originais para consistência entre documentos (backlog.mdx e solucao.mdx). | Felipe Pedroza | Todos |
 | 21/10/2025 | 2.2 | Implementação de link unidirecional limpo do Backlog para Solução Proposta (padrão similar aos Requisitos). | Felipe Pedroza, Guilherme Gusmao, Pietro Vinsenti, Yuri Andrade | Todos |
 | 21/10/2025 | 3.0 | Reestruturação completa das User Stories (US-001 a US-012) com nova coluna de Benefício/Valor, alinhamento com RF-001 a RF-011 e atualização dos Critérios de Aceitação. | Felipe Pedroza, Guilherme Gusmao, Pietro Vinsenti, Yuri Andrade | Todos |
+| 21/10/2025 | 3.1 | Adição da seção completa de Priorização MoSCoW com critérios, pontuação de esforço (Planning Poker), tabelas Must/Should/Could/Won't Have e ligação com cronograma de sprints. | Felipe Pedroza, Guilherme Gusmao, Pietro Vinsenti, Yuri Andrade | Todos |
