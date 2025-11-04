@@ -6,11 +6,12 @@ export interface User {
   name: string
 }
 
-export function useAuth() {
-  const user = ref<User | null>(null)
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
+// Estado global compartilhado (singleton)
+const user = ref<User | null>(null)
+const isLoading = ref(false)
+const error = ref<string | null>(null)
 
+export function useAuth() {
   const isAuthenticated = computed(() => user.value !== null)
 
   const login = async (email: string, password: string) => {
@@ -21,17 +22,13 @@ export function useAuth() {
       // Simulação de chamada para API
       await new Promise(resolve => setTimeout(resolve, 1000))
 
-      // Mock de usuário (em um projeto real, isso viria da API)
-      if (email === 'admin@softex.com' && password === '123456') {
-        user.value = {
-          id: 1,
-          email,
-          name: 'Administrador Softex'
-        }
-        return true
-      } else {
-        throw new Error('Credenciais inválidas')
+      // Aceita qualquer credencial por enquanto
+      user.value = {
+        id: 1,
+        email,
+        name: email.split('@')[0] || 'Usuário'
       }
+      return true
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Erro ao fazer login'
       return false
