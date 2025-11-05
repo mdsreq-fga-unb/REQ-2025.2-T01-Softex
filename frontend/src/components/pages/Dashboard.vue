@@ -81,8 +81,8 @@ const hideTooltip = () => {
 
 const userInitials = computed(() => {
   if (!user.value) return 'U'
-  const names = user.value.name.split(' ')
-  if (names.length >= 2) {
+  const names = user.value.name.split(' ').filter(name => name.length > 0)
+  if (names.length >= 2 && names[0] && names[1]) {
     return `${names[0][0]}${names[1][0]}`.toUpperCase()
   }
   return user.value.name.substring(0, 2).toUpperCase()
