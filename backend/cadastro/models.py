@@ -9,7 +9,6 @@ class Cadastro(models.Model):
         ('admin', 'Admin'),
     ]
 
-
     id_cadastro = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=50)
     sobrenome = models.CharField(max_length=50)
@@ -17,5 +16,11 @@ class Cadastro(models.Model):
     tipo_permissao = models.CharField(max_length=50, choices=PERMISSAO_CHOICES, blank=False)
 
     def __str__(self):
-        return f"Nome: {self.nome}\n Sobrenome: {self.sobrenome}\n email: {self.email} \n Permissao: {self.tipo_permissao}\n"
+        return (f"Nome: {self.nome}\n"
+                f"Sobrenome: {self.sobrenome}\n"
+                f"email: {self.email}\n"
+                f"Permissao: {self.tipo_permissao}\n")
+
+    class Meta:
+        db_table = 'cadastro'
     

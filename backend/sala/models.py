@@ -3,8 +3,9 @@ from planta.models import Planta
 
 STATUS_CHOICES = [
     ('ocupada', 'Ocupada'),
-    ('desocupada', 'Desocupa'),
+    ('desocupada', 'Desocupada'),
 ]
+
 
 class Sala(models.Model):
     id_sala = models.AutoField(primary_key=True)
@@ -16,5 +17,15 @@ class Sala(models.Model):
         Planta, on_delete=models.CASCADE, related_name="salas"
     )
 
+
     def __str__(self):
-        return f"Sala_id:{self.sala_id}\n Nome:{self.nome_sala}\n Capacidade:{self.capacidade}\n Status: {self.status}\n Planta_id:{self.planta_id}\n"
+        return (
+            f"Sala_id: {self.id_sala}\n"
+            f"Nome: {self.nome_sala}\n"
+            f"Capacidade: {self.capacidade}\n"
+            f"Status: {self.status}\n"
+            f"Planta_id: {self.planta.id}\n"
+        )
+
+    class Meta:
+        db_table = 'sala'

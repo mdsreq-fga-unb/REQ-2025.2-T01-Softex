@@ -6,5 +6,11 @@ class Planta(models.Model):
     cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='pantas')
     nome = models.CharField(max_length=50)
 
+
     def __str__(self):
-        return f"Planta_id: {self.id_planta} \n Nome: {self.nome}\n Cadastro_id: {self.cadastro.id_cadastro}\n"
+        return (f"Planta_id: {self.id_planta}\n" 
+                f"Nome: {self.nome}\n"
+                f"Cadastro_id: {self.cadastro.id_cadastro}\n")
+
+    class Meta:
+        db_table = 'planta'

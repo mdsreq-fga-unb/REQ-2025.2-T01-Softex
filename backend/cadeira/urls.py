@@ -3,7 +3,7 @@ from django.urls import path, include
 from .views import CadeiraViewSet
 
 router = routers.DefaultRouter()
-router.register(r'cadeiras', CadeiraViewSet, basename='cadeira')
+router.register(r'', CadeiraViewSet, basename='cadeira')
 
 urlpatterns = [
     path('', include(router.urls)),

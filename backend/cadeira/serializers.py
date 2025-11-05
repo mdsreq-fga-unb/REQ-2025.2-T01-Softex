@@ -6,3 +6,9 @@ class CadeiraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cadeira
         fields = '__all__'
+
+    def validate(self, data):
+        sala = data['salas']
+        if sala.cadeiras.count() >= sala.capacidade:
+            raise serializers.ValidationError({"Sala": "Essa sala já está cheia. Não é possivel adicionar mais cadeiras"})
+        return data
