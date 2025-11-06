@@ -19,14 +19,21 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from rest_framework.routers import DefaultRouter
+from planta.views import PlantaViewSet
+from cadastro.views import CadastroViewSet
+
+router = DefaultRouter()
+
+# Regista 'api/plantas/'
+router.register(r'plantas', PlantaViewSet, basename='planta')
+
+# Regista 'api/cadastro/'
+router.register(r'cadastro', CadastroViewSet, basename='cadastro')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/cadastro', include('cadastro.urls')),
-    path('api/cadeiras', include('cadeira.urls')),
-    path('api/plantas', include('planta.urls')),
-    path('api/reservas', include('reserva.urls')),
-    path('api/salas', include('sala.urls'))
-
+    path('api/', include(router.urls)),
 ]
 
 # so adiciona documentos de imagem em modo debug

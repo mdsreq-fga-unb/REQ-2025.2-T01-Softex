@@ -6,10 +6,10 @@ TIPO_SALA_CHOICES = [
     ('reuniao', 'Sala de Reunião'),
 ]
 
-STATUS_CHOICES = [
-    ('ocupada','Ocupada'),
-    ('desocupada','Desocupada'),
-]
+#STATUS_CHOICES = [
+#    ('ocupada','Ocupada'),
+#    ('desocupada','Desocupada'),
+#]
 
 
 class Sala(models.Model):
@@ -18,7 +18,7 @@ class Sala(models.Model):
     
     nome_sala = models.CharField(max_length=45)
     capacidade = models.IntegerField(default=0)
-    status = models.CharField(max_length=45, choices=STATUS_CHOICES)
+    #status = models.CharField(max_length=45, choices=STATUS_CHOICES)
     descricao = models.CharField(blank=True, max_length=200)
     planta = models.ForeignKey(Planta, on_delete=models.CASCADE, related_name="salas")
 
