@@ -134,4 +134,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Uso de uma model pre-configurada para telas de logins
 AUTH_USER_MODEL = 'cadastro.Cadastro'
+
+# Guardando o path para acessar os arquivos de imagem dos mapas
+MEDIA_URL = '/media/'
+
+# Caminho para guardar os arquivos de imagem
+MEDIA_ROOT = BASE_DIR / 'media'
