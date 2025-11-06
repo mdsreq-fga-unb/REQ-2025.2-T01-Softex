@@ -22,6 +22,8 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from planta.views import PlantaViewSet
 from cadastro.views import CadastroViewSet
+from sala.views import SalaViewSet
+from cadeira.views import CadeiraViewSet
 
 router = DefaultRouter()
 
@@ -30,6 +32,12 @@ router.register(r'plantas', PlantaViewSet, basename='planta')
 
 # Regista 'api/cadastro/'
 router.register(r'cadastro', CadastroViewSet, basename='cadastro')
+
+# Regista 'api/salas/'
+router.register(r'salas', SalaViewSet, basename='sala')
+
+# Regista 'api/cadeiras/'
+router.register(r'cadeiras', CadeiraViewSet, basename='cadeira')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

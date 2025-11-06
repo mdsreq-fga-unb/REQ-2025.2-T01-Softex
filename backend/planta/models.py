@@ -19,7 +19,7 @@ class Planta(models.Model):
     def __str__(self):
         return (f"Planta_id: {self.id_planta}\n" 
                 f"Nome: {self.nome}\n"
-                f"Cadastro_id: {self.cadastro.id_cadastro}\n")
+                f"Cadastro_id: {self.cadastro.id}\n")
 
     class Meta:
         db_table = 'planta'
