@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'planta',
     'sala',
     'cadeira',
+    'reserva',
 
 ]
 

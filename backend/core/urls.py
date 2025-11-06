@@ -22,7 +22,7 @@ urlpatterns = [
     path('api/cadastro', include('cadastro.urls')),
     path('api/cadeiras', include('cadeira.urls')),
     path('api/plantas', include('planta.urls')),
-    #path('api/', include('reserva.urls')),
+    path('api/reservas', include('reserva.urls')),
     path('api/salas', include('sala.urls')),
 
 ]
