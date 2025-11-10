@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,10 +15,14 @@ import { useAuth } from '@/composables/useAuth'
 
 const { login, isLoading, error } = useAuth()
 
+// Configuração da API
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const rememberMe = ref(false)
+const successMessage = ref('')
 
 const handleSubmit = async (e: Event) => {
   e.preventDefault()
@@ -27,15 +31,56 @@ const handleSubmit = async (e: Event) => {
     return
   }
 
-  await login(email.value, password.value)
+  const success = await login(email.value, password.value)
+  if (success) {
+    successMessage.value = 'Login realizado com sucesso!'
+    // Aqui você pode redirecionar ou emitir um evento
+    console.log('Login bem-sucedido!')
+  }
 }
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
 
+// Verificar se usuário voltou do Google com dados
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search)
+  
+  // Verificar sucesso
+  if (urlParams.get('auth') === 'success') {
+    const userData = urlParams.get('user')
+    const isNewUser = urlParams.get('new_user') === 'true'
+    
+    if (userData) {
+      try {
+        const user = JSON.parse(userData)
+        localStorage.setItem('user', JSON.stringify(user))
+        successMessage.value = isNewUser 
+          ? 'Conta criada com sucesso!' 
+          : 'Login realizado com sucesso!'
+        
+        // Limpar URL
+        window.history.replaceState({}, document.title, '/')
+        
+        console.log('✅ Login bem-sucedido!', user)
+      } catch (e) {
+        console.error('Erro ao processar dados do usuário:', e)
+      }
+    }
+  }
+  
+  // Verificar erro
+  if (urlParams.has('error')) {
+    const errorMsg = urlParams.get('error')
+    successMessage.value = ''
+    console.error('❌ Erro no login Google:', errorMsg)
+  }
+})
+
 const handleGoogleLogin = () => {
-  console.log('Login com Google')
+  // Redirecionar para o endpoint do backend que inicia o OAuth2
+  window.location.href = `${API_URL}/api/auth/google/login/`
 }
 
 const handleBack = () => {
@@ -57,11 +102,21 @@ const handleBack = () => {
       </CardHeader>
       
       <CardContent>
-        <form @submit="handleSubmit" class="space-y-8">
+        <form @submit="handleSubmit" class="space-y-6">
+          <!-- Mensagem de sucesso -->
+          <div 
+            v-if="successMessage" 
+            class="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700"
+            role="alert"
+          >
+            {{ successMessage }}
+          </div>
+          
           <!-- Mensagem de erro -->
           <div 
             v-if="error" 
-            class="bg-destructive/15 text-destructive text-sm p-3 rounded-md"
+            class="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
+            role="alert"
           >
             {{ error }}
           </div>
@@ -70,11 +125,11 @@ const handleBack = () => {
           <Button 
             type="button" 
             variant="outline" 
-            class="w-full google-button"
+            class="w-full"
             :disabled="isLoading"
             @click="handleGoogleLogin"
           >
-            <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
+            <svg class="mr-2 h-5 w-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -92,7 +147,6 @@ const handleBack = () => {
                 v-model="email"
                 type="email"
                 placeholder="E-mail"
-                class="input-field"
                 :disabled="isLoading"
                 required
               />
@@ -106,7 +160,7 @@ const handleBack = () => {
                   v-model="password"
                   :type="showPassword ? 'text' : 'password'"
                   placeholder="Senha"
-                  class="input-field password-input"
+                  class="password-input"
                   :disabled="isLoading"
                   required 
                 />
@@ -124,21 +178,21 @@ const handleBack = () => {
           </div>
 
           <!-- Lembrar-me e Esqueci a senha -->
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between text-sm">
             <div class="flex items-center space-x-2">
               <input
                 id="remember-me"
                 v-model="rememberMe"
                 type="checkbox"
-                class="checkbox"
+                class="h-4 w-4 rounded border-input bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <Label for="remember-me" class="cursor-pointer text-sm font-normal">
+              <Label for="remember-me" class="cursor-pointer font-normal">
                 Lembrar-me
               </Label>
             </div>
             <a
               href="#"
-              class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+              class="text-muted-foreground underline-offset-4 hover:underline"
               @click.prevent
             >
               Esqueci a senha
@@ -149,7 +203,7 @@ const handleBack = () => {
           <div class="flex gap-3">
             <Button 
               type="submit" 
-              class="flex-1 login-button"
+              class="flex-1"
               :disabled="isLoading"
             >
               {{ isLoading ? 'Entrando...' : 'Login' }}
@@ -157,7 +211,7 @@ const handleBack = () => {
             <Button 
               type="button" 
               variant="outline" 
-              class="flex-1 back-button"
+              class="flex-1"
               :disabled="isLoading"
               @click="handleBack"
             >
@@ -223,29 +277,6 @@ const handleBack = () => {
   padding: 1.5rem;
 }
 
-.google-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  border: 1px solid #e5e7eb;
-  background: white;
-  color: #1f2937;
-  transition: all 0.2s;
-}
-
-.google-button:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-}
-
-.google-icon {
-  flex-shrink: 0;
-}
-
-.input-field {
-  width: 100%;
-}
 
 .password-input-wrapper {
   position: relative;
@@ -267,46 +298,13 @@ const handleBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  transition: color 0.2s;
 }
 
 .password-toggle:hover {
-  color: #374151;
+  color: hsl(var(--foreground));
 }
 
-.checkbox {
-  width: 1rem;
-  height: 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  accent-color: #7C3AED;
-}
-
-.checkbox:checked {
-  background-color: #7C3AED;
-  border-color: #7C3AED;
-}
-
-.login-button {
-  background: #2563eb;
-  color: white;
-  font-weight: 500;
-}
-
-.login-button:hover {
-  background: #1d4ed8;
-}
-
-.back-button {
-  border-color: #6b7280;
-  color: #374151;
-}
-
-.back-button:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-}
 
 .footer {
   width: 100%;

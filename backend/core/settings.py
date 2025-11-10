@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
+    'corsheaders',  # CORS para comunicação com frontend
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS - deve vir antes do CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -142,3 +144,56 @@ MEDIA_URL = '/media/'
 
 # Caminho para guardar os arquivos de imagem
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# ========================================
+# CONFIGURAÇÕES DE CORS
+# ========================================
+# Permite requisições do frontend
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",      # Vite/React
+    "http://localhost:5173",      # Vite (porta padrão)
+    "http://localhost:8080",      # Vue CLI
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8080",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# ========================================
+# CONFIGURAÇÕES DO GOOGLE OAUTH
+# ========================================
+# Client ID do Google Cloud Console
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET', default='')
+
+# URL de callback do Google (backend)
+GOOGLE_REDIRECT_URI = config('GOOGLE_REDIRECT_URI', default='http://localhost:8000/api/auth/google/callback/')
+
+# URL do frontend (para redirecionamento após login)
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
+
+# Permitir HTTPS em produção (para OAuth2)
+import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' if DEBUG else '0'

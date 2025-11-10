@@ -5,3 +5,11 @@ pillow==12.0.0
 psycopg2-binary==2.9.11
 python-decouple==3.8
 sqlparse==0.5.3
+
+# Google OAuth2
+google-auth==2.23.0
+google-auth-oauthlib==1.1.0
+google-auth-httplib2==0.1.1
+
+# CORS (para frontend comunicar com backend)
+django-cors-headers==4.3.0
