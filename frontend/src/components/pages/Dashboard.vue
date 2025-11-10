@@ -1,706 +1,439 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { 
-  Home, 
-  LogOut, 
-  Gauge, 
-  MapPin, 
-  Sofa, 
-  Calendar, 
-  Settings,
-  FileText,
-  Filter,
-  Search,
-  X
-} from 'lucide-vue-next'
-import { useAuth } from '@/composables/useAuth'
+import { ref, computed, onMounted } from 'vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useAuth } from '@/composables/useAuth'
 
 const { user, logout } = useAuth()
 
-const isFilterModalOpen = ref(false)
-const searchQuery = ref('')
-const dateRange = ref('')
-const startDate = ref<Date | null>(null)
-const endDate = ref<Date | null>(null)
-const currentMonth = ref(new Date())
+// Dados das métricas
+const metricas = ref({
+  posicoesOcupadas: 32,
+  totalPosicoes: 58,
+  salasEmUso: 4,
+  totalSalas: 6,
+  reservasHoje: 18,
+  reservasAtivas: 30,
+  taxaOcupacao: 75
+})
 
-const users = ref([
-  'Claudio santana',
-  'Maria Silva',
-  'João Santos',
-  'Ana Costa',
-  'Pedro Oliveira',
-  'Carla Ferreira',
-  'Lucas Almeida'
+// Dados de ocupação por horário
+const ocupacaoPorHorario = ref([
+  { hora: '8h', porcentagem: 50, cor: 'bg-blue-900' },
+  { hora: '10h', porcentagem: 78, cor: 'bg-blue-400' },
+  { hora: '12h', porcentagem: 95, cor: 'bg-pink-500' },
+  { hora: '14h', porcentagem: 70, cor: 'bg-blue-800' },
+  { hora: '16h', porcentagem: 60, cor: 'bg-green-500' },
+  { hora: '18h', porcentagem: 40, cor: 'bg-orange-500' },
 ])
 
-const selectedUsers = ref<string[]>([])
+// Distribuição de uso
+const distribuicaoUso = ref([
+  { tipo: 'Coworking', porcentagem: 50, cor: 'bg-blue-900' },
+  { tipo: 'Salas', porcentagem: 30, cor: 'bg-blue-400' },
+  { tipo: 'Livre', porcentagem: 20, cor: 'bg-pink-500' },
+])
 
-const filteredUsers = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return users.value
-  }
-  const query = searchQuery.value.toLowerCase().trim()
-  return users.value.filter(user => 
-    user.toLowerCase().includes(query)
-  )
-})
+// Atividade recente
+const atividadeRecente = ref([
+  { nome: 'Maria Santos', acao: 'reservou sala Zeus', horario: '14:30-16:00 hoje', tipo: 'reserva' },
+  { nome: 'Pedro Lima', acao: 'ocupou Posição A-15', horario: '13:45 hoje', tipo: 'ocupacao' },
+  { nome: 'Sala Apolo', acao: 'liberada', horario: '14:30-16:00 hoje', tipo: 'liberacao' },
+])
 
-// Tooltip para gráfico de rosca
-const tooltip = ref<{ show: boolean; label: string; percentage: string; x: number; y: number }>({
-  show: false,
-  label: '',
-  percentage: '',
-  x: 0,
-  y: 0
-})
+// Próximas reservas
+const proximasReservas = ref([
+  { titulo: 'Reunião de Projeto', local: 'Sala Hermes', horario: '15:00-16:30', tempo: 'Em 30 min' },
+  { titulo: 'Apresentação Cliente', local: 'Sala Zeus', horario: '16:00-17:00', tempo: 'Em 1h30' },
+  { titulo: 'Workshop Técnico', local: 'Sala Apolo', horario: '17:30-19:00', tempo: 'Em 3h' },
+])
 
-const showTooltip = (event: Event, label: string, percentage: string) => {
-  const mouseEvent = event as MouseEvent
-  tooltip.value = {
-    show: true,
-    label,
-    percentage,
-    x: mouseEvent.clientX,
-    y: mouseEvent.clientY
-  }
-}
-
-const updateTooltipPosition = (event: Event) => {
-  const mouseEvent = event as MouseEvent
-  tooltip.value.x = mouseEvent.clientX
-  tooltip.value.y = mouseEvent.clientY
-}
-
-const hideTooltip = () => {
-  tooltip.value.show = false
-}
-
-const userInitials = computed(() => {
-  if (!user.value) return 'U'
-  const names = user.value.name.split(' ').filter(name => name.length > 0)
-  if (names.length >= 2 && names[0] && names[1]) {
-    return `${names[0][0]}${names[1][0]}`.toUpperCase()
-  }
-  return user.value.name.substring(0, 2).toUpperCase()
+const porcentagemOcupacao = computed(() => {
+  return Math.round((metricas.value.posicoesOcupadas / metricas.value.totalPosicoes) * 100)
 })
 
 const handleLogout = () => {
   logout()
+  window.location.reload()
 }
 
-const openFilterModal = () => {
-  isFilterModalOpen.value = true
+// Calcular ângulo do donut chart para cada segmento
+const calcularAngulo = (porcentagem: number, offset: number = 0) => {
+  const angulo = (porcentagem / 100) * 360
+  return { angulo, offset }
 }
-
-const closeFilterModal = () => {
-  isFilterModalOpen.value = false
-}
-
-const toggleUser = (userName: string) => {
-  const index = selectedUsers.value.indexOf(userName)
-  if (index > -1) {
-    selectedUsers.value.splice(index, 1)
-  } else {
-    selectedUsers.value.push(userName)
-  }
-}
-
-const getDaysInMonth = (date: Date) => {
-  const year = date.getFullYear()
-  const month = date.getMonth()
-  const firstDay = new Date(year, month, 1)
-  const lastDay = new Date(year, month + 1, 0)
-  const daysInMonth = lastDay.getDate()
-  const startingDayOfWeek = firstDay.getDay()
-  
-  const days: (Date | null)[] = []
-  
-  // Preencher dias do mês anterior
-  for (let i = 0; i < startingDayOfWeek; i++) {
-    days.push(null)
-  }
-  
-  // Preencher dias do mês atual
-  for (let day = 1; day <= daysInMonth; day++) {
-    days.push(new Date(year, month, day))
-  }
-  
-  return days
-}
-
-const selectDate = (date: Date) => {
-  // Se não tem data inicial ou se já tem ambas, começa uma nova seleção
-  if (!startDate.value || (startDate.value && endDate.value)) {
-    startDate.value = date
-    endDate.value = null
-  } else {
-    // Se já tem data inicial, define a data final
-    if (date < startDate.value) {
-      // Se a data selecionada é anterior à inicial, inverte
-      endDate.value = startDate.value
-      startDate.value = date
-    } else {
-      endDate.value = date
-    }
-  }
-  
-  // Atualiza o campo de data
-  if (startDate.value && endDate.value) {
-    const start = startDate.value.toLocaleDateString('pt-BR')
-    const end = endDate.value.toLocaleDateString('pt-BR')
-    dateRange.value = `${start} até ${end}`
-  } else if (startDate.value) {
-    dateRange.value = startDate.value.toLocaleDateString('pt-BR')
-  }
-}
-
-const previousMonth = () => {
-  currentMonth.value = new Date(
-    currentMonth.value.getFullYear(),
-    currentMonth.value.getMonth() - 1,
-    1
-  )
-}
-
-const nextMonth = () => {
-  currentMonth.value = new Date(
-    currentMonth.value.getFullYear(),
-    currentMonth.value.getMonth() + 1,
-    1
-  )
-}
-
-const isToday = (date: Date) => {
-  const today = new Date()
-  return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
-  )
-}
-
-const isSelected = (date: Date) => {
-  if (!startDate.value) return false
-  
-  const dateTime = date.getTime()
-  const startTime = startDate.value.getTime()
-  
-  // Se só tem data inicial
-  if (!endDate.value) {
-    return dateTime === startTime
-  }
-  
-  // Se tem intervalo, verifica se está dentro do range
-  const endTime = endDate.value.getTime()
-  return dateTime >= startTime && dateTime <= endTime
-}
-
-const isRangeStart = (date: Date) => {
-  if (!startDate.value) return false
-  return (
-    date.getDate() === startDate.value.getDate() &&
-    date.getMonth() === startDate.value.getMonth() &&
-    date.getFullYear() === startDate.value.getFullYear()
-  )
-}
-
-const isRangeEnd = (date: Date) => {
-  if (!endDate.value) return false
-  return (
-    date.getDate() === endDate.value.getDate() &&
-    date.getMonth() === endDate.value.getMonth() &&
-    date.getFullYear() === endDate.value.getFullYear()
-  )
-}
-
-const isInRange = (date: Date) => {
-  if (!startDate.value || !endDate.value) return false
-  const dateTime = date.getTime()
-  const startTime = startDate.value.getTime()
-  const endTime = endDate.value.getTime()
-  return dateTime > startTime && dateTime < endTime
-}
-
-const monthNames = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-]
-
-const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 </script>
 
 <template>
   <div class="dashboard-container">
-    <!-- Navbar -->
-    <nav class="navbar">
-      <!-- Top Section - Header -->
-      <div class="navbar-header">
-        <div class="header-left">
-          <div class="logo-container">
-            <img 
-              src="../../assets/LOGO_SOFTEX_VERTICAL_BRANCO_OFFLINE.png" 
-              alt="Softex" 
-              class="logo-image"
-            />
-            <div class="logo-text">
-              <div class="brand-top">
-                <span class="brand-main">Coworking</span>
-              </div>
-              <span class="brand-desc">Sistema de gestão de Espaços</span>
-            </div>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-section">
+          <img src="../../assets/LOGO_SOFTEX_VERTICAL_BRANCO_OFFLINE.png" alt="Softex" class="logo">
+          <div class="logo-text">
+            <h1 class="logo-title">Softex</h1>
+            <p class="logo-subtitle">Sistema de gestão de Espaços</p>
           </div>
         </div>
         
-        <div class="header-right">
-          <Home class="header-icon" />
-          <div class="user-info">
-            <span class="navbar-user-name">{{ user?.name || 'Usuário' }}</span>
-            <span class="user-role">Administrador</span>
-          </div>
+        <div class="user-section">
+          <span class="user-name">{{ user?.first_name }} {{ user?.last_name }}</span>
+          <span class="user-role">{{ user?.tipo_permissao }}</span>
           <div class="user-avatar">
-            {{ userInitials }}
+            {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
           </div>
-          <button class="logout-button" @click="handleLogout">
-            <LogOut class="logout-icon" />
+          <button @click="handleLogout" class="logout-btn" title="Sair">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
           </button>
         </div>
       </div>
       
-      <!-- Bottom Section - Navigation Links -->
-      <div class="navbar-nav">
-        <a href="#" class="nav-link active">
-          <Gauge class="nav-icon" />
-          <span>Dashboard</span>
+      <!-- Navigation -->
+      <nav class="navigation">
+        <a href="#" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          </svg>
+          Dashboard
         </a>
-        <a href="#" class="nav-link">
-          <MapPin class="nav-icon" />
-          <span>Coworking</span>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          Coworking
         </a>
-        <a href="#" class="nav-link">
-          <Sofa class="nav-icon" />
-          <span>Salas de reunião</span>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
+          Salas de reunião
         </a>
-        <a href="#" class="nav-link">
-          <Calendar class="nav-icon" />
-          <span>Minhas Reservas</span>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Minhas Reservas
         </a>
-        <a href="#" class="nav-link">
-          <Settings class="nav-icon" />
-          <span>Administração</span>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Administração
         </a>
-      </div>
-    </nav>
-    
-    <!-- Conteúdo principal -->
-    <main class="dashboard-content">
-      <!-- Grid Container -->
-      <div class="dashboard-grid">
-        <!-- Header do Dashboard -->
-        <div class="dashboard-header">
-          <div class="header-left-section">
-            <h1 class="dashboard-title">Dashboard</h1>
-            <p class="dashboard-subtitle">Visão Geral do co-working da Softex</p>
-          </div>
-          <div class="header-right-section">
-            <Button class="report-button">
-              Gerar Relatórios
-            </Button>
-            <Filter class="filter-icon" @click="openFilterModal" />
-          </div>
-        </div>
+      </nav>
+    </header>
 
-        <!-- Cards de Estatísticas -->
-        <div class="stats-cards">
-        <!-- Card 1: Posições Ocupadas -->
-        <div class="stat-card card-blue">
-          <div class="card-icon-wrapper icon-blue">
-            <FileText class="card-icon" />
-          </div>
-          <div class="card-content">
-            <h3 class="card-title">Posições Ocupadas</h3>
-            <p class="card-value">32</p>
-            <p class="card-detail">de 58 totais</p>
-          </div>
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-header">
+        <div>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Visão Geral do co-working da Softex</p>
         </div>
+        <Button variant="outline" class="report-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Gerar Relatórios
+        </Button>
+      </div>
+
+      <!-- Cards de Métricas -->
+      <div class="metrics-grid">
+        <!-- Card 1: Posições Ocupadas -->
+        <Card class="border-l-4 border-l-blue-400">
+          <CardContent class="p-6">
+            <div class="flex justify-between items-center">
+              <div class="space-y-1">
+                <div class="text-sm font-medium text-muted-foreground">Posições Ocupadas</div>
+                <div class="text-4xl font-bold text-blue-400">{{ metricas.posicoesOcupadas }}</div>
+                <div class="text-sm text-muted-foreground">de {{ metricas.totalPosicoes }} totais</div>
+              </div>
+              <div class="w-16 h-16 rounded-xl bg-blue-400/10 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2">
+                  <path d="M8 6h13"></path>
+                  <path d="M8 12h13"></path>
+                  <path d="M8 18h13"></path>
+                  <path d="M3 6h.01"></path>
+                  <path d="M3 12h.01"></path>
+                  <path d="M3 18h.01"></path>
+                </svg>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <!-- Card 2: Salas em uso -->
-        <div class="stat-card card-purple">
-          <div class="card-icon-wrapper icon-purple">
-            <FileText class="card-icon" />
-          </div>
-          <div class="card-content">
-            <h3 class="card-title">Salas em uso</h3>
-            <p class="card-value">4</p>
-            <p class="card-detail">de 6 Salas disponíveis</p>
-          </div>
-        </div>
+        <Card class="border-l-4 border-l-blue-800">
+          <CardContent class="p-6">
+            <div class="flex justify-between items-center">
+              <div class="space-y-1">
+                <div class="text-sm font-medium text-muted-foreground">Salas em uso</div>
+                <div class="text-4xl font-bold text-blue-800">{{ metricas.salasEmUso }}</div>
+                <div class="text-sm text-muted-foreground">de {{ metricas.totalSalas }} Salas disponíveis</div>
+              </div>
+              <div class="w-16 h-16 rounded-xl bg-blue-800/10 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <!-- Card 3: Reservas hoje -->
-        <div class="stat-card card-pink">
-          <div class="card-icon-wrapper icon-pink">
-            <Calendar class="card-icon" />
-          </div>
-          <div class="card-content">
-            <h3 class="card-title">Reservas hoje</h3>
-            <p class="card-value">18</p>
-            <p class="card-detail">de 30 reservas ativas</p>
-          </div>
-        </div>
+        <Card class="border-l-4 border-l-pink-500">
+          <CardContent class="p-6">
+            <div class="flex justify-between items-center">
+              <div class="space-y-1">
+                <div class="text-sm font-medium text-muted-foreground">Reservas hoje</div>
+                <div class="text-4xl font-bold text-pink-500">{{ metricas.reservasHoje }}</div>
+                <div class="text-sm text-muted-foreground">de {{ metricas.reservasAtivas }} reservas ativas</div>
+              </div>
+              <div class="w-16 h-16 rounded-xl bg-pink-500/10 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <!-- Card 4: Taxa de Ocupação -->
-        <div class="stat-card card-gray">
-          <div class="card-icon-wrapper icon-gray">
-            <span class="percent-icon">%</span>
-          </div>
-          <div class="card-content">
-            <h3 class="card-title">Taxa de Ocupação</h3>
-            <p class="card-value">75%</p>
-            <p class="card-detail">média semanal</p>
-          </div>
-        </div>
-        </div>
-
-        <!-- Gráficos -->
-        <div class="charts-section">
-          <!-- Gráfico de Barras: Ocupação por Horário -->
-          <div class="chart-card">
-            <h3 class="chart-title">Ocupação por Horário</h3>
-            <div class="bar-chart-container">
-              <div class="bars-container">
-                <div class="bar bar-blue" style="height: 50%;">
-                  <span class="bar-value">50%</span>
-                </div>
-                <div class="bar bar-light-blue" style="height: 78%;">
-                  <span class="bar-value">78%</span>
-                </div>
-                <div class="bar bar-magenta" style="height: 98%;">
-                  <span class="bar-value">98%</span>
-                </div>
-                <div class="bar bar-dark-blue" style="height: 70%;">
-                  <span class="bar-value">70%</span>
-                </div>
-                <div class="bar bar-green" style="height: 55%;">
-                  <span class="bar-value">55%</span>
-                </div>
-                <div class="bar bar-orange" style="height: 40%;">
-                  <span class="bar-value">40%</span>
-                </div>
+        <Card class="border-l-4 border-l-gray-500">
+          <CardContent class="p-6">
+            <div class="flex justify-between items-center">
+              <div class="space-y-1">
+                <div class="text-sm font-medium text-muted-foreground">Taxa de Ocupação</div>
+                <div class="text-4xl font-bold text-gray-700">{{ metricas.taxaOcupacao }}%</div>
+                <div class="text-sm text-muted-foreground">média semanal</div>
               </div>
-              <div class="bar-labels">
-                <span class="bar-label">8h</span>
-                <span class="bar-label">10h</span>
-                <span class="bar-label">12h</span>
-                <span class="bar-label">14h</span>
-                <span class="bar-label">16h</span>
-                <span class="bar-label">18h</span>
+              <div class="w-16 h-16 rounded-xl bg-gray-200 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2">
+                  <line x1="12" y1="2" x2="12" y2="22"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
               </div>
             </div>
-          </div>
-
-          <!-- Gráfico de Rosca: Distribuição de uso -->
-          <div class="chart-card">
-            <h3 class="chart-title">Distribuição de uso</h3>
-            <div class="donut-chart-container">
-              <svg class="donut-chart" viewBox="0 0 200 200">
-                <!-- Segmento Coworking (50%) -->
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="none"
-                  stroke="#1E3A8A"
-                  stroke-width="30"
-                  stroke-dasharray="219.91 439.82"
-                  stroke-dashoffset="0"
-                  transform="rotate(-90 100 100)"
-                  class="donut-segment"
-                  @mouseenter="(e) => showTooltip(e, 'Coworking', '50%')"
-                  @mouseleave="hideTooltip"
-                  @mousemove="updateTooltipPosition"
-                />
-                <!-- Segmento Salas (30%) -->
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="none"
-                  stroke="#3B82F6"
-                  stroke-width="30"
-                  stroke-dasharray="131.95 439.82"
-                  stroke-dashoffset="-219.91"
-                  transform="rotate(-90 100 100)"
-                  class="donut-segment"
-                  @mouseenter="(e) => showTooltip(e, 'Salas', '30%')"
-                  @mouseleave="hideTooltip"
-                  @mousemove="updateTooltipPosition"
-                />
-                <!-- Segmento Livre (20%) -->
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="none"
-                  stroke="#EC4899"
-                  stroke-width="30"
-                  stroke-dasharray="87.96 439.82"
-                  stroke-dashoffset="-351.86"
-                  transform="rotate(-90 100 100)"
-                  class="donut-segment"
-                  @mouseenter="(e) => showTooltip(e, 'Livre', '20%')"
-                  @mouseleave="hideTooltip"
-                  @mousemove="updateTooltipPosition"
-                />
-                <!-- Texto central -->
-                <text x="100" y="95" text-anchor="middle" class="donut-center-text">
-                  80%
-                </text>
-                <text x="100" y="110" text-anchor="middle" class="donut-center-subtext">
-                  Ocupação
-                </text>
-              </svg>
-              <!-- Tooltip -->
-              <div 
-                v-if="tooltip.show" 
-                class="donut-tooltip"
-                :style="{ left: tooltip.x + 'px', top: tooltip.y + 'px' }"
-              >
-                <div class="tooltip-label">{{ tooltip.label }}</div>
-                <div class="tooltip-percentage">{{ tooltip.percentage }}</div>
-              </div>
-              <div class="donut-legend">
-                <div class="legend-item">
-                  <div class="legend-dot dot-dark-blue"></div>
-                  <span>Coworking (50%)</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot dot-light-blue"></div>
-                  <span>Salas (30%)</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot dot-magenta"></div>
-                  <span>Livre (20%)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Atividade Recente e Próximas Reservas -->
-        <div class="activity-section">
-          <!-- Card: Atividade Recente -->
-          <div class="activity-card">
-            <h3 class="activity-card-title">Atividade Recente</h3>
-            <div class="activity-list">
-              <div class="activity-item activity-green">
-                <div class="activity-dot dot-green"></div>
-                <div class="activity-content">
-                  <p class="activity-text">Maria santos reservou sala Zeus</p>
-                  <p class="activity-time">14:30-16:00 hoje</p>
-                </div>
-              </div>
-              <div class="activity-item activity-blue">
-                <div class="activity-dot dot-blue"></div>
-                <div class="activity-content">
-                  <p class="activity-text">Pedro Lima ocupou Posição A-15</p>
-                  <p class="activity-time">13:45 hoje</p>
-                </div>
-              </div>
-              <div class="activity-item activity-orange">
-                <div class="activity-dot dot-orange"></div>
-                <div class="activity-content">
-                  <p class="activity-text">Sala Apolo liberada</p>
-                  <p class="activity-time">14:30-16:00 hoje</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card: Próximas Reservas -->
-          <div class="reservations-card">
-            <h3 class="activity-card-title">Próximas Reservas</h3>
-            <div class="reservations-list">
-              <div class="reservation-item">
-                <div class="reservation-content">
-                  <p class="reservation-title">Reunião de Projeto</p>
-                  <p class="reservation-subtitle">Sala Hermes - 15:00-16:30</p>
-                </div>
-                <span class="reservation-tag tag-purple">Em 30 min</span>
-              </div>
-              <div class="reservation-item">
-                <div class="reservation-content">
-                  <p class="reservation-title">Apresentação Cliente</p>
-                  <p class="reservation-subtitle">Sala Zeus - 16:00-17:00</p>
-                </div>
-                <span class="reservation-tag tag-green">Em 1h30</span>
-              </div>
-              <div class="reservation-item">
-                <div class="reservation-content">
-                  <p class="reservation-title">Workshop Técnico</p>
-                  <p class="reservation-subtitle">Sala Apolo - 17:30-19:00</p>
-                </div>
-                <span class="reservation-tag tag-orange">Em 3h</span>
-              </div>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <!-- Rodapé -->
-      <footer class="dashboard-footer">
-        <div class="footer-content">
-          <span class="footer-text">© 2025 - Softex</span>
-          <span class="footer-text">All rights reserved</span>
-        </div>
-      </footer>
-
-      <!-- Modal de Filtros -->
-      <div v-if="isFilterModalOpen" class="modal-overlay" @click="closeFilterModal">
-        <div class="modal-content" @click.stop>
-          <div class="modal-header">
-            <h2 class="modal-title">Filtros</h2>
-            <button class="modal-close" @click="closeFilterModal">
-              <X class="close-icon" />
-            </button>
-          </div>
-          
-          <div class="modal-body">
-            <div class="modal-top-row">
-              <div class="search-input-wrapper">
-                <Search class="search-icon" />
-                <Input
-                  v-model="searchQuery"
-                  placeholder="Buscar..."
-                  class="search-input"
-                />
+      <!-- Charts -->
+      <div class="charts-grid">
+        <!-- Gráfico de Ocupação por Horário -->
+        <Card>
+          <CardHeader class="pb-4">
+            <CardTitle>Ocupação por Horário</CardTitle>
+          </CardHeader>
+          <CardContent class="pb-6">
+            <div class="bar-chart">
+              <div class="bar-chart-y-axis">
+                <span>100%</span>
+                <span>75%</span>
+                <span>50%</span>
+                <span>25%</span>
+                <span>0%</span>
               </div>
-              
-              <div class="date-input-wrapper">
-                <Label class="date-label">calendário</Label>
-                <div class="date-input-container">
-                  <Calendar class="calendar-icon" />
-                  <Input
-                    v-model="dateRange"
-                    placeholder="até"
-                    class="date-input"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="modal-bottom-row">
-              <div class="users-list">
-                <div
-                  v-for="userName in filteredUsers"
-                  :key="userName"
-                  class="user-checkbox-item"
-                  @click="toggleUser(userName)"
+              <div class="bar-chart-content">
+                <div 
+                  v-for="item in ocupacaoPorHorario" 
+                  :key="item.hora"
+                  class="bar-wrapper"
                 >
-                  <input
-                    type="checkbox"
-                    :checked="selectedUsers.includes(userName)"
-                    class="checkbox-input"
-                    @click.stop
-                    @change="toggleUser(userName)"
-                  />
-                  <span class="user-name">{{ userName }}</span>
-                </div>
-                <div v-if="filteredUsers.length === 0" class="no-results">
-                  Nenhum usuário encontrado
-                </div>
-              </div>
-
-              <div class="calendar-container">
-                <div class="calendar-header">
-                  <button class="calendar-nav-button" @click="previousMonth">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <h3 class="calendar-month-title">
-                    {{ monthNames[currentMonth.getMonth()] }} {{ currentMonth.getFullYear() }}
-                  </h3>
-                  <button class="calendar-nav-button" @click="nextMonth">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                </div>
-                
-                <div class="calendar-weekdays">
-                  <div v-for="day in weekDays" :key="day" class="weekday">
-                    {{ day }}
+                  <div class="bar-container">
+                    <div 
+                      class="bar"
+                      :class="item.cor"
+                      :style="{ height: `${item.porcentagem}%` }"
+                    >
+                      <span v-if="item.porcentagem > 70" class="bar-label">{{ item.porcentagem }}%</span>
+                    </div>
                   </div>
-                </div>
-                
-                <div class="calendar-days">
-                  <div
-                    v-for="(date, index) in getDaysInMonth(currentMonth)"
-                    :key="index"
-                    class="calendar-day"
-                    :class="{
-                      'empty': date === null,
-                      'today': date && isToday(date),
-                      'selected': date && isSelected(date),
-                      'range-start': date && isRangeStart(date),
-                      'range-end': date && isRangeEnd(date),
-                      'in-range': date && isInRange(date)
-                    }"
-                    @click="date && selectDate(date)"
-                  >
-                    {{ date ? date.getDate() : '' }}
-                  </div>
+                  <span class="bar-hour">{{ item.hora }}</span>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+
+        <!-- Gráfico de Distribuição de Uso -->
+        <Card>
+          <CardHeader class="pb-4">
+            <CardTitle>Distribuição de uso</CardTitle>
+          </CardHeader>
+          <CardContent class="pb-6">
+            <div class="flex gap-8 items-center">
+            <div class="donut-chart">
+              <svg viewBox="0 0 100 100" class="donut-svg">
+                <!-- Coworking (50%) -->
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="transparent"
+                  stroke="#1e3a8a"
+                  stroke-width="20"
+                  stroke-dasharray="125.6 125.6"
+                  stroke-dashoffset="0"
+                  transform="rotate(-90 50 50)"
+                />
+                <!-- Salas (30%) -->
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="transparent"
+                  stroke="#60a5fa"
+                  stroke-width="20"
+                  stroke-dasharray="75.4 125.6"
+                  stroke-dashoffset="-125.6"
+                  transform="rotate(-90 50 50)"
+                />
+                <!-- Livre (20%) -->
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="transparent"
+                  stroke="#ec4899"
+                  stroke-width="20"
+                  stroke-dasharray="50.2 125.6"
+                  stroke-dashoffset="-201"
+                  transform="rotate(-90 50 50)"
+                />
+              </svg>
+              <div class="donut-center">
+                <div class="donut-percentage">{{ metricas.taxaOcupacao }}%</div>
+                <div class="donut-label">Ocupação</div>
+              </div>
+            </div>
+            
+            <div class="flex flex-col gap-4">
+              <div v-for="item in distribuicaoUso" :key="item.tipo" class="flex items-center gap-3">
+                <div class="w-4 h-4 rounded" :class="item.cor"></div>
+                <span class="text-sm">{{ item.tipo }} ({{ item.porcentagem }}%)</span>
+              </div>
+            </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <!-- Listas -->
+      <div class="lists-grid">
+        <!-- Atividade Recente -->
+        <Card>
+          <CardHeader class="pb-4">
+            <CardTitle>Atividade Recente</CardTitle>
+          </CardHeader>
+          <CardContent class="pb-6">
+            <div class="space-y-4">
+            <div v-for="(atividade, index) in atividadeRecente" :key="index" class="flex items-start gap-4">
+              <div 
+                class="w-2 h-2 rounded-full mt-2 flex-shrink-0"
+                :class="{
+                  'bg-green-500': atividade.tipo === 'reserva',
+                  'bg-blue-500': atividade.tipo === 'ocupacao',
+                  'bg-yellow-500': atividade.tipo === 'liberacao'
+                }"
+              ></div>
+              <div class="flex-1">
+                <div class="text-sm">
+                  <span class="font-semibold">{{ atividade.nome }}</span> {{ atividade.acao }}
+                </div>
+                <div class="text-xs text-muted-foreground">{{ atividade.horario }}</div>
+              </div>
+            </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Próximas Reservas -->
+        <Card>
+          <CardHeader class="pb-4">
+            <CardTitle>Próximas Reservas</CardTitle>
+          </CardHeader>
+          <CardContent class="pb-6">
+            <div class="space-y-4">
+              <div v-for="(reserva, index) in proximasReservas" :key="index" class="flex justify-between items-center gap-4">
+                <div class="flex-1">
+                  <div class="text-sm font-semibold">{{ reserva.titulo }}</div>
+                  <div class="text-xs text-muted-foreground">{{ reserva.local }} - {{ reserva.horario }}</div>
+                </div>
+                <div 
+                  class="px-3 py-1 rounded-full text-white text-xs font-medium whitespace-nowrap"
+                  :class="{
+                    'bg-purple-500': index === 0,
+                    'bg-green-500': index === 1,
+                    'bg-orange-500': index === 2
+                  }"
+                >
+                  {{ reserva.tempo }}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>© 2025 - Softex</span>
+      <span>All rights reserved</span>
+    </footer>
   </div>
 </template>
 
 <style scoped>
 .dashboard-container {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #1C2457 0%, #2F2365 40%, #4A2E70 70%, #6C5885 100%);
-  width: 100%;
+  background: linear-gradient(to bottom, #00107B 0%, #320D73 54%, #746388 100%);
   display: flex;
   flex-direction: column;
 }
 
-.navbar {
-  background: #1C2457;
-  width: 100%;
-  z-index: 100;
+/* Header */
+.header {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.navbar-header {
+.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.logo-container {
+.logo-section {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.logo-image {
-  height: 48px;
+.logo {
+  height: 40px;
   width: auto;
-  object-fit: contain;
 }
 
 .logo-text {
@@ -708,66 +441,40 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   flex-direction: column;
 }
 
-.brand-top {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.brand-name {
-  color: white;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.brand-main {
+.logo-title {
   color: white;
   font-size: 1.25rem;
   font-weight: 600;
+  line-height: 1;
 }
 
-.brand-desc {
-  color: rgba(255, 255, 255, 0.6);
+.logo-subtitle {
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
-  font-weight: 400;
 }
 
-.header-right {
+.user-section {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-}
-
-.header-icon {
-  width: 24px;
-  height: 24px;
+  gap: 1rem;
   color: white;
-  cursor: pointer;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-}
-
-.navbar-user-name {
-  color: #ffffff;
-  font-size: 0.875rem;
+.user-name {
   font-weight: 500;
 }
 
 .user-role {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  text-transform: capitalize;
 }
 
 .user-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #7C3AED;
-  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -775,938 +482,240 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   font-size: 0.875rem;
 }
 
-.logout-button {
-  background: none;
+.logout-btn {
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  cursor: pointer;
   padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: opacity 0.2s;
-}
-
-.logout-button:hover {
-  opacity: 0.7;
-}
-
-.logout-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.navbar-nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  padding: 0.75rem 2rem;
-  background: rgba(28, 36, 87, 0.8);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-  text-decoration: none;
-  font-size: 0.875rem;
-  padding: 0.5rem 0;
-  position: relative;
-  transition: opacity 0.2s;
-}
-
-.nav-link:hover {
-  opacity: 0.8;
-}
-
-.nav-link.active {
-  font-weight: 500;
-}
-
-.nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: white;
-}
-
-.nav-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.dashboard-content {
-  flex: 1;
-  padding: 2rem;
-  width: 100%;
-}
-
-.dashboard-grid {
-  max-width: 1600px;
-  margin: 0 auto;
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 2rem;
-}
-
-.dashboard-header {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0;
-}
-
-.header-left-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.dashboard-title {
-  color: white;
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.dashboard-subtitle {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
-  margin: 0;
-}
-
-.header-right-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.report-button {
-  background: #374151;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
-  font-weight: 500;
   cursor: pointer;
+  color: white;
   transition: background 0.2s;
 }
 
-.report-button:hover {
-  background: #4B5563;
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.filter-icon {
-  width: 20px;
-  height: 20px;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-}
-
-.filter-icon:hover {
-  color: white;
-}
-
-.stats-cards {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 2rem;
-  width: 100%;
-}
-
-.stat-card {
-  grid-column: span 3;
-  background: white;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+/* Navigation */
+.navigation {
   display: flex;
-  flex-direction: column;
-  min-height: 100px;
+  gap: 2rem;
+  padding: 0 2rem;
+  overflow-x: auto;
 }
 
-.stat-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  border-radius: 0.75rem 0 0 0.75rem;
-}
-
-.card-blue::before {
-  background: #3B82F6;
-}
-
-.card-purple::before {
-  background: #7C3AED;
-}
-
-.card-pink::before {
-  background: #EC4899;
-}
-
-.card-gray::before {
-  background: #6B7280;
-}
-
-.card-icon-wrapper {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+.nav-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.icon-blue {
-  background: #DBEAFE;
-}
-
-.icon-purple {
-  background: #EDE9FE;
-}
-
-.icon-pink {
-  background: #FCE7F3;
-}
-
-.icon-gray {
-  background: #F3F4F6;
-}
-
-.card-icon {
-  width: 16px;
-  height: 16px;
-}
-
-.icon-blue .card-icon {
-  color: #3B82F6;
-}
-
-.icon-purple .card-icon {
-  color: #7C3AED;
-}
-
-.icon-pink .card-icon {
-  color: #EC4899;
-}
-
-.percent-icon {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #6B7280;
-}
-
-.card-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-top: 1.5rem;
-}
-
-.card-title {
-  color: #6B7280;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin: 0 0 0.375rem 0;
-}
-
-.card-value {
-  color: #1F2937;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.125rem 0;
-}
-
-.card-detail {
-  color: #9CA3AF;
-  font-size: 0.6875rem;
-  margin: 0;
-}
-
-/* Charts Section */
-.charts-section {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.activity-section {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.activity-card,
-.reservations-card {
-  grid-column: span 6;
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-}
-
-.activity-card-title {
-  color: #1F2937;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 1.5rem 0;
-}
-
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.activity-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-}
-
-.activity-item.activity-green {
-  background: #D1FAE5;
-}
-
-.activity-item.activity-blue {
-  background: #DBEAFE;
-}
-
-.activity-item.activity-orange {
-  background: #FED7AA;
-}
-
-.activity-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.dot-green {
-  background: #10B981;
-}
-
-.dot-blue {
-  background: #3B82F6;
-}
-
-.dot-orange {
-  background: #F59E0B;
-}
-
-.activity-content {
-  flex: 1;
-}
-
-.activity-text {
-  color: #374151;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin: 0 0 0.25rem 0;
-}
-
-.activity-time {
-  color: #9CA3AF;
-  font-size: 0.75rem;
-  margin: 0;
-}
-
-.reservations-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.reservation-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
   padding: 1rem 0;
-  border-bottom: 1px solid #E5E7EB;
-}
-
-.reservation-item:last-child {
-  border-bottom: none;
-}
-
-.reservation-content {
-  flex: 1;
-}
-
-.reservation-title {
-  color: #374151;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin: 0 0 0.25rem 0;
-}
-
-.reservation-subtitle {
-  color: #9CA3AF;
-  font-size: 0.75rem;
-  margin: 0;
-}
-
-.reservation-tag {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: white;
-  flex-shrink: 0;
-}
-
-.tag-purple {
-  background: #A78BFA;
-}
-
-.tag-green {
-  background: #10B981;
-}
-
-.tag-orange {
-  background: #F59E0B;
-}
-
-.chart-card {
-  grid-column: span 6;
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.chart-title {
-  color: #1F2937;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 1.5rem 0;
-}
-
-/* Bar Chart Styles */
-.bar-chart-container {
-  display: flex;
-  flex-direction: column;
-  height: 300px;
-}
-
-.bars-container {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  width: 100%;
-  flex: 1;
-  gap: 0.75rem;
-  min-height: 0;
-}
-
-.bar {
-  flex: 1;
-  max-width: 60px;
-  border-radius: 0.5rem 0.5rem 0 0;
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  transition: height 0.3s ease;
-}
-
-.bar-labels {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-  flex-shrink: 0;
-}
-
-.bar-label {
-  flex: 1;
-  text-align: center;
-  max-width: 60px;
-}
-
-.bar-value {
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  position: absolute;
-  top: 0.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.bar-blue {
-  background: #3B82F6;
-}
-
-.bar-light-blue {
-  background: #60A5FA;
-}
-
-.bar-magenta {
-  background: #EC4899;
-}
-
-.bar-dark-blue {
-  background: #1E3A8A;
-}
-
-.bar-green {
-  background: #10B981;
-}
-
-.bar-orange {
-  background: #F59E0B;
-}
-
-.bar-label {
-  color: #6B7280;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin-top: 0.5rem;
-  flex-shrink: 0;
-}
-
-/* Donut Chart Styles */
-.donut-chart-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.donut-chart {
-  width: 200px;
-  height: 200px;
-  position: relative;
-}
-
-.donut-segment {
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.donut-segment:hover {
-  opacity: 0.8;
-}
-
-.donut-tooltip {
-  position: fixed;
-  background: #1F2937;
-  color: white;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  pointer-events: none;
-  z-index: 1000;
-  transform: translate(-50%, -100%);
-  margin-top: -0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
   white-space: nowrap;
 }
 
-.tooltip-label {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+.nav-item:hover {
+  color: white;
 }
 
-.tooltip-percentage {
-  font-weight: 500;
-  opacity: 0.9;
+.nav-item.active {
+  color: white;
+  border-bottom-color: white;
 }
 
-.donut-center-text {
-  fill: #1F2937;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.donut-center-subtext {
-  fill: #6B7280;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.donut-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #1F2937;
-  font-size: 0.875rem;
-}
-
-.legend-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.dot-dark-blue {
-  background: #1E3A8A;
-}
-
-.dot-light-blue {
-  background: #3B82F6;
-}
-
-.dot-magenta {
-  background: #EC4899;
-}
-
-.legend-dot-empty {
-  background: transparent;
-  border: 2px solid #E5E7EB;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+/* Main Content */
+.main-content {
+  flex: 1;
   padding: 2rem;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
   width: 100%;
-  max-width: 900px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
 }
 
-.modal-header {
+.content-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  align-items: flex-start;
+  margin-bottom: 2rem;
 }
 
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1F2937;
-  margin: 0;
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.5rem;
 }
 
-.modal-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6B7280;
-  transition: color 0.2s;
+.page-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
 }
 
-.modal-close:hover {
-  color: #1F2937;
+.report-btn {
+  background: white;
+  color: #1C2457;
 }
 
-.close-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.modal-body {
-  padding: 1.5rem;
-  flex: 1;
-  overflow-y: auto;
-}
-
-.modal-top-row {
+/* Metrics Grid */
+.metrics-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.search-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
 
-.search-icon {
-  position: absolute;
-  left: 0.75rem;
-  width: 20px;
-  height: 20px;
-  color: #6B7280;
-  pointer-events: none;
-}
-
-.search-input {
-  padding-left: 2.75rem;
-}
-
-.date-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.date-label {
-  font-size: 0.75rem;
-  color: #3B82F6;
-  font-weight: 500;
-}
-
-.date-input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.calendar-icon {
-  position: absolute;
-  left: 0.75rem;
-  width: 18px;
-  height: 18px;
-  color: #6B7280;
-  pointer-events: none;
-}
-
-.date-input {
-  padding-left: 2.75rem;
-}
-
-.modal-bottom-row {
+/* Charts Grid */
+.charts-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.users-list {
+
+/* Bar Chart */
+.bar-chart {
+  display: flex;
+  gap: 1rem;
+  height: 250px;
+}
+
+.bar-chart-y-axis {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.user-checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: background 0.2s;
-}
-
-.user-checkbox-item:hover {
-  background: #F3F4F6;
-}
-
-.checkbox-input {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #7C3AED;
-}
-
-.user-name {
-  color: #1F2937;
-  font-size: 0.875rem;
-}
-
-.no-results {
-  color: #9CA3AF;
-  font-size: 0.875rem;
-  text-align: center;
-  padding: 2rem;
-  font-style: italic;
-}
-
-.calendar-container {
-  background: #1C2457;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  min-height: 400px;
-  display: flex;
-  flex-direction: column;
-}
-
-.calendar-header {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.calendar-nav-button {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 0.5rem;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: white;
-  transition: background 0.2s;
-}
-
-.calendar-nav-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.calendar-month-title {
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.weekday {
-  color: rgba(255, 255, 255, 0.7);
+  padding-right: 0.5rem;
   font-size: 0.75rem;
-  font-weight: 500;
-  text-align: center;
-  padding: 0.5rem 0;
+  color: hsl(var(--muted-foreground));
 }
 
-.calendar-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
+.bar-chart-content {
   flex: 1;
-}
-
-.calendar-day {
-  aspect-ratio: 1;
   display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.bar-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.8);
+}
+
+.bar {
+  width: 100%;
+  max-width: 60px;
+  border-radius: 0.375rem 0.375rem 0 0;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.5rem;
+  transition: all 0.3s;
+}
+
+.bar:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.bar-label {
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.bar-hour {
   font-size: 0.875rem;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
+  color: hsl(var(--muted-foreground));
+  padding-top: 0.5rem;
 }
 
-.calendar-day.empty {
-  cursor: default;
-  color: transparent;
+/* Donut Chart */
+.donut-chart {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
 }
 
-.calendar-day:not(.empty):hover {
-  background: rgba(255, 255, 255, 0.15);
+.donut-svg {
+  width: 100%;
+  height: 100%;
 }
 
-.calendar-day.today {
-  background: rgba(255, 255, 255, 0.2);
-  font-weight: 600;
+.donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
-.calendar-day.selected {
-  background: #7C3AED;
-  color: white;
-  font-weight: 600;
+.donut-percentage {
+  font-size: 2rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
 }
 
-.calendar-day.selected:hover {
-  background: #8B5CF6;
+.donut-label {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
 }
 
-.calendar-day.range-start {
-  background: #7C3AED;
-  color: white;
-  font-weight: 600;
-  border-radius: 0.5rem 0 0 0.5rem;
+/* Lists Grid */
+.lists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.calendar-day.range-end {
-  background: #7C3AED;
-  color: white;
-  font-weight: 600;
-  border-radius: 0 0.5rem 0.5rem 0;
-}
 
-.calendar-day.in-range {
-  background: rgba(124, 58, 237, 0.3);
-  color: white;
-  border-radius: 0;
-}
 
 /* Footer */
-.dashboard-footer {
-  grid-column: 1 / -1;
-  width: 100%;
-  margin-top: 3rem;
-  padding: 2rem 0;
+.footer {
+  padding: 1.5rem 2rem;
   display: flex;
   justify-content: center;
-  align-items: center;
-}
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.footer-text {
+  gap: 1rem;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
 }
 
-.calendar-day.range-start.range-end {
-  border-radius: 0.5rem;
+/* Responsive */
+@media (max-width: 768px) {
+  .metrics-grid,
+  .charts-grid,
+  .lists-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .navigation {
+    gap: 1rem;
+  }
+  
+  .donut-content {
+    flex-direction: column;
+  }
 }
 </style>

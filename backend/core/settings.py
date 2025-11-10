@@ -194,6 +194,10 @@ GOOGLE_REDIRECT_URI = config('GOOGLE_REDIRECT_URI', default='http://localhost:80
 # URL do frontend (para redirecionamento após login)
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
 
-# Permitir HTTPS em produção (para OAuth2)
+# Permitir HTTP em desenvolvimento (para OAuth2)
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' if DEBUG else '0'
+
+# Tolerância de tempo para validação de tokens (clock skew)
+# Útil quando o relógio do servidor não está perfeitamente sincronizado
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'

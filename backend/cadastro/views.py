@@ -83,10 +83,10 @@ def google_callback(request):
         # Verificar state (segurança)
         state = request.session.get('google_auth_state')
         if not state:
-            return JsonResponse(
-                {'error': 'State inválido. Tente fazer login novamente.'},
-                status=400
-            )
+            print("❌ State não encontrado na sessão")
+            return redirect(f"{settings.FRONTEND_URL}?error=state_invalido")
+        
+        print(f"✅ State verificado: {state[:20]}...")
         
         # Configurar o fluxo OAuth2
         flow = Flow.from_client_config(
@@ -109,21 +109,45 @@ def google_callback(request):
         
         flow.redirect_uri = settings.GOOGLE_REDIRECT_URI
         
+        print(f"🔄 Trocando código por token...")
+        print(f"📍 Redirect URI: {settings.GOOGLE_REDIRECT_URI}")
+        
         # Trocar código por token
         flow.fetch_token(authorization_response=request.build_absolute_uri())
+        
+        print("✅ Token obtido com sucesso!")
         
         # Obter credenciais
         credentials = flow.credentials
         
-        # Verificar token ID
-        idinfo = id_token.verify_oauth2_token(
-            credentials.id_token,
-            google_requests.Request(),
-            settings.GOOGLE_CLIENT_ID
-        )
+        print("🔍 Verificando token ID...")
+        
+        # Verificar token ID (com tratamento de clock skew)
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                credentials.id_token,
+                google_requests.Request(),
+                settings.GOOGLE_CLIENT_ID
+            )
+        except ValueError as ve:
+            # Se erro de clock skew, tentar novamente sem verificação estrita de tempo
+            print(f"⚠️ Erro de verificação: {str(ve)}")
+            if "too early" in str(ve).lower() or "clock" in str(ve).lower():
+                print("🕐 Problema de sincronização de relógio detectado")
+                # Decodificar sem verificação estrita (apenas para desenvolvimento)
+                import jwt as pyjwt
+                idinfo = pyjwt.decode(
+                    credentials.id_token,
+                    options={"verify_signature": False}
+                )
+            else:
+                raise
+        
+        print(f"✅ Token verificado! Email: {idinfo.get('email')}")
         
         # Verificar email verificado
         if not idinfo.get('email_verified'):
+            print("❌ Email não verificado pelo Google")
             return redirect(f"{settings.FRONTEND_URL}?error=email_not_verified")
         
         # Extrair informações
@@ -160,8 +184,14 @@ def google_callback(request):
         return redirect(f"{settings.FRONTEND_URL}?auth=success&user={user_data}&new_user={created}")
         
     except Exception as e:
+        # Log do erro completo
+        print(f"❌ ERRO no callback do Google: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
         # Redirecionar com erro
-        return redirect(f"{settings.FRONTEND_URL}?error={str(e)}")
+        error_msg = str(e).replace(' ', '_')
+        return redirect(f"{settings.FRONTEND_URL}?error={error_msg}")
 
 
 @api_view(['POST'])

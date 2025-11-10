@@ -10,6 +10,7 @@ sqlparse==0.5.3
 google-auth==2.23.0
 google-auth-oauthlib==1.1.0
 google-auth-httplib2==0.1.1
+PyJWT==2.8.0
 
 # CORS (para frontend comunicar com backend)
 django-cors-headers==4.3.0
