@@ -14,14 +14,14 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### Objetivo — Administração e permissões
 
-#### RF-001 — Cadastrar usuários <span class="badge badge--alta">Alta</span>
+#### <span id="rf-001--cadastrar-usuários-">RF-001 — Cadastrar usuários</span> <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>Permitir cadastro de usuários utilizando e-mail corporativo</li>
   <li>Permitir que usuários com permissão (Administradores) editem perfis de outros usuários</li>
 </ul>
 
-#### RF-002 — Controlar permissões <span class="badge badge--alta">Alta</span>
+#### <span id="rf-002--controle-de-permissões-">RF-002 — Controle de permissões</span> <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>Controlar acesso por perfis; administradores definem restrições e exceções para agentes</li>
@@ -30,7 +30,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### Objetivo — Reservas de salas e estações
 
-#### RF-003 — Reservar locais de trabalho <span class="badge badge--critica">Crítica</span>
+#### <span id="rf-003--reservar-locais-de-trabalho-">RF-003 — Reservar locais de trabalho</span> <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>Permitir reservar salas e estações</li>
@@ -45,7 +45,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>Assegurar se existe a reserva disponível ou não</li>
 </ul>
 
-#### RF-004 — Editar reservas <span class="badge badge--critica">Crítica</span>
+#### <span id="rf-004--editar-reservas-">RF-004 — Editar reservas</span> <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>Permitir ao proprietário da reserva (ou um Administrador) atualizar, cancelar ou reagendar reservas</li>
@@ -53,7 +53,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>O sistema poderá registrar histórico das alterações de reserva</li>
 </ul>
 
-#### RF-005 — Adicionar estações de trabalho <span class="badge badge--alta">Alta</span>
+#### <span id="rf-005--editar-estações-de-trabalho-">RF-005 — Editar estações de trabalho</span> <span class="badge badge--alta">Alta</span>
 
 <ul class="softex-list">
   <li>Recurso permitido apenas aos membros de carga de liderança</li>
@@ -61,7 +61,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>Adicionar salas de reunião</li>
 </ul>
 
-#### RF-006 — Visualizar detalhamento de reservas <span class="badge badge--media">Média</span>
+#### <span id="rf-006--visualizar-detalhamento-de-reservas-">RF-006 — Visualizar detalhamento de reservas</span> <span class="badge badge--media">Média</span>
 
 <div class="softex-process">
 > **Ao selecionar uma sala/estação, exibir:**
@@ -74,7 +74,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
   <li>Descrição/uso</li>
 </ul>
 
-#### RF-007 — Filtrar Reserva <span class="badge badge--media">Média</span>
+#### <span id="rf-007--filtrar-reserva-">RF-007 — Filtrar Reserva</span> <span class="badge badge--media">Média</span>
 
 <ul class="softex-list">
   <li>Filtrar reservas por dia, período e dia da semana</li>
@@ -83,24 +83,16 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### Objetivo — Visualização e mapa de ocupação
 
-#### RF-008 — Visualizar mapa interativo da planta <span class="badge badge--critica">Crítica</span>
+#### <span id="rf-008--visualizar-mapa-interativo-da-planta-">RF-008 — Visualizar mapa interativo da planta</span> <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>Exibir mapa da planta para consulta</li>
   <li>Identificar salas/estações disponíveis em tempo real</li>
 </ul>
 
-#### RF-009 — Adicionar estações de trabalho <span class="badge badge--alta">Alta</span>
-
-<ul class="softex-list">
-  <li>Recurso permitido apenas aos membros de carga de liderança</li>
-  <li>Adicionar estações de trabalho</li>
-  <li>Adicionar salas de reunião</li>
-</ul>
-
 ### Objetivo — Relatórios e gestão
 
-#### RF-010 — Gerar relatórios de histórico de ocupação <span class="badge badge--critica">Crítica</span>
+#### <span id="rf-009--gerar-relatórios-de-histórico-de-ocupação-">RF-009 — Gerar relatórios de histórico de ocupação</span> <span class="badge badge--critica">Crítica</span>
 
 <ul class="softex-list">
   <li>Gerar relatórios de uso/ocupação por período e por sala/estação</li>
@@ -110,7 +102,7 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 
 ### Objetivo — Integrações externas
 
-#### RF-011 — Alertar sistemas internos da empresa <span class="badge badge--media">Média</span>
+#### <span id="rf-010--alertar-sistemas-internos-da-empresa-">RF-010 — Alertar sistemas internos da empresa</span> <span class="badge badge--media">Média</span>
 
 <ul class="softex-flow">
   <li>Enviar confirmações/cancelamentos por e-mail e sistemas internos</li>
@@ -217,3 +209,4 @@ import requisitosFigma from '../../../assets/requisitos.jpeg';
 | 14/10/2025 | 2.2 | Adicionado RF05 (Adicionar estações de trabalho). Renumeração de RF06-RF10. Ajustes em descrições. | Felipe Pedroza | Todos |
 | 20/10/2025 | 2.5 | Ajuste nos RF, refatorado e detalhado com mais clareza. | Felipe Pedroza | Todos |
 | 21/10/2025 | 3.0 | Reestruturação completa dos objetivos alinhados com as Características da Solução. RF renumerados (RF-001 a RF-011). | Felipe Pedroza, Yuri Andrade, Pietro Vinsenti | Todos |
+| 21/10/2025 | 3.1 | Removido RF-009 duplicado (Adicionar estações de trabalho). RF renumerados: RF-009 (Gerar relatórios), RF-010 (Alertar sistemas internos). Total: 10 requisitos funcionais. | Felipe Pedroza | Todos |

@@ -457,9 +457,80 @@ html {
 .badge--alta { background-color: #3B82F6; }     /* azul */
 .badge--critica { background-color: #F97316; }  /* laranja */
 .badge--media { background-color: #F59E0B; }    /* amarelo */
+.badge--info { background-color: #06B6D4; }     /* ciano */
+.badge--success { background-color: #10B981; }  /* verde */
+.badge--warning { background-color: #F59E0B; }  /* amarelo */
+.badge--danger { background-color: #EF4444; }  /* vermelho */
+.badge--purple { background-color: #8B5CF6; }   /* roxo */
+.badge--pink { background-color: #EC4899; }     /* rosa */
+.badge--indigo { background-color: #6366F1; }   /* índigo */
+.badge--teal { background-color: #14B8A6; }     /* verde-azulado */
+.badge--orange { background-color: #F97316; }   /* laranja */
+.badge--red { background-color: #DC2626; }      /* vermelho escuro */
+.badge--blue { background-color: #2563EB; }     /* azul escuro */
+.badge--green { background-color: #059669; }    /* verde escuro */
 
 /* Ajustes quando usados em listas */
 .softex-list li .badge { margin-right: 0.5rem; margin-left: 0; }
+
+/* Cores específicas para ferramentas de comunicação */
+.fase-item h4 i.fa-whatsapp { color: #25D366; }
+.fase-item h4 i.fa-discord { color: #5865F2; }
+.fase-item h4 i.fa-slack { color: #4A154B; }
+.fase-item h4 i.fa-video { color: #EA4335; }
+.fase-item h4 i.fa-github { color: #F0F6FC; }
+.fase-item h4 i.fa-file-code { color: #8B5CF6; }
+
+/* Cores para modo claro */
+[data-theme="light"] .fase-item h4 i.fa-whatsapp { color: #25D366; }
+[data-theme="light"] .fase-item h4 i.fa-discord { color: #5865F2; }
+[data-theme="light"] .fase-item h4 i.fa-slack { color: #4A154B; }
+[data-theme="light"] .fase-item h4 i.fa-video { color: #EA4335; }
+[data-theme="light"] .fase-item h4 i.fa-github { color: #181717; }
+[data-theme="light"] .fase-item h4 i.fa-file-code { color: #8B5CF6; }
+
+/* Cores dos ícones das sprints */
+.cronograma-card h3 i.fa-play,
+h3 i.fa-play { color: #8B5CF6 !important; }
+
+.cronograma-card h3 i.fa-bullseye,
+h3 i.fa-bullseye { color: #3B82F6 !important; }
+
+.cronograma-card h3 i.fa-check-circle,
+h3 i.fa-check-circle { color: #10B981 !important; }
+
+.cronograma-card h3 i.fa-cogs,
+h3 i.fa-cogs { color: #F59E0B !important; }
+
+.cronograma-card h3 i.fa-laptop-code,
+h3 i.fa-laptop-code { color: #6366F1 !important; }
+
+.cronograma-card h3 i.fa-map-marked-alt,
+h3 i.fa-map-marked-alt { color: #14B8A6 !important; }
+
+.cronograma-card h3 i.fa-wrench,
+h3 i.fa-wrench { color: #F97316 !important; }
+
+.cronograma-card h3 i.fa-bell,
+h3 i.fa-bell { color: #EF4444 !important; }
+
+.cronograma-card h3 i.fa-edit,
+h3 i.fa-edit { color: #8B5CF6 !important; }
+
+.cronograma-card h3 i.fa-tachometer-alt,
+h3 i.fa-tachometer-alt { color: #06B6D4 !important; }
+
+.cronograma-card h3 i.fa-shield-alt,
+h3 i.fa-shield-alt { color: #10B981 !important; }
+
+.cronograma-card h3 i.fa-cloud-upload-alt,
+h3 i.fa-cloud-upload-alt { color: #3B82F6 !important; }
+
+.cronograma-card h3 i.fa-rocket,
+h3 i.fa-rocket { color: #EC4899 !important; }
+
+.cronograma-card h3 i.fa-flag-checkered,
+h3 i.fa-flag-checkered { color: #da1414 !important; }
 
 /* Highlight quando navega por âncora (link) */
 :target {

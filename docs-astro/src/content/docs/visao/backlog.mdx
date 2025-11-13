@@ -14,34 +14,34 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
 ## Características da Solução
 [🔗 Ver na Solução Proposta](/REQ-2025.2-T01-Softex/visao/solucao#características-da-solução)
 
-| **ID** | **Característica** | **Descrição** | **User Stories** |
-|--------|-------------------|---------------|------------------|
-| <span id="c01">**[C01](/REQ-2025.2-T01-Softex/visao/solucao#reserva-salas-estacoes)**</span> | Reservas de salas e estações | Criar, editar/cancelar e solicitar reservas (salas e estações), com prevenção de conflitos e confirmações. | [US-003](#us-003), [US-004](#us-004), [US-005](#us-005), [US-008](#us-008), [US-012](#us-012) |
-| <span id="c02">**[C02](/REQ-2025.2-T01-Softex/visao/solucao#mapa-interativo)**</span> | Visualização e mapa de ocupação | Mapa interativo em tempo real, filtros por andar/setor e estado de ocupação. | [US-009](#us-009), [US-010](#us-010), [US-011](#us-011) |
-| <span id="c03">**[C03](/REQ-2025.2-T01-Softex/visao/solucao#integracao-ferramentas)**</span> | Integrações externas | Sincronizar com enviar notificações/alertas via Slack. | [US-007](#us-007) |
-| <span id="c04">**[C04](/REQ-2025.2-T01-Softex/visao/solucao#relatorios-indicadores)**</span> | Relatórios e gestão | Relatórios de uso/ocupação, métricas e monitoramento de capacidade com alertas. | [US-006](#us-006) |
-| <span id="c05">**[C05](/REQ-2025.2-T01-Softex/visao/solucao#controle-permissoes)**</span> | Administração e permissões | Gestão de usuários, papéis/perfis e cadastro/edição de recursos (salas, estações, equipamentos). | [US-001](#us-001), [US-002](#us-002) |
+| **ID** | **Característica** | **Descrição** | **Objetivos Específicos** | **User Stories** |
+|--------|-------------------|---------------|---------------------------|------------------|
+| <span id="c01">**[C01](/REQ-2025.2-T01-Softex/visao/solucao#reserva-salas-estacoes)**</span> | Reservas de salas e estações | Criar, editar/cancelar e solicitar reservas (salas e estações), com prevenção de conflitos e confirmações. | [OE1](/REQ-2025.2-T01-Softex/visao/solucao#eliminar-ineficiencias), [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade) | [US-003](#us-003), [US-004](#us-004), [US-005](#us-005), [US-008](#us-008), [US-012](#us-012) |
+| <span id="c02">**[C02](/REQ-2025.2-T01-Softex/visao/solucao#mapa-interativo)**</span> | Visualização e mapa de ocupação | Mapa interativo em tempo real, filtros por andar/setor e estado de ocupação. | [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [US-009](#us-009), [US-010](#us-010), [US-011](#us-011) |
+| <span id="c03">**[C03](/REQ-2025.2-T01-Softex/visao/solucao#relatorios-indicadores)**</span> | Relatórios e gestão | Relatórios de uso/ocupação, métricas e monitoramento de capacidade com alertas. | [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [US-006](#us-006) |
+| <span id="c04">**[C04](/REQ-2025.2-T01-Softex/visao/solucao#controle-permissoes)**</span> | Administração e permissões | Gestão de usuários, papéis/perfis e cadastro/edição de recursos (salas, estações, equipamentos). | [OE4](/REQ-2025.2-T01-Softex/visao/solucao#autonomia-conveniencia), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [US-001](#us-001), [US-002](#us-002) |
+| <span id="c05">**[C05](/REQ-2025.2-T01-Softex/visao/solucao#integracao-ferramentas)**</span> | Integrações externas | Sincronizar com enviar notificações/alertas via Slack. | [OE4](/REQ-2025.2-T01-Softex/visao/solucao#autonomia-conveniencia) | [US-007](#us-007) |
 
 ## Histórias de Usuário
 
 ### Tabela de User Stories
 
-| **US** | **CS** | **RF** | **Declaração** | **Critérios** | **Benefício/Valor** |
-|--------|--------|--------|----------------|---------------|---------------------|
-| <span id="us-001">**US-001**</span> | [C05](#c05) | [RF-001](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-001--cadastrar-usuários-) | Como administrador quero cadastrar os usuários | [Ver](#us-001--cadastrar-os-usuários) | Garantir que apenas usuários autorizados usem o sistema. |
-| <span id="us-002">**US-002**</span> | [C05](#c05) | [RF-002](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-002--controle-de-permissões-) | Como administrador, quero controlar perfis e permissões (restrições e exceções para agentes) para garantir acessos adequados. | [Ver](#us-002--controlar-perfis-e-permissões) | Garantir segurança e controle sobre acessos do sistema. |
-| <span id="us-003">**US-003**</span> | [C01](#c01) | [RF-005](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-005--adicionar-estações-de-trabalho-) | Como administrador, quero cadastrar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. | [Ver](#us-003--cadastrar-recursos) | Manter o inventário de recursos atualizado. |
-| <span id="us-004">**US-004**</span> | [C01](#c01) | [RF-004](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-004--editar-reservas-) | Como administrador, quero editar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. | [Ver](#us-004--editar-recursos) | Garantir que informações sobre recursos estejam sempre corretas. |
-| <span id="us-005">**US-005**</span> | [C01](#c01) | [RF-003](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-003--reservar-locais-de-trabalho-) | Como usuário, quero reservar uma sala para garantir espaço disponível no horário que preciso. | [Ver](#us-005--reservar-sala) | Garantir que o usuário tenha espaço disponível quando necessário. |
-| <span id="us-006">**US-006**</span> | [C04](#c04) | [RF-010](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-010--gerar-relatórios-de-histórico-de-ocupação-) | Como gestor, quero relatórios de uso/ocupação por período, com taxa de ocupação e picos, e exportação em Excel. | [Ver](#us-006--gerar-relatórios-de-uso) | Tomar decisões baseadas em dados de uso e ocupação. |
-| <span id="us-007">**US-007**</span> | [C03](#c03) | [RF-011](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-011--alertar-sistemas-internos-da-empresa-) | Como usuário, quero receber notificações (Slack/e-mail) ao criar/editar/cancelar reservas e lembrete próximo do horário. | [Ver](#us-007--receber-notificações) | Reduzir esquecimentos e melhorar comunicação com usuários. |
-| <span id="us-008">**US-008**</span> | [C01](#c01) | [RF-006](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-006--visualizar-detalhamento-de-reservas-) | Como usuário, quero ver o detalhamento da reserva (usuário, localização, início/término, descrição/uso) ao selecionar uma sala/estação. | [Ver](#us-008--ver-detalhamento-de-reserva) | Ter informações claras sobre cada reserva. |
-| <span id="us-009">**US-009**</span> | [C02](#c02) | [RF-007](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-007--filtrar-reserva-) | Como usuário, quero filtrar reservas por dia, período e dia da semana para encontrar rapidamente o que preciso. | [Ver](#us-009--filtrar-reservas) | Encontrar reservas de forma rápida e eficiente. |
-| <span id="us-010">**US-010**</span> | [C02](#c02) | [RF-004](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-004--editar-reservas-) | Como usuário, quero editar ou cancelar minhas reservas para corrigir informações ou liberar a sala. | [Ver](#us-010--editar-ou-cancelar-reserva) | Flexibilidade e correção de reservas pelo usuário. |
-| <span id="us-011">**US-011**</span> | [C02](#c02) | [RF-008](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-008--visualizar-mapa-interativo-da-planta-) | Como usuário, quero visualizar um mapa interativo em tempo real para ver salas/estações livres. | [Ver](#us-011--visualizar-mapa-interativo) | Visualizar ocupação em tempo real e planejar melhor uso. |
-| <span id="us-012">**US-012**</span> | [C01](#c01) | [RF-003](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-003--reservar-locais-de-trabalho-) | Como colaborador, quero reservar uma estação de trabalho para garantir onde trabalhar no escritório. | [Ver](#us-012--reservar-estação-de-trabalho) | Garantir local de trabalho disponível e organizado. |
+| **US** | **CS** | **RF** | **Declaração** | **Objetivos Específicos** | **Critérios** | **Benefício/Valor** |
+|--------|--------|--------|----------------|---------------------------|---------------|---------------------|
+| <span id="us-001">**US-001**</span> | [C04](#c04) | [RF-001](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-001--cadastrar-usuários-) | Como administrador quero cadastrar os usuários | [OE4](/REQ-2025.2-T01-Softex/visao/solucao#autonomia-conveniencia), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [Ver](#us-001--cadastrar-os-usuários) | Garantir que apenas usuários autorizados usem o sistema. |
+| <span id="us-002">**US-002**</span> | [C04](#c04) | [RF-002](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-002--controle-de-permissões-) | Como administrador, quero controlar perfis e permissões (restrições e exceções para agentes) para garantir acessos adequados. | [OE4](/REQ-2025.2-T01-Softex/visao/solucao#autonomia-conveniencia), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [Ver](#us-002--controlar-perfis-e-permissões) | Garantir segurança e controle sobre acessos do sistema. |
+| <span id="us-003">**US-003**</span> | [C01](#c01) | [RF-005](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-005--editar-estações-de-trabalho-) | Como administrador, quero cadastrar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. | [OE1](/REQ-2025.2-T01-Softex/visao/solucao#eliminar-ineficiencias), [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade) | [Ver](#us-003--cadastrar-recursos) | Manter o inventário de recursos atualizado. |
+| <span id="us-004">**US-004**</span> | [C01](#c01) | [RF-005](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-005--editar-estações-de-trabalho-) | Como administrador, quero editar recursos (salas, estações, equipamentos) e desativar temporariamente quando necessário. | [OE1](/REQ-2025.2-T01-Softex/visao/solucao#eliminar-ineficiencias), [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade) | [Ver](#us-004--editar-recursos) | Garantir que informações sobre recursos estejam sempre corretas. |
+| <span id="us-005">**US-005**</span> | [C01](#c01) | [RF-003](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-003--reservar-locais-de-trabalho-) | Como usuário, quero reservar uma sala para garantir espaço disponível no horário que preciso. | [OE1](/REQ-2025.2-T01-Softex/visao/solucao#eliminar-ineficiencias), [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade) | [Ver](#us-005--reservar-sala) | Garantir que o usuário tenha espaço disponível quando necessário. |
+| <span id="us-006">**US-006**</span> | [C03](#c03) | [RF-009](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-009--gerar-relatórios-de-histórico-de-ocupação-) | Como gestor, quero relatórios de uso/ocupação por período, com taxa de ocupação e picos, e exportação em Excel. | [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica), [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade) | [Ver](#us-006--gerar-relatórios-de-uso) | Tomar decisões baseadas em dados de uso e ocupação. |
+| <span id="us-007">**US-007**</span> | [C05](#c05) | [RF-010](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-010--alertar-sistemas-internos-da-empresa-) | Como usuário, quero receber notificações (Slack/e-mail) ao criar/editar/cancelar reservas e lembrete próximo do horário. | [OE4](/REQ-2025.2-T01-Softex/visao/solucao#autonomia-conveniencia) | [Ver](#us-007--receber-notificações) | Reduzir esquecimentos e melhorar comunicação com usuários. |
+| <span id="us-008">**US-008**</span> | [C01](#c01) | [RF-006](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-006--visualizar-detalhamento-de-reservas-) | Como usuário, quero ver o detalhamento da reserva (usuário, localização, início/término, descrição/uso) ao selecionar uma sala/estação. | [OE1](/REQ-2025.2-T01-Softex/visao/solucao#eliminar-ineficiencias), [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade) | [Ver](#us-008--ver-detalhamento-de-reserva) | Ter informações claras sobre cada reserva. |
+| <span id="us-009">**US-009**</span> | [C02](#c02) | [RF-007](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-007--filtrar-reserva-) | Como usuário, quero filtrar reservas por dia, período e dia da semana para encontrar rapidamente o que preciso. | [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [Ver](#us-009--filtrar-reservas) | Encontrar reservas de forma rápida e eficiente. |
+| <span id="us-010">**US-010**</span> | [C02](#c02) | [RF-004](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-004--editar-reservas-) | Como usuário, quero editar ou cancelar minhas reservas para corrigir informações ou liberar a sala. | [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [Ver](#us-010--editar-ou-cancelar-reserva) | Flexibilidade e correção de reservas pelo usuário. |
+| <span id="us-011">**US-011**</span> | [C02](#c02) | [RF-008](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-008--visualizar-mapa-interativo-da-planta-) | Como usuário, quero visualizar um mapa interativo em tempo real para ver salas/estações livres. | [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE5](/REQ-2025.2-T01-Softex/visao/solucao#visibilidade-estrategica) | [Ver](#us-011--visualizar-mapa-interativo) | Visualizar ocupação em tempo real e planejar melhor uso. |
+| <span id="us-012">**US-012**</span> | [C01](#c01) | [RF-003](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-003--reservar-locais-de-trabalho-) | Como colaborador, quero reservar uma estação de trabalho para garantir onde trabalhar no escritório. | [OE1](/REQ-2025.2-T01-Softex/visao/solucao#eliminar-ineficiencias), [OE2](/REQ-2025.2-T01-Softex/visao/solucao#otimizar-espaco), [OE3](/REQ-2025.2-T01-Softex/visao/solucao#aumentar-produtividade) | [Ver](#us-012--reservar-estação-de-trabalho) | Garantir local de trabalho disponível e organizado. |
 
-## Critérios de Aceitação
+## Critérios de Aceitação de User Stories
 
 <div class="softex-process">
 > Os critérios de aceitação definem quando uma história de usuário está completa e atende aos requisitos esperados.
@@ -90,7 +90,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
 </ul>
 
 ### US-006 — Gerar Relatórios de Uso
-**[↑ Voltar para US-006](#us-006)** | **Característica:** [C04 - Relatórios e gestão](#c04) | **Requisito:** [RF-010](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-010--gerar-relatórios-de-histórico-de-ocupação-)
+**[↑ Voltar para US-006](#us-006)** | **Característica:** [C04 - Relatórios e gestão](#c04) | **Requisito:** [RF-009](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-009--gerar-relatórios-de-histórico-de-ocupação-)
 
 <ul class="softex-list">
   <li>O sistema deve gerar relatórios por período customizável</li>
@@ -99,7 +99,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
 </ul>
 
 ### US-007 — Receber Notificações
-**[↑ Voltar para US-007](#us-007)** | **Característica:** [C03 - Integrações externas](#c03) | **Requisito:** [RF-011](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-011--alertar-sistemas-internos-da-empresa-)
+**[↑ Voltar para US-007](#us-007)** | **Característica:** [C03 - Integrações externas](#c03) | **Requisito:** [RF-010](/REQ-2025.2-T01-Softex/visao/levantamento-parcial#rf-010--alertar-sistemas-internos-da-empresa-)
 
 <ul class="softex-list">
   <li>O sistema deve enviar notificações via Slack e e-mail ao criar/editar/cancelar reservas</li>
@@ -152,7 +152,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
   <li>O sistema deve reservar pelo mesmo fluxo das salas</li>
 </ul>
 
-## Priorização MoSCoW
+## Priorização Backlog
 
 <div class="softex-process">
 > O **método MoSCoW** é uma técnica de priorização que classifica funcionalidades em quatro categorias, ajudando a equipe a focar no que é essencial para o sucesso do projeto.
@@ -189,70 +189,46 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
 </div>
 
 <ul class="softex-flow">
-  <li>**0–5**: Simples</li>
-  <li>**8–13**: Médio</li>
-  <li>**15–20**: Complexo</li>
+  <li>**0–5**: Simples &rarr; O tempo de 2 dias de dedicação da equipe</li>
+  <li>**8–13**: Médio &rarr; O tempo de 5 dias de dedicação da equipe</li>
+  <li>**15–20**: Complexo &rarr; O tempo de 10 dias de dedicação da equipe</li>
 </ul>
 
 ### Must Have
 
-| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Must'** | **Prioridade (Planning Poker)** |
-|-------------------|----------------|--------------------------------------|--------------------------------|
-| Reservar locais de trabalho (salas e estações) | US-005, US-012 | É o core do produto — o cliente precisa garantir o uso do espaço físico. Sem essa função, o sistema não tem propósito. | 13 |
-| Editar ou cancelar reservas | US-010 | O cliente quer evitar retrabalho e erros operacionais. Impacta diretamente a usabilidade e confiança no sistema. | 8 |
-| Visualizar mapa interativo da planta | US-011 | O cliente solicitou a visualização intuitiva das salas e estações livres. Facilita tomada de decisão e reduz suporte. | 8 |
-| Gerar relatórios de histórico/ocupação | US-006 | O gestor precisa justificar o uso dos espaços e mensurar eficiência. Solicitação explícita do cliente para avaliação de ROI. | 5 |
+| **Funcionalidade** | **User Story** | **RF** | **Justificativa / Por que é 'Must'** | **Prioridade (Planning Poker)** |
+|-------------------|----------------|--------|--------------------------------------|--------------------------------|
+| Reservar locais de trabalho (salas e estações), com checagem de disponibilidade e bloqueio de conflitos | US-005, US-012 | RF-003 | É o core do produto: sem reserva confiável por data/horário, o sistema não cumpre o objetivo. | 13 |
+| Editar ou cancelar reservas (até antes do início) com validações | US-010 | RF-004 | Evita retrabalho/erros operacionais e mantém confiança no sistema. | 8 |
+| Visualizar mapa interativo | US-011 | RF-008 | Eleva a usabilidade e reduz suporte, mas o MVP funciona sem mapa (lista já atende). | 8 |
+| Relatórios de uso/ocupação por período, com taxa de ocupação, picos e visão por unidade/ambiente | US-006 | RF-009 | Suporta tomadas de decisão e justificativas gerenciais; pode entrar logo após o core. | 5 |
+| Editar recursos | US-004 | RF-005 | Possibilita a empresa continuar mantendo a aplicação. | 5 |
 
 ### Should Have
 
-| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Should'** | **Prioridade (Planning Poker)** |
-|-------------------|----------------|---------------------------------------|--------------------------------|
-| Cadastrar usuários | US-001 | Necessário para controle interno, mas pode começar com importação manual no MVP. | 5 |
-| Disponibilidade e performance | — | Importante para escalabilidade, mas não impede o uso inicial. | 3 |
-| Adicionar novas estações de trabalho | US-003 | Gestão de espaços é relevante, mas pode ser manual no início. | 5 |
-| Controlar permissões de usuários | US-002 | Essencial para segurança, mas pode ser simplificado no MVP (admin único). | 5 |
+| **Funcionalidade** | **User Story** | **RF** | **Justificativa / Por que é 'Should'** | **Planing Poker** |
+|-------------------|----------------|--------|---------------------------------------|---------------------|
+| Filtrar reservas por dia | US-009 | RF-007 | Acelera a busca e reduz atrito na experiência; não impede o uso inicial. | 5 |
+| Visualizar detalhamento da reserva | US-008 | RF-006 | Transparência para o usuário e para operação; agrega confiança ao fluxo. | 3 |
+| Cadastrar usuários (e-mail corporativo), gerir dados básicos | US-001 | RF-001 | Necessário para controle/segurança; pode começar simples (importação/seed) no MVP. | 5 |
+| Controle de perfis e permissões (usuário/gestor/admin) com restrições e exceções básicas | US-002 | RF-002 | Segurança e governança; no MVP, modelagem inicial de papéis (sem granularidade fina). | 8 |
+| Cadastrar recursos (salas/estações/equipamentos) | US-003 | RF-005 | Mantém inventário atualizado e operacional. | 5 |
 
 ### Could Have
 
-| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Could'** | **Prioridade (Planning Poker)** |
-|-------------------|----------------|--------------------------------------|--------------------------------|
-| Filtrar reservas | US-009 | Melhora a experiência, mas é possível operar o MVP sem filtros avançados. | 3 |
-| Alertar sistemas internos (Slack/e-mail) | US-007 | Boa automação, mas o cliente aceitou notificações simples no MVP. | 2 |
+| **Funcionalidade** | **User Story** | **RF** | **Justificativa / Por que é 'Could'** | **Planing Poker** |
+|-------------------|----------------|--------|--------------------------------------|---------------------|
+| Notificações por Slack/E-mail | US-007 | RF-010 | Melhora comunicação e reduz esquecimentos, mas não é crítico ao funcionamento do core. | 3 |
 
 ### Won't Have
 
-| **Funcionalidade** | **User Story** | **Justificativa / Por que é 'Won't'** |
-|-------------------|----------------|---------------------------------------|
-| Otimização de performance | — | MVP busca validar hipóteses de uso, não escalabilidade. Somente após feedback e métricas reais. |
+| **Funcionalidade** | **Justificativa / Por que é 'Won't'** |
+|-------------------|---------------------------------------|
+| Otimizações de performance/escala (hardening e tuning avançado) | MVP busca validar hipóteses de uso, não escalabilidade. Somente após feedback e métricas reais. |
+| Exceções de permissão granulares/complexas para agentes (além do básico de papéis) | Funcionalidade avançada que pode ser implementada após o MVP com base no feedback de uso real. |
+| Auditoria detalhada e completa de reservas (log jurídico-completo) | Não é requisito crítico para o MVP; pode ser implementado em versões futuras conforme necessidade legal. |
 
-### Ligação com o Cronograma
 
-<CardGrid>
-<Card title="Sprint 1" icon="🚀">
-**Foco:** Reserva e Edição básica  
-**User Stories:** US-005, US-010 → Must Have
-</Card>
-
-<Card title="Sprint 2" icon="📊">
-**Foco:** Visualização de mapa e relatórios  
-**User Stories:** US-011, US-006 → Must Have
-</Card>
-
-<Card title="Sprint 3" icon="👥">
-**Foco:** Cadastro e permissões de usuários  
-**User Stories:** US-001, US-002 → Should Have
-</Card>
-
-<Card title="Sprint 4" icon="🔔">
-**Foco:** Filtros e notificações  
-**User Stories:** US-009, US-007 → Could Have
-</Card>
-
-<Card title="Sprint 5" icon="⚡">
-**Foco:** Ajustes de performance e testes  
-**User Stories:** Won't Have (revisão futura)
-</Card>
-</CardGrid>
 
 ## MVP — Produto Mínimo Viável
 
@@ -264,13 +240,33 @@ O foco é garantir que os colaboradores possam visualizar a disponibilidade de s
 
 ### Escopo do MVP
 
-**Total de Story Points: 52 pontos** (Must Have: 34 | Should Have: 18)
+<CardGrid>
+  <Card title="✅ No MVP" icon="check">
+    **10 User Stories incluídas:**
+    
+    - **US-001** - Cadastrar usuários (Should)
+    - **US-002** - Controlar permissões (Should)
+    - **US-003** - Cadastrar recursos (Should)
+    - **US-004** - Editar recursos (Must)
+    - **US-005** - Reservar sala (Must)
+    - **US-008** - Ver detalhamento (Should)
+    - **US-009** - Filtrar reservas (Should)
+    - **US-010** - Editar/cancelar reserva (Must)
+    - **US-011** - Visualizar mapa (Must)
+    - **US-012** - Reservar estação (Must)
+  </Card>
 
-<ul class="softex-flow">
-  <li>**Must Have** (4 funcionalidades) — 34 pontos</li>
-  <li>**Should Have** (4 funcionalidades) — 18 pontos</li>
-  <li>**Total de User Stories no MVP**: 10 (US-001, US-002, US-003, US-005, US-006, US-007, US-010, US-011, US-012)</li>
-</ul>
+  <Card title="❌ Fora do MVP" icon="warning">
+    **2 User Stories excluídas:**
+    
+    - **US-006** - Gerar relatórios (Must)  
+      *→ Será implementado após MVP*
+    - **US-007** - Notificações Slack/E-mail (Could)  
+      *→ Não prioritário nesta fase*
+  </Card>
+</CardGrid>
+
+**Total de User Stories no MVP: 10** | **Fora do MVP: 2**
 
 ## Histórico de Versão
 
@@ -285,3 +281,4 @@ O foco é garantir que os colaboradores possam visualizar a disponibilidade de s
 | 21/10/2025 | 2.2 | Implementação de link unidirecional limpo do Backlog para Solução Proposta (padrão similar aos Requisitos). | Felipe Pedroza, Guilherme Gusmao, Pietro Vinsenti, Yuri Andrade | Todos |
 | 21/10/2025 | 3.0 | Reestruturação completa das User Stories (US-001 a US-012) com nova coluna de Benefício/Valor, alinhamento com RF-001 a RF-011 e atualização dos Critérios de Aceitação. | Felipe Pedroza, Guilherme Gusmao, Pietro Vinsenti, Yuri Andrade | Todos |
 | 21/10/2025 | 3.1 | Adição da seção completa de Priorização MoSCoW com critérios, pontuação de esforço (Planning Poker), tabelas Must/Should/Could/Won't Have e ligação com cronograma de sprints. | Felipe Pedroza, Guilherme Gusmao, Pietro Vinsenti, Yuri Andrade | Todos |
+| 21/10/2025 | 3.2 | Atualização dos links de requisitos: RF-010 → RF-009 (Gerar relatórios) e RF-011 → RF-010 (Alertar sistemas internos) devido à remoção do RF-009 duplicado no documento de requisitos. | Felipe Pedroza | Todos |
