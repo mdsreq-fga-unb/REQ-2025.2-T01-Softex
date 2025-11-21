@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/composables/useAuth'
+import Header from '@/components/Layout/Header.vue'
 
 const { user, logout } = useAuth()
 
@@ -66,73 +67,8 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
 
 <template>
   <div class="dashboard-container">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-content">
-        <div class="logo-section">
-          <img src="../../assets/LOGO_SOFTEX_VERTICAL_BRANCO_OFFLINE.png" alt="Softex" class="logo">
-          <div class="logo-text">
-            <h1 class="logo-title">Softex</h1>
-            <p class="logo-subtitle">Sistema de gestão de Espaços</p>
-          </div>
-        </div>
-        
-        <div class="user-section">
-          <span class="user-name">{{ user?.first_name }} {{ user?.last_name }}</span>
-          <span class="user-role">{{ user?.tipo_permissao }}</span>
-          <div class="user-avatar">
-            {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
-          </div>
-          <button @click="handleLogout" class="logout-btn" title="Sair">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-      
-      <!-- Navigation -->
-      <nav class="navigation">
-        <a href="#" class="nav-item active">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          </svg>
-          Dashboard
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-          </svg>
-          Coworking
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="9" y1="3" x2="9" y2="21"></line>
-          </svg>
-          Salas de reunião
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          Minhas Reservas
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          Administração
-        </a>
-      </nav>
-    </header>
+    <Header />
+
 
     <!-- Main Content -->
     <main class="main-content">
@@ -313,7 +249,7 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
                   cy="50"
                   r="40"
                   fill="transparent"
-                  stroke="#ec4899"
+                  stroke="#ff06eeff"
                   stroke-width="20"
                   stroke-dasharray="50.2 125.6"
                   stroke-dashoffset="-201"
@@ -412,47 +348,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
 }
 
 /* Header */
-.header {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-}
-
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logo {
-  height: 40px;
-  width: auto;
-}
-
-.logo-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.logo-title {
-  color: white;
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.logo-subtitle {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
-}
-
 .user-section {
   display: flex;
   align-items: center;
