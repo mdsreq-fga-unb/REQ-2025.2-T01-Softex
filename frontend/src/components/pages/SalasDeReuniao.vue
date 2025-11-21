@@ -3,24 +3,25 @@ import { ref, computed } from 'vue'
 import Header from '@/components/Layout/Header.vue'
 import AndamentoModal from '@/components/modals/salas/Andamento.vue'
 import ConcluidasModal from '@/components/modals/salas/Concluidas.vue'
+import SalaDeReuniao from '@/components/modals/salas/SalaDeReuniao.vue'
 
 type FluxoStatus = 'andamento' | 'concluido'
 type ResultadoStatus = 'aprovado' | 'pendente' | 'negado'
 
 type ReservaSala = {
   id: number
-  titulo: string        // Ex: "Sala Alfa - Andar 3"
-  solicitante: string   // nome da pessoa
-  sala: string          // Ex: "Sala Alfa"
+  titulo: string       
+  solicitante: string  
+  sala: string         
   fluxo: FluxoStatus
   status: ResultadoStatus
-  dataInicio: string
-  dataFim: string
-  horaInicio: string
-  horaFim: string
+  dataInicio: string  
+  dataFim: string     
+  horaInicio: string   
+  horaFim: string      
   participantes: number
   tipoReuniao: 'interna' | 'externa'
-  motivoReuniao?: string   // 👈 motivo da reunião
+  motivoReuniao?: string  
 }
 
 type Aba = 'solicitacoes' | 'salas' | 'concluidas'
@@ -87,6 +88,21 @@ const reservasSalas = ref<ReservaSala[]>([
     participantes: 5,
     tipoReuniao: 'externa',
     motivoReuniao: 'Reunião extra com parceiro, fora do calendário padrão.'
+  },
+  {
+    id: 5,
+    titulo: 'Sala Alpha - Andar 4',
+    solicitante: 'João Pedro',
+    sala: 'Sala Alpha',
+    fluxo: 'concluido',
+    status: 'negado',
+    dataInicio: '21/11/2025',
+    dataFim: '21/11/2025',
+    horaInicio: '11:00',
+    horaFim: '12:00',
+    participantes: 5,
+    tipoReuniao: 'externa',
+    motivoReuniao: 'Reunião extra com parceiro, fora do calendário padrão.'
   }
 ])
 
@@ -102,7 +118,6 @@ const selecionarTab = (tab: Aba) => {
   activeTab.value = tab
 }
 
-/* --------- MODAIS --------- */
 const showAndamentoModal = ref(false)
 const showConcluidasModal = ref(false)
 
@@ -117,11 +132,10 @@ const handleClickReserva = (reserva: ReservaSala) => {
     reservaConcluidaSelecionada.value = reserva
     showConcluidasModal.value = true
   } else {
-    // aba "salas" por enquanto não abre modal
+    
   }
 }
 
-/* badges / labels */
 const labelResultado = (resultado: ResultadoStatus): string => {
   if (resultado === 'aprovado') return 'Aprovada'
   if (resultado === 'pendente') return 'Pendente'
@@ -136,6 +150,53 @@ const resultadoClass = (resultado: ResultadoStatus): string => {
 
 const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   tipo === 'interna' ? 'Reunião interna' : 'Reunião externa'
+
+
+const toIsoFromBr = (dateBr: string): string => {
+  const [dia, mes, ano] = dateBr.split('/')
+  return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
+}
+
+const filtroDataInicio = ref<string>('')
+const filtroDataFim = ref<string>('')    
+const ordenacao = ref<'recentes' | 'antigas'>('recentes')
+
+const reservasConcluidasFiltradas = computed(() => {
+  let lista = reservasConcluidas.value.slice()
+
+  if (filtroDataInicio.value) {
+    const inicioFiltroIso = filtroDataInicio.value
+    lista = lista.filter(r => {
+      const dataIso = toIsoFromBr(r.dataInicio)
+      return dataIso >= inicioFiltroIso
+    })
+  }
+
+  if (filtroDataFim.value) {
+    const fimFiltroIso = filtroDataFim.value
+    lista = lista.filter(r => {
+      const dataIso = toIsoFromBr(r.dataInicio)
+      return dataIso <= fimFiltroIso
+    })
+  }
+
+  lista.sort((a, b) => {
+    const aKey = `${toIsoFromBr(a.dataInicio)}T${a.horaInicio}`
+    const bKey = `${toIsoFromBr(b.dataInicio)}T${b.horaInicio}`
+
+    if (ordenacao.value === 'recentes') {
+      if (aKey < bKey) return 1
+      if (aKey > bKey) return -1
+      return 0
+    } else {
+      if (aKey < bKey) return -1
+      if (aKey > bKey) return 1
+      return 0
+    }
+  })
+
+  return lista
+})
 </script>
 
 <template>
@@ -143,7 +204,6 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
     <Header />
 
     <div class="wrapper">
-      <!-- TABS SUPERIORES -->
       <div class="tabs-row">
         <button
           type="button"
@@ -177,7 +237,6 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
         </button>
       </div>
 
-      <!-- CARD PRINCIPAL -->
       <div class="card">
         <h2 class="card-title">
           <span v-if="activeTab === 'solicitacoes'">Solicitações de salas</span>
@@ -185,7 +244,6 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
           <span v-else>Histórico de reservas</span>
         </h2>
 
-        <!-- ABA: SOLICITAÇÕES EM ANDAMENTO -->
         <template v-if="activeTab === 'solicitacoes'">
           <div v-if="solicitacoesEmAndamento.length === 0" class="empty-state">
             <p>Não há solicitações de salas em andamento no momento.</p>
@@ -207,10 +265,7 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
                 <p class="reserva-desc">
                   Solicitante: <strong>{{ reserva.solicitante }}</strong>
                 </p>
-                <p
-                  v-if="reserva.motivoReuniao"
-                  class="reserva-motivo"
-                >
+                <p v-if="reserva.motivoReuniao" class="reserva-motivo">
                   Motivo: {{ reserva.motivoReuniao }}
                 </p>
                 <p class="reserva-sub">
@@ -237,30 +292,52 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
           </div>
         </template>
 
-        <!-- ABA: SALAS DE REUNIÃO (placeholder) -->
         <template v-else-if="activeTab === 'salas'">
-          <div class="empty-state">
-            <p>Em breve você poderá gerenciar todas as salas de reunião aqui.</p>
-            <p class="empty-hint">
-              Cadastro, capacidade, equipamentos e disponibilidade das salas ficarão
-              centralizados nesta tela.
-            </p>
-          </div>
+          <SalaDeReuniao :reservas="reservasSalas" />
         </template>
 
-        <!-- ABA: CONCLUÍDAS -->
         <template v-else>
-          <div v-if="reservasConcluidas.length === 0" class="empty-state">
-            <p>Você ainda não possui reservas de salas concluídas.</p>
+          <div class="filtros-concluidas">
+            <div class="filtro-data-range">
+              <label class="filtro-label">
+                De
+                <input
+                  v-model="filtroDataInicio"
+                  type="date"
+                  class="filtro-date-input"
+                />
+              </label>
+              <label class="filtro-label">
+                Até
+                <input
+                  v-model="filtroDataFim"
+                  type="date"
+                  class="filtro-date-input"
+                />
+              </label>
+            </div>
+
+            <div class="filtro-ordenacao">
+              <label class="filtro-label">
+                Ordenar
+                <select v-model="ordenacao" class="filtro-select">
+                  <option value="recentes">Mais recentes primeiro</option>
+                  <option value="antigas">Mais antigas primeiro</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div v-if="reservasConcluidasFiltradas.length === 0" class="empty-state">
+            <p>Nenhuma reserva encontrada para os filtros selecionados.</p>
             <p class="empty-hint">
-              Assim que reuniões forem finalizadas, o histórico aparecerá aqui,
-              incluindo reservas aprovadas e negadas.
+              Ajuste o período ou a ordenação para visualizar outras reservas concluídas.
             </p>
           </div>
 
           <div v-else class="lista-reservas">
             <button
-              v-for="reserva in reservasConcluidas"
+              v-for="reserva in reservasConcluidasFiltradas"
               :key="reserva.id"
               type="button"
               class="reserva-item"
@@ -271,10 +348,7 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
                 <p class="reserva-desc">
                   Solicitante: <strong>{{ reserva.solicitante }}</strong>
                 </p>
-                <p
-                  v-if="reserva.motivoReuniao"
-                  class="reserva-motivo"
-                >
+                <p v-if="reserva.motivoReuniao" class="reserva-motivo">
                   Motivo: {{ reserva.motivoReuniao }}
                 </p>
                 <p class="reserva-sub">
@@ -303,16 +377,14 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
       </div>
     </div>
 
-    <!-- MODAL ANDAMENTO (análise / aprovação) -->
     <AndamentoModal
       :open="showAndamentoModal"
       :reserva="reservaAndamentoSelecionada"
       @close="showAndamentoModal = false"
       @aprovar="payload => console.log('Aprovar reserva sala:', payload)"
-      @recusar="id => console.log('Recusar reserva sala:', id)"
+      @recusar="payload => console.log('Recusar reserva sala:', payload)"
     />
 
-    <!-- MODAL CONCLUÍDAS (somente detalhes) -->
     <ConcluidasModal
       :open="showConcluidasModal"
       :reserva="reservaConcluidaSelecionada"
@@ -332,14 +404,12 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   padding-bottom: 3rem;
 }
 
-/* área central */
 .wrapper {
   max-width: 1100px;
   margin: 0 auto;
   padding: 2.5rem 1rem 0;
 }
 
-/* TABS */
 .tabs-row {
   display: flex;
   justify-content: center;
@@ -373,7 +443,6 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   font-size: 1.1rem;
 }
 
-/* CARD PRINCIPAL */
 .card {
   background: #ffffff;
   border-radius: 24px;
@@ -388,7 +457,6 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   margin-bottom: 1.4rem;
 }
 
-/* ESTADO VAZIO */
 .empty-state {
   text-align: center;
   padding: 2rem 1rem;
@@ -402,7 +470,48 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   color: #9ca3af;
 }
 
-/* LISTA DE RESERVAS */
+.filtros-concluidas {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filtro-data-range {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.filtro-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  gap: 0.25rem;
+}
+
+.filtro-date-input,
+.filtro-select {
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.filtro-date-input:focus,
+.filtro-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.filtro-ordenacao {
+  display: flex;
+  align-items: flex-end;
+}
+
 .lista-reservas {
   display: flex;
   flex-direction: column;
@@ -457,7 +566,6 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   color: #6b7280;
 }
 
-/* meta (status + tipo + sala + pessoas) */
 .reserva-meta {
   display: flex;
   flex-direction: column;
@@ -488,7 +596,6 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   color: #075985;
 }
 
-/* status visual */
 .badge.status {
   font-weight: 600;
 }
@@ -519,6 +626,11 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
   }
 
   .reserva-meta {
+    align-items: flex-start;
+  }
+
+  .filtros-concluidas {
+    flex-direction: column;
     align-items: flex-start;
   }
 }

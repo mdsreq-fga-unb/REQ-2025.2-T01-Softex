@@ -7,7 +7,6 @@ import Header from '@/components/Layout/Header.vue'
 
 const { user, logout } = useAuth()
 
-// Dados das métricas
 const metricas = ref({
   posicoesOcupadas: 32,
   totalPosicoes: 58,
@@ -18,7 +17,6 @@ const metricas = ref({
   taxaOcupacao: 75
 })
 
-// Dados de ocupação por horário
 const ocupacaoPorHorario = ref([
   { hora: '8h', porcentagem: 50, cor: 'bg-blue-900' },
   { hora: '10h', porcentagem: 78, cor: 'bg-blue-400' },
@@ -28,21 +26,18 @@ const ocupacaoPorHorario = ref([
   { hora: '18h', porcentagem: 40, cor: 'bg-orange-500' },
 ])
 
-// Distribuição de uso
 const distribuicaoUso = ref([
   { tipo: 'Coworking', porcentagem: 50, cor: 'bg-blue-900' },
   { tipo: 'Salas', porcentagem: 30, cor: 'bg-blue-400' },
   { tipo: 'Livre', porcentagem: 20, cor: 'bg-pink-500' },
 ])
 
-// Atividade recente
 const atividadeRecente = ref([
   { nome: 'Maria Santos', acao: 'reservou sala Zeus', horario: '14:30-16:00 hoje', tipo: 'reserva' },
   { nome: 'Pedro Lima', acao: 'ocupou Posição A-15', horario: '13:45 hoje', tipo: 'ocupacao' },
   { nome: 'Sala Apolo', acao: 'liberada', horario: '14:30-16:00 hoje', tipo: 'liberacao' },
 ])
 
-// Próximas reservas
 const proximasReservas = ref([
   { titulo: 'Reunião de Projeto', local: 'Sala Hermes', horario: '15:00-16:30', tempo: 'Em 30 min' },
   { titulo: 'Apresentação Cliente', local: 'Sala Zeus', horario: '16:00-17:00', tempo: 'Em 1h30' },
@@ -58,7 +53,6 @@ const handleLogout = () => {
   window.location.reload()
 }
 
-// Calcular ângulo do donut chart para cada segmento
 const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   const angulo = (porcentagem / 100) * 360
   return { angulo, offset }
@@ -70,7 +64,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
     <Header />
 
 
-    <!-- Main Content -->
     <main class="main-content">
       <div class="content-header">
         <div>
@@ -87,9 +80,7 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
         </Button>
       </div>
 
-      <!-- Cards de Métricas -->
       <div class="metrics-grid">
-        <!-- Card 1: Posições Ocupadas -->
         <Card class="border-l-4 border-l-blue-400">
           <CardContent class="p-6">
             <div class="flex justify-between items-center">
@@ -112,7 +103,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
           </CardContent>
         </Card>
 
-        <!-- Card 2: Salas em uso -->
         <Card class="border-l-4 border-l-blue-800">
           <CardContent class="p-6">
             <div class="flex justify-between items-center">
@@ -131,7 +121,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
           </CardContent>
         </Card>
 
-        <!-- Card 3: Reservas hoje -->
         <Card class="border-l-4 border-l-pink-500">
           <CardContent class="p-6">
             <div class="flex justify-between items-center">
@@ -152,7 +141,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
           </CardContent>
         </Card>
 
-        <!-- Card 4: Taxa de Ocupação -->
         <Card class="border-l-4 border-l-gray-500">
           <CardContent class="p-6">
             <div class="flex justify-between items-center">
@@ -172,9 +160,7 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
         </Card>
       </div>
 
-      <!-- Charts -->
       <div class="charts-grid">
-        <!-- Gráfico de Ocupação por Horário -->
         <Card>
           <CardHeader class="pb-4">
             <CardTitle>Ocupação por Horário</CardTitle>
@@ -210,7 +196,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
           </CardContent>
         </Card>
 
-        <!-- Gráfico de Distribuição de Uso -->
         <Card>
           <CardHeader class="pb-4">
             <CardTitle>Distribuição de uso</CardTitle>
@@ -219,7 +204,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
             <div class="flex gap-8 items-center">
             <div class="donut-chart">
               <svg viewBox="0 0 100 100" class="donut-svg">
-                <!-- Coworking (50%) -->
                 <circle
                   cx="50"
                   cy="50"
@@ -231,7 +215,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
                   stroke-dashoffset="0"
                   transform="rotate(-90 50 50)"
                 />
-                <!-- Salas (30%) -->
                 <circle
                   cx="50"
                   cy="50"
@@ -243,7 +226,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
                   stroke-dashoffset="-125.6"
                   transform="rotate(-90 50 50)"
                 />
-                <!-- Livre (20%) -->
                 <circle
                   cx="50"
                   cy="50"
@@ -273,9 +255,7 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
         </Card>
       </div>
 
-      <!-- Listas -->
       <div class="lists-grid">
-        <!-- Atividade Recente -->
         <Card>
           <CardHeader class="pb-4">
             <CardTitle>Atividade Recente</CardTitle>
@@ -302,7 +282,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
           </CardContent>
         </Card>
 
-        <!-- Próximas Reservas -->
         <Card>
           <CardHeader class="pb-4">
             <CardTitle>Próximas Reservas</CardTitle>
@@ -331,7 +310,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
       </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
       <span>© 2025 - Softex</span>
       <span>All rights reserved</span>
@@ -347,7 +325,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   flex-direction: column;
 }
 
-/* Header */
 .user-section {
   display: flex;
   align-items: center;
@@ -391,7 +368,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Navigation */
 .navigation {
   display: flex;
   gap: 2rem;
@@ -420,7 +396,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   border-bottom-color: white;
 }
 
-/* Main Content */
 .main-content {
   flex: 1;
   padding: 2rem;
@@ -453,7 +428,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   color: #1C2457;
 }
 
-/* Metrics Grid */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -462,7 +436,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
 }
 
 
-/* Charts Grid */
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -471,7 +444,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
 }
 
 
-/* Bar Chart */
 .bar-chart {
   display: flex;
   gap: 1rem;
@@ -540,7 +512,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   padding-top: 0.5rem;
 }
 
-/* Donut Chart */
 .donut-chart {
   position: relative;
   width: 200px;
@@ -572,7 +543,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   color: hsl(var(--muted-foreground));
 }
 
-/* Lists Grid */
 .lists-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -582,7 +552,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
 
 
 
-/* Footer */
 .footer {
   padding: 1.5rem 2rem;
   display: flex;
@@ -592,7 +561,6 @@ const calcularAngulo = (porcentagem: number, offset: number = 0) => {
   font-size: 0.875rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .metrics-grid,
   .charts-grid,

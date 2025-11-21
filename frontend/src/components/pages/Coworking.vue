@@ -9,8 +9,8 @@ type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' | 'favorito'
 
 type SeatPoint = {
   id: number
-  x: number   // em %
-  y: number   // em %
+  x: number  
+  y: number  
   status: SeatStatus
 }
 
@@ -346,7 +346,6 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
   margin-left: auto;
   margin-right: auto;
 
-  /* travamos no quadrado (mesma ideia do 1400x1400) */
   aspect-ratio: 1 / 1;
 }
 
@@ -354,7 +353,7 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: fill; /* preenche exatamente a área do wrapper */
+  object-fit: fill;
 }
 
 .seat-dot {

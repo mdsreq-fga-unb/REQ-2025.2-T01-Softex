@@ -58,15 +58,13 @@ const statusMensagem = computed(() => {
   if (r.status === 'aprovado') {
     return 'Sua reserva foi aprovada. Aparecerá em "Em andamento" até ser concluída.'
   }
-  // negado
   return 'Sua reserva foi negada. Reservas negadas aparecem apenas na aba "Concluído".'
 })
 
 const fluxoAvisoInvalido = computed(() => {
   const r = props.reserva
   if (!r) return false
-  // regra: em andamento => apenas pendente/aprovado
-  //       negado => só em concluído
+
   if (r.fluxo === 'andamento' && r.status === 'negado') return true
   if (r.fluxo === 'concluido' && r.status === 'pendente') return true
   return false
@@ -100,7 +98,6 @@ const fechar = () => emit('close')
           </span>
         </div>
 
-        <!-- Horário agora sempre aparece -->
         <div class="linha-info">
           <span class="label">Horário:</span>
           <span class="valor">

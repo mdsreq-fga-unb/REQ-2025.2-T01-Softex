@@ -145,16 +145,13 @@ const handleExcluirUsuario = (id: number) => {
   <div class="admin-bg min-h-screen">
     <Header />
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <div class="max-w-6xl mx-auto pt-10 px-4">
       <h1 class="page-title">Gerenciamento do sistema</h1>
       <p class="page-subtitle">
         Gerencie usuários, permissões, notificações e lugares do sistema
       </p>
 
-      <!-- AÇÕES SUPERIORES -->
       <div class="actions-container">
-        <!-- BUSCA -->
         <div class="search-wrapper">
           <input
             v-model="search"
@@ -172,7 +169,6 @@ const handleExcluirUsuario = (id: number) => {
           </svg>
         </div>
 
-        <!-- BOTÕES -->
         <button class="action-btn bg-permissoes">
           <i class="fa-solid fa-lock"></i> Permissões
         </button>
@@ -195,7 +191,6 @@ const handleExcluirUsuario = (id: number) => {
         </button>
       </div>
 
-      <!-- TABELA -->
       <div class="table-wrapper">
         <table class="w-full">
           <thead class="table-head">
@@ -225,7 +220,6 @@ const handleExcluirUsuario = (id: number) => {
       </div>
     </div>
 
-    <!-- MODAIS COMO COMPONENTES -->
     <NovoUsuarioModal
       :open="showNovoUsuarioModal"
       :funcoes="funcoes"
@@ -289,7 +283,6 @@ const handleExcluirUsuario = (id: number) => {
   margin-top: 0.25rem;
 }
 
-/* 🟦 CONTAINER DE AÇÕES */
 
 .actions-container {
   margin-top: 1.5rem;
@@ -303,7 +296,6 @@ const handleExcluirUsuario = (id: number) => {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-/* Busca */
 
 .search-wrapper {
   width: 16rem;
@@ -332,7 +324,6 @@ const handleExcluirUsuario = (id: number) => {
   color: #9ca3af;
 }
 
-/* Botões superiores */
 
 .action-btn {
   flex: 1 1 120px;

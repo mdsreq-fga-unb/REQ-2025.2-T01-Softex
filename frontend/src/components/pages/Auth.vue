@@ -15,7 +15,6 @@ import { useAuth } from '@/composables/useAuth'
 
 const { login, isLoading, error } = useAuth()
 
-// Configuração da API
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const email = ref('')
@@ -34,7 +33,6 @@ const handleSubmit = async (e: Event) => {
   const success = await login(email.value, password.value)
   if (success) {
     successMessage.value = 'Login realizado com sucesso!'
-    // Aqui você pode redirecionar ou emitir um evento
     console.log('Login bem-sucedido!')
   }
 }
@@ -43,11 +41,9 @@ const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
 
-// Verificar se usuário voltou do Google com dados
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search)
   
-  // Verificar sucesso
   if (urlParams.get('auth') === 'success') {
     const userData = urlParams.get('user')
     const isNewUser = urlParams.get('new_user') === 'true'
@@ -62,7 +58,6 @@ onMounted(() => {
         
         console.log('✅ Login bem-sucedido!', user)
         
-        // Redirecionar para dashboard após 1 segundo
         setTimeout(() => {
           window.location.href = '/dashboard'
         }, 1000)
@@ -72,7 +67,6 @@ onMounted(() => {
     }
   }
   
-  // Verificar erro
   if (urlParams.has('error')) {
     const errorMsg = urlParams.get('error')
     successMessage.value = ''
@@ -81,7 +75,6 @@ onMounted(() => {
 })
 
 const handleGoogleLogin = () => {
-  // Redirecionar para o endpoint do backend que inicia o OAuth2
   window.location.href = `${API_URL}/api/auth/google/login/`
 }
 
@@ -92,12 +85,10 @@ const handleBack = () => {
 
 <template>
   <div class="auth-container">
-    <!-- Cabeçalho com Logo -->
     <header class="header">
       <img class="header-logo" src="../../assets/LOGO_SOFTEX_VERTICAL_BRANCO_OFFLINE.png" alt="Softex">
     </header>
 
-    <!-- Card de Login -->
     <Card class="login-card">
       <CardHeader class="text-center">
         <CardTitle>Acesse sua conta</CardTitle>
@@ -105,7 +96,6 @@ const handleBack = () => {
       
       <CardContent>
         <form @submit="handleSubmit" class="space-y-6">
-          <!-- Mensagem de sucesso -->
           <div 
             v-if="successMessage" 
             class="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700"
@@ -114,7 +104,6 @@ const handleBack = () => {
             {{ successMessage }}
           </div>
           
-          <!-- Mensagem de erro -->
           <div 
             v-if="error" 
             class="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
@@ -123,7 +112,6 @@ const handleBack = () => {
             {{ error }}
           </div>
           
-          <!-- Botão Google (primeiro) -->
           <Button 
             type="button" 
             variant="outline" 
@@ -140,7 +128,6 @@ const handleBack = () => {
             Entrar com Google
           </Button>
 
-          <!-- Campos de entrada -->
           <div class="space-y-4">
             <div class="space-y-2">
               <Label for="email">E-mail</Label>
@@ -179,7 +166,6 @@ const handleBack = () => {
             </div>
           </div>
 
-          <!-- Lembrar-me e Esqueci a senha -->
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center space-x-2">
               <input
@@ -201,7 +187,6 @@ const handleBack = () => {
             </a>
           </div>
 
-          <!-- Botões de ação -->
           <div class="flex gap-3">
             <Button 
               type="submit" 
@@ -224,7 +209,6 @@ const handleBack = () => {
       </CardContent>
     </Card>
 
-    <!-- Rodapé -->
     <footer class="footer">
       <div class="footer-content">
         <span class="footer-text">© 2025 - Softex</span>

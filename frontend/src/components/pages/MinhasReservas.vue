@@ -70,7 +70,7 @@ const reservas = ref<Reserva[]>([
     descricao: 'Trabalho presencial',
     tipo: 'estacao',
     status: 'concluido',
-    resultado: 'aprovado', // estava "negado", agora não pode mais
+    resultado: 'aprovado',
     dataInicio: '25/02/2026',
     dataFim: '26/02/2026'
   }
@@ -84,7 +84,6 @@ const selecionarTab = (tab: ReservaStatus) => {
   activeTab.value = tab
 }
 
-/* --------- MODAIS --------- */
 const showCadeiraModal = ref(false)
 const showSalaModal = ref(false)
 
@@ -103,7 +102,6 @@ const handleClickReserva = (reserva: Reserva) => {
   }
 }
 
-/* label bonitinho pro status do resultado */
 const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => {
   if (resultado === 'aprovado') return 'Aprovada'
   if (resultado === 'pendente') return 'Pendente'
@@ -116,7 +114,6 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
     <Header />
 
     <div class="wrapper">
-      <!-- TABS SUPERIORES -->
       <div class="tabs-row">
         <button
           type="button"
@@ -139,11 +136,9 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
         </button>
       </div>
 
-      <!-- CARD PRINCIPAL -->
       <div class="card">
         <h2 class="card-title">Meu histórico</h2>
 
-        <!-- estado vazio -->
         <div v-if="reservasFiltradas.length === 0" class="empty-state">
           <p>
             Você ainda não possui reservas
@@ -155,7 +150,6 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
           </p>
         </div>
 
-        <!-- lista de reservas -->
         <div v-else class="lista-reservas">
           <button
             v-for="reserva in reservasFiltradas"
@@ -193,14 +187,12 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
       </div>
     </div>
 
-    <!-- MODAL DETALHE ESTAÇÃO -->
     <CadeiraModal
       :open="showCadeiraModal"
       :reserva="reservaCadeiraSelecionada"
       @close="showCadeiraModal = false"
     />
 
-    <!-- MODAL DETALHE SALA -->
     <SalaReuniaoModal
       :open="showSalaModal"
       :reserva="reservaSalaSelecionada"
@@ -210,7 +202,6 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
 </template>
 
 <style scoped>
-/* (mesmo CSS que você já tinha) */
 .reservas-bg {
   background: linear-gradient(
     to bottom right,

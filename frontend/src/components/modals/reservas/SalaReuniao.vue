@@ -6,14 +6,13 @@ type ResultadoStatus = 'aprovado' | 'pendente' | 'negado'
 
 type ReservaSala = {
   id: number
-  titulo: string           // Ex: "Sala Alfa - Andar 3"
-  sala: string             // Ex: "Sala Alfa"
-  fluxo: FluxoStatus       // andamento | concluido
-  status: ResultadoStatus  // aprovado | pendente | negado
-  dataInicio: string
+  titulo: string        
+  sala: string            
+  fluxo: FluxoStatus       
+  status: ResultadoStatus  
   dataFim: string
-  horaInicio: string       // obrigatório
-  horaFim: string          // obrigatório
+  horaInicio: string      
+  horaFim: string          
   participantes?: number
   tipoReuniao?: 'interna' | 'externa'
 }
@@ -111,7 +110,6 @@ const fechar = () => emit('close')
           </span>
         </div>
 
-        <!-- Horário agora sempre aparece -->
         <div class="linha-info">
           <span class="label">Horário:</span>
           <span class="valor">

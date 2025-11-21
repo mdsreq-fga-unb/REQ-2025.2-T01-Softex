@@ -351,7 +351,7 @@ const fechar = () => emit('close')
 }
 
 .btn-ghost {
-  background: #e5e7eb;
+  background: #ef4444;
   color: #111827;
 }
 
