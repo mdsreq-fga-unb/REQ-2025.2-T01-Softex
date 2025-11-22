@@ -579,7 +579,7 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
 }
 
 .planta-card {
-  grid-column: 1 / -1;
+  grid-column: 2 / 12;
   background: #f9fafb;
   border-radius: 18px;
   padding: 1.5rem 1.7rem 1.8rem;
