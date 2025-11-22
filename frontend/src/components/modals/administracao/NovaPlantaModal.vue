@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { X, MapPin } from 'lucide-vue-next'
 import plantaImg from '@/assets/planta.png'
 import ModalUploadImagem from '@/components/modals/administracao/ModalUploadImagem.vue'
 import EditarPlanta from '@/components/modals/administracao/Editar_Planta.vue' 
@@ -125,6 +126,12 @@ const fechar = () => {
   emit('close')
 }
 
+const handleOverlayClick = (e: MouseEvent) => {
+  if (e.target === e.currentTarget) {
+    fechar()
+  }
+}
+
 // --------- EDITAR PLANTA (ABRIR MODAL EDITOR) ---------
 const abrirEditarPlanta = () => {
   if (!selectedPlanta.value) return
@@ -157,87 +164,107 @@ const handleUploadConfirm = (data: { file: File | null; previewUrl: string | nul
 
 <template>
   <!-- Overlay do modal -->
-  <div v-if="open" class="planta-overlay">
-    <div class="card">
+  <div v-if="open" class="planta-overlay" @click="handleOverlayClick">
+    <div class="card" @click.stop>
       <div class="modal-header">
-        <h1 class="title">Gerenciar plantas</h1>
-        <button class="close-btn" @click="fechar">×</button>
+        <div class="header-content">
+          <div class="icon-wrapper">
+            <MapPin class="header-icon" />
+          </div>
+          <div>
+            <h1 class="title">Gerenciar plantas</h1>
+            <p class="subtitle">Visualize e gerencie as plantas cadastradas</p>
+          </div>
+        </div>
+        <button class="close-btn" @click="fechar">
+          <X class="close-icon" />
+        </button>
       </div>
 
-      <p class="text">
-        Nesta tela, você poderá visualizar as plantas cadastradas do seu escritório.
-      </p>
-      <p class="text">
-        Todas as plantas adicionadas serão disponibilizadas automaticamente para os usuários
-        e a numeração dos lugares será gerada de forma automática.
-      </p>
+      <div class="modal-content-wrapper">
+        <div class="info-section">
+          <div class="info-card">
+            <p class="info-text">
+              Nesta tela, você poderá visualizar as plantas cadastradas do seu escritório.
+              Todas as plantas adicionadas serão disponibilizadas automaticamente para os usuários
+              e a numeração dos lugares será gerada de forma automática.
+            </p>
+          </div>
+          
+          <div class="info-cards-row">
+            <div class="info-card-small">
+              <strong>Recomendação:</strong>
+              para melhor experiência e evitar erros de carregamento, recomenda-se realizar este
+              procedimento em um computador (desktop).
+            </div>
+            <div class="info-card-small">
+              <strong>Obs.:</strong> a imagem deve ter tamanho mínimo de
+              <span class="tag-dim">1400 × 1400 px</span>.
+            </div>
+          </div>
+        </div>
 
-      <p class="text text-small">
-        <strong>Recomendação:</strong>
-        para melhor experiência e evitar erros de carregamento, recomenda-se realizar este
-        procedimento em um computador (desktop).
-      </p>
+        <!-- Ações -->
+        <div class="actions-row">
+          <div class="select-wrapper">
+            <select v-model.number="selectedPlantaId" class="select">
+              <option
+                v-for="planta in plantas"
+                :key="planta.id"
+                :value="planta.id"
+              >
+                {{ planta.nome }}
+              </option>
+            </select>
+          </div>
 
-      <p class="text text-small">
-        <strong>Obs.:</strong> a imagem deve ter tamanho mínimo de
-        <span class="tag-dim">1400 × 1400 px</span>.
-      </p>
+          <button
+            class="btn editar"
+            @click="abrirEditarPlanta"
+            :disabled="!selectedPlanta"
+          >
+            Editar planta
+          </button>
 
-      <!-- Ações -->
-      <div class="actions-row">
-        <button
-          class="btn editar"
-          @click="abrirEditarPlanta"
-          :disabled="!selectedPlanta"
-        >
-          Editar planta
-        </button>
+          <button
+            class="btn excluir"
+            @click="showConfirmExcluir = true"
+            :disabled="!selectedPlanta"
+          >
+            Excluir planta
+          </button>
 
-        <button
-          class="btn excluir"
-          @click="showConfirmExcluir = true"
-          :disabled="!selectedPlanta"
-        >
-          Excluir planta
-        </button>
+          <button class="btn salvar" @click="showUploadModal = true">
+            Escolher imagem da planta
+          </button>
+        </div>
 
-        <button class="btn salvar" @click="showUploadModal = true">
-          Escolher imagem da planta
-        </button>
+        <!-- Preview da planta -->
+        <div class="planta-container" v-if="selectedPlanta">
+          <img
+            :src="previewUrl || plantaImg"
+            alt="Planta do escritório"
+            class="planta-img"
+          />
 
-        <div class="select-wrapper">
-          <select v-model.number="selectedPlantaId" class="select">
-            <option
-              v-for="planta in plantas"
-              :key="planta.id"
-              :value="planta.id"
-            >
-              {{ planta.nome }}
-            </option>
-          </select>
+          <div
+            v-for="p in pontos"
+            :key="p.id"
+            class="seat-dot"
+            :style="{ left: p.x + '%', top: p.y + '%' }"
+          />
         </div>
       </div>
 
-      <!-- Preview da planta -->
-      <div class="planta-container" v-if="selectedPlanta">
-        <img
-          :src="previewUrl || plantaImg"
-          alt="Planta do escritório"
-          class="planta-img"
-        />
-
-        <div
-          v-for="p in pontos"
-          :key="p.id"
-          class="seat-dot"
-          :style="{ left: p.x + '%', top: p.y + '%' }"
-        />
-      </div>
-
       <!-- Mini modal confirmar exclusão -->
-      <div v-if="showConfirmExcluir" class="mini-overlay">
-        <div class="mini-modal">
-          <h3 class="mini-title">Excluir planta</h3>
+      <div v-if="showConfirmExcluir" class="mini-overlay" @click="showConfirmExcluir = false">
+        <div class="mini-modal" @click.stop>
+          <div class="mini-header">
+            <h3 class="mini-title">Excluir planta</h3>
+            <button class="mini-close-btn" @click="showConfirmExcluir = false">
+              <X class="mini-close-icon" />
+            </button>
+          </div>
           <p class="mini-text">
             Tem certeza que deseja excluir a planta selecionada?
             Esta ação não poderá ser desfeita.
@@ -280,84 +307,180 @@ const handleUploadConfirm = (data: { file: File | null; previewUrl: string | nul
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 1000;
+  padding: 2rem 1rem;
+  overflow-y: auto;
 }
 
 .card {
-  background: #f9fafb;
-  border-radius: 18px;
-  padding: 1.75rem 2rem 2.25rem;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-  max-width: 960px;
+  background: white;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
   width: 100%;
-  max-height: 90vh;
-  overflow: auto;
+  max-height: calc(100vh - 4rem);
+  overflow: hidden;
+  position: relative;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 0.75rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #1C2457 0%, #2F2365 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.icon-wrapper {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-icon {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
 }
 
 .close-btn {
   border: none;
-  background: transparent;
-  font-size: 1.4rem;
-  line-height: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
   cursor: pointer;
-  padding: 0.2rem 0.4rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
 }
 
-.title {
-  text-align: left;
-  font-size: 1.4rem;
-  font-weight: 700;
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.text {
-  font-size: 0.92rem;
-  color: #111827;
-  line-height: 1.4;
+.close-icon {
+  width: 20px;
+  height: 20px;
 }
-.text + .text {
-  margin-top: 0.3rem;
+
+.modal-content-wrapper {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
 }
-.text-small {
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
+
+.info-section {
+  margin-bottom: 1.5rem;
 }
+
+.info-card {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.info-text {
+  font-size: 0.875rem;
+  color: #1e40af;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.info-cards-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.75rem;
+}
+
+.info-card-small {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  font-size: 0.8125rem;
+  color: #92400e;
+  line-height: 1.5;
+}
+
 .tag-dim {
   background: #fee2e2;
   color: #991b1b;
-  padding: 0.05rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-left: 0.25rem;
 }
 
 .actions-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1.4rem 0 1.3rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .btn {
   border: none;
-  border-radius: 999px;
-  padding: 0.45rem 1.2rem;
-  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  transition: all 0.2s;
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 .btn:disabled {
   opacity: 0.5;
@@ -366,43 +489,55 @@ const handleUploadConfirm = (data: { file: File | null; previewUrl: string | nul
 }
 .btn:not(:disabled):hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .editar {
-  background: #0ea5e9;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
 }
 .excluir {
-  background: #ef4444;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
 }
 .adicionar {
-  background: #22c55e;
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
 }
 .salvar {
-  background: #4f46e5;
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
 }
 
 .select-wrapper {
-  min-width: 200px;
+  min-width: 220px;
+  flex: 1;
 }
 .select {
   width: 100%;
-  border: 1px solid #d1d5db;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.9rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  background: white;
+  color: #374151;
+  transition: all 0.2s;
+}
+.select:focus {
+  outline: none;
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .planta-container {
-  margin-top: 0.5rem;
-  border-radius: 18px;
+  margin-top: 1rem;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
-  background: #111827;
-  max-width: 800px;
+  background: #1f2937;
+  border: 2px solid #374151;
+  max-width: 700px;
   width: 100%;
   aspect-ratio: 1 / 1;
   margin-left: auto;
   margin-right: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .planta-img {
@@ -426,57 +561,137 @@ const handleUploadConfirm = (data: { file: File | null; previewUrl: string | nul
 .mini-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 60;
+  z-index: 2000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
 }
+
 .mini-modal {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 1.25rem 1.5rem 1.1rem;
+  background: white;
+  border-radius: 16px;
+  padding: 0;
   width: 100%;
-  max-width: 360px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  max-width: 420px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
 }
+
+.mini-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  color: white;
+}
+
 .mini-title {
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: 700;
-  margin-bottom: 0.4rem;
+  margin: 0;
+  color: white;
 }
+
+.mini-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s;
+}
+
+.mini-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mini-close-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .mini-text {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: #374151;
+  line-height: 1.6;
+  padding: 1.25rem 1.5rem;
+  margin: 0;
 }
+
 .mini-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.25rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
 }
+
 .mini-btn {
-  border-radius: 999px;
-  padding: 0.35rem 0.95rem;
-  font-size: 0.85rem;
+  border-radius: 8px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: opacity 0.1s ease;
+  transition: all 0.2s;
 }
+
 .mini-btn:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 .mini-btn.ghost {
-  background: #e5e7eb;
-  color: #111827;
+  background: white;
+  color: #374151;
+  border: 1.5px solid #e5e7eb;
 }
+
+.mini-btn.ghost:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
 .mini-btn.primary {
-  background: #0ea5e9;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: #ffffff;
 }
+
 .mini-btn.danger {
-  background: #dc2626;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
   color: #ffffff;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>

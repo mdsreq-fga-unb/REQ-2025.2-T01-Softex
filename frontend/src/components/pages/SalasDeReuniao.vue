@@ -1,9 +1,41 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import Header from '@/components/Layout/Header.vue'
+import { useRouter, useRoute } from 'vue-router'
+import { 
+  Home, 
+  LogOut, 
+  Gauge, 
+  MapPin, 
+  Sofa, 
+  Calendar, 
+  Settings
+} from 'lucide-vue-next'
+import { useAuth } from '@/composables/useAuth'
 import AndamentoModal from '@/components/modals/salas/Andamento.vue'
 import ConcluidasModal from '@/components/modals/salas/Concluidas.vue'
 import SalaDeReuniao from '@/components/modals/salas/SalaDeReuniao.vue'
+
+const { user, logout } = useAuth()
+const router = useRouter()
+const route = useRoute()
+
+const userInitials = computed(() => {
+  if (!user.value) return 'U'
+  const firstName = user.value.first_name || ''
+  const lastName = user.value.last_name || ''
+  if (firstName && lastName) {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase()
+  }
+  if (firstName) {
+    return firstName.substring(0, 2).toUpperCase()
+  }
+  return 'U'
+})
+
+const handleLogout = () => {
+  logout()
+  router.push('/login')
+}
 
 type FluxoStatus = 'andamento' | 'concluido'
 type ResultadoStatus = 'aprovado' | 'pendente' | 'negado'
@@ -200,11 +232,72 @@ const reservasConcluidasFiltradas = computed(() => {
 </script>
 
 <template>
-  <div class="salas-bg min-h-screen">
-    <Header />
+  <div class="salas-container min-h-screen">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <!-- Top Section - Header -->
+      <div class="navbar-header">
+        <div class="header-left">
+          <div class="logo-container">
+            <img 
+              src="../../assets/LOGO_SOFTEX_VERTICAL_BRANCO_OFFLINE.png" 
+              alt="Softex" 
+              class="logo-image"
+            />
+            <div class="logo-text">
+              <div class="brand-top">
+                <span class="brand-main">Coworking</span>
+              </div>
+              <span class="brand-desc">Sistema de gestão de Espaços</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <router-link to="/dashboard" class="header-icon-link">
+            <Home class="header-icon" />
+          </router-link>
+          <div class="user-info">
+            <span class="navbar-user-name">{{ user ? `${user.first_name} ${user.last_name}` : 'Usuário' }}</span>
+            <span class="user-role">Administrador</span>
+          </div>
+          <div class="user-avatar">
+            {{ userInitials }}
+          </div>
+          <button class="logout-button" @click="handleLogout">
+            <LogOut class="logout-icon" />
+          </button>
+        </div>
+      </div>
+      
+      <!-- Bottom Section - Navigation Links -->
+      <div class="navbar-nav">
+        <router-link to="/dashboard" class="nav-link" :class="{ active: route.path === '/dashboard' }">
+          <Gauge class="nav-icon" />
+          <span>Dashboard</span>
+        </router-link>
+        <router-link to="/coworking" class="nav-link" :class="{ active: route.path === '/coworking' }">
+          <MapPin class="nav-icon" />
+          <span>Coworking</span>
+        </router-link>
+        <router-link to="/salas" class="nav-link" :class="{ active: route.path === '/salas' }">
+          <Sofa class="nav-icon" />
+          <span>Salas de reunião</span>
+        </router-link>
+        <router-link to="/reservas" class="nav-link" :class="{ active: route.path === '/reservas' }">
+          <Calendar class="nav-icon" />
+          <span>Minhas Reservas</span>
+        </router-link>
+        <router-link to="/administracao" class="nav-link" :class="{ active: route.path === '/administracao' }">
+          <Settings class="nav-icon" />
+          <span>Administração</span>
+        </router-link>
+      </div>
+    </nav>
 
-    <div class="wrapper">
-      <div class="tabs-row">
+    <div class="dashboard-content">
+      <div class="dashboard-grid">
+        <div class="tabs-row">
         <button
           type="button"
           class="tab-btn"
@@ -374,6 +467,7 @@ const reservasConcluidasFiltradas = computed(() => {
             </button>
           </div>
         </template>
+        </div>
       </div>
     </div>
 
@@ -394,28 +488,207 @@ const reservasConcluidasFiltradas = computed(() => {
 </template>
 
 <style scoped>
-.salas-bg {
-  background: linear-gradient(
-    to bottom right,
-    #00107b,
-    #320d73,
-    #746388
-  );
-  padding-bottom: 3rem;
+.salas-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #1C2457 0%, #2F2365 40%, #4A2E70 70%, #6C5885 100%);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-.wrapper {
-  max-width: 1100px;
+.navbar {
+  background: #1C2457;
+  width: 100%;
+  z-index: 100;
+}
+
+.navbar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-image {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-top {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.brand-main {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.brand-desc {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.header-icon {
+  width: 24px;
+  height: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.navbar-user-name {
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.user-role {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #7C3AED;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.logout-button:hover {
+  opacity: 0.7;
+}
+
+.logout-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.75rem 2rem;
+  background: rgba(28, 36, 87, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: opacity 0.2s;
+}
+
+.nav-link:hover {
+  opacity: 0.8;
+}
+
+.nav-link.active {
+  font-weight: 500;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: white;
+}
+
+.nav-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  width: 100%;
+}
+
+.dashboard-grid {
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 2.5rem 1rem 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
 }
 
 .tabs-row {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.8rem;
+  margin-bottom: 0;
 }
 
 .tab-btn {
@@ -444,6 +717,7 @@ const reservasConcluidasFiltradas = computed(() => {
 }
 
 .card {
+  grid-column: 1 / -1;
   background: #ffffff;
   border-radius: 24px;
   padding: 2rem 2.5rem 2.3rem;

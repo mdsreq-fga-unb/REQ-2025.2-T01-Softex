@@ -221,7 +221,7 @@ const handleBack = () => {
 <style scoped>
 .auth-container {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #00107B 0%, #320D73 54%, #746388 100%);
+  background: linear-gradient(to bottom, #1C2457 0%, #2F2365 40%, #4A2E70 70%, #6C5885 100%);
   display: flex;
   flex-direction: column;
   align-items: center;

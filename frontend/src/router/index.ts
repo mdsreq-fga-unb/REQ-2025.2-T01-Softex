@@ -9,17 +9,30 @@ import Salas from '@/components/pages/SalasDeReuniao.vue'
 
 import { useAuth } from '@/composables/useAuth'
 
+// const router = createRouter({
+//   history: createWebHistory(),
+//   routes: [
+//     { path: '/', component: Auth },
+//     { path: '/login', component: Auth },
+//     { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
+//     { path: '/administracao', component: Administracao, meta: { requiresAuth: true } },
+//     { path: '/cadastro', component: Cadastro },
+//     { path: '/coworking', component: Coworking, meta: { requiresAuth: true } },
+//     { path: '/reservas', component: Reservas, meta: { requiresAuth: true } },
+//     { path: '/salas', component: Salas, meta: { requiresAuth: true } },
+//   ]
+// })
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: Auth },
     { path: '/login', component: Auth },
-    { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-    { path: '/administracao', component: Administracao, meta: { requiresAuth: true } },
+    { path: '/dashboard', component: Dashboard},
+    { path: '/administracao', component: Administracao},
     { path: '/cadastro', component: Cadastro },
-    { path: '/coworking', component: Coworking, meta: { requiresAuth: true } },
-    { path: '/reservas', component: Reservas, meta: { requiresAuth: true } },
-    { path: '/salas', component: Salas, meta: { requiresAuth: true } },
+    { path: '/coworking', component: Coworking},
+    { path: '/reservas', component: Reservas},
+    { path: '/salas', component: Salas },
   ]
 })
 
