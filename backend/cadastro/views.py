@@ -155,6 +155,13 @@ def google_callback(request):
         first_name = idinfo.get('given_name', '')
         last_name = idinfo.get('family_name', '')
         
+        # verifica se email está cadastrado no banco de dados
+        if not Cadastro.objects.filter(email=email).exists():
+            print("❌ Email não autorizado")
+            return redirect(f"{settings.FRONTEND_URL}?error=email_nao_autorizado")
+        
+
+
         # Buscar ou criar usuário
         user, created = Cadastro.objects.get_or_create(
             email=email,

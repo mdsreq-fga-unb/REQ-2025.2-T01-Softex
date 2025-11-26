@@ -40,6 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',       
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     'cadastro',
     'planta',
@@ -58,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -181,6 +187,8 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+SOCIALACCOUNT_ADAPTER = 'cadastro.adapters.MySocialAccountAdapter'
+
 # ========================================
 # CONFIGURAÇÕES DO GOOGLE OAUTH
 # ========================================
@@ -201,3 +209,5 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' if DEBUG else '0'
 # Tolerância de tempo para validação de tokens (clock skew)
 # Útil quando o relógio do servidor não está perfeitamente sincronizado
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+
+SITE_ID = 1
