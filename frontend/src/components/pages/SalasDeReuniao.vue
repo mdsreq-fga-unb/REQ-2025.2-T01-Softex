@@ -192,10 +192,17 @@ const toIsoFromBr = (dateBr: string): string => {
 const filtroDataInicio = ref<string>('')
 const filtroDataFim = ref<string>('')    
 const ordenacao = ref<'recentes' | 'antigas'>('recentes')
+const filtroStatus = ref<'todos' | 'aprovado' | 'pendente' | 'negado'>('todos')
 
 const reservasConcluidasFiltradas = computed(() => {
   let lista = reservasConcluidas.value.slice()
 
+  // 🔹 Filtro por status
+  if (filtroStatus.value !== 'todos') {
+    lista = lista.filter(r => r.status === filtroStatus.value)
+  }
+
+  // 🔹 Filtro Data Início
   if (filtroDataInicio.value) {
     const inicioFiltroIso = filtroDataInicio.value
     lista = lista.filter(r => {
@@ -204,6 +211,7 @@ const reservasConcluidasFiltradas = computed(() => {
     })
   }
 
+  // 🔹 Filtro Data Fim
   if (filtroDataFim.value) {
     const fimFiltroIso = filtroDataFim.value
     lista = lista.filter(r => {
@@ -212,30 +220,30 @@ const reservasConcluidasFiltradas = computed(() => {
     })
   }
 
+  // 🔹 Ordenação
   lista.sort((a, b) => {
     const aKey = `${toIsoFromBr(a.dataInicio)}T${a.horaInicio}`
     const bKey = `${toIsoFromBr(b.dataInicio)}T${b.horaInicio}`
 
     if (ordenacao.value === 'recentes') {
-      if (aKey < bKey) return 1
-      if (aKey > bKey) return -1
-      return 0
+      return aKey < bKey ? 1 : -1
     } else {
-      if (aKey < bKey) return -1
-      if (aKey > bKey) return 1
-      return 0
+      return aKey < bKey ? -1 : 1
     }
   })
 
   return lista
 })
+
+
+
+
 </script>
 
 <template>
   <div class="salas-container min-h-screen">
     <!-- Navbar -->
     <nav class="navbar">
-      <!-- Top Section - Header -->
       <div class="navbar-header">
         <div class="header-left">
           <div class="logo-container">
@@ -410,6 +418,19 @@ const reservasConcluidasFiltradas = computed(() => {
               </label>
             </div>
 
+            <!-- 🔹 NOVO FILTRO DE STATUS -->
+            <div class="filtro-status">
+              <label class="filtro-label">
+                Status
+                <select v-model="filtroStatus" class="filtro-select">
+                  <option value="todos">Todos</option>
+                  <option value="aprovado">Aprovadas</option>
+                  <option value="pendente">Pendentes</option>
+                  <option value="negado">Canceladas</option>
+                </select>
+              </label>
+            </div>
+
             <div class="filtro-ordenacao">
               <label class="filtro-label">
                 Ordenar
@@ -420,6 +441,7 @@ const reservasConcluidasFiltradas = computed(() => {
               </label>
             </div>
           </div>
+
 
           <div v-if="reservasConcluidasFiltradas.length === 0" class="empty-state">
             <p>Nenhuma reserva encontrada para os filtros selecionados.</p>
@@ -903,9 +925,14 @@ const reservasConcluidasFiltradas = computed(() => {
     align-items: flex-start;
   }
 
-  .filtros-concluidas {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.filtros-concluidas {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+
 }
 </style>

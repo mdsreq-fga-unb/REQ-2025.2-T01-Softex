@@ -19,6 +19,7 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'save', payload: Usuario): void
   (e: 'delete', id: number): void
+  (e: 'resend-password', id: number): void
 }>()
 
 const nome = ref('')
@@ -74,6 +75,12 @@ const confirmarExclusao = () => {
   emit('delete', props.usuario.id)
   showConfirmDelete.value = false
 }
+
+// NOVO: reenviar senha
+const reenviarSenha = () => {
+  if (!props.usuario) return
+  emit('resend-password', props.usuario.id)
+}
 </script>
 
 <template>
@@ -127,6 +134,16 @@ const confirmarExclusao = () => {
             </option>
           </select>
         </div>
+
+        <!-- NOVO: botão roxo, pequeno, logo abaixo de função -->
+        <button
+          class="btn-resend"
+          type="button"
+          :disabled="!usuario"
+          @click="reenviarSenha"
+        >
+          Reenviar senha para este usuário
+        </button>
       </div>
 
       <!-- ações -->
@@ -261,6 +278,31 @@ const confirmarExclusao = () => {
 .select:focus {
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+/* botão roxo pequeno */
+.btn-resend {
+  margin-top: 0.2rem;
+  align-self: flex-start;
+  background: #7c3aed; /* roxo */
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.btn-resend:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-resend:not(:disabled):hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
 }
 
 /* ações */

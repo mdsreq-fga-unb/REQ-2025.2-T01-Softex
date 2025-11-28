@@ -123,6 +123,7 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
   }
   showCadeiraModal.value = false
 }
+
 </script>
 
 
@@ -630,8 +631,8 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
 
 .seat-dot {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
   border: 2px solid #ffffff;
   transform: translate(-50%, -50%);
@@ -640,7 +641,7 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
 
 .seat-disponivel {
   background: #22c55e;
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.4);
 }
 
 .seat-ocupado {

@@ -16,6 +16,7 @@ import SlackConfigModal from '@/components/modals/administracao/SlackConfigModal
 import NovaPlantaModal from '@/components/modals/administracao/NovaPlantaModal.vue'
 import ModalSala from '@/components/modals/administracao/ModalSala.vue'
 import EditarUsuario from '@/components/modals/administracao/EditarUsuario.vue'
+import PermissoesModal from '@/components/modals/administracao/PermissoesModal.vue'
 
 const { user, logout } = useAuth()
 const router = useRouter()
@@ -170,6 +171,58 @@ const handleExcluirUsuario = (id: number) => {
   usuarios.value = usuarios.value.filter(u => u.id !== id)
   showEditarUsuarioModal.value = false
 }
+
+type PerfilPermissao = {
+  id: number
+  nome: string
+  descricao?: string
+  acessoBasico: boolean
+  dashboards: boolean
+  salasReuniao: boolean
+  administracao: boolean
+}
+
+const showPermissoesModal = ref(false)
+
+const perfisPermissao = ref<PerfilPermissao[]>([
+  {
+    id: 1,
+    nome: 'Padrão (colaboradores)',
+    descricao: 'Acesso ao coworking e Minhas Reservas',
+    acessoBasico: true,
+    dashboards: false,
+    salasReuniao: false,
+    administracao: false
+  },
+  {
+    id: 2,
+    nome: 'Gestores',
+    descricao: 'Dashboards e salas de reunião',
+    acessoBasico: true,
+    dashboards: true,
+    salasReuniao: true,
+    administracao: false
+  },
+  {
+    id: 3,
+    nome: 'Administradores',
+    descricao: 'Acesso total ao sistema',
+    acessoBasico: true,
+    dashboards: true,
+    salasReuniao: true,
+    administracao: true
+  }
+])
+
+const abrirPermissoes = () => {
+  showPermissoesModal.value = true
+}
+
+const handleSalvarPermissoes = (novos: PerfilPermissao[]) => {
+  perfisPermissao.value = novos
+  console.log('Perfis de permissão atualizados:', novos)
+}
+
 </script>
 
 
@@ -266,7 +319,7 @@ const handleExcluirUsuario = (id: number) => {
           </svg>
         </div>
 
-        <button class="action-btn bg-permissoes">
+        <button class="action-btn bg-permissoes" @click="abrirPermissoes">
           <i class="fa-solid fa-lock"></i> Permissões
         </button>
 
@@ -347,12 +400,20 @@ const handleExcluirUsuario = (id: number) => {
       @delete="handleExcluirSala"
     />
     <EditarUsuario
-    :open="showEditarUsuarioModal"
-    :usuario="usuarioSelecionado"
-    :funcoes="funcoes"
-    @close="showEditarUsuarioModal = false"
-    @save="handleSalvarUsuarioEditado"
-    @delete="handleExcluirUsuario"
+      :open="showEditarUsuarioModal"
+      :usuario="usuarioSelecionado"
+      :funcoes="funcoes"
+      @close="showEditarUsuarioModal = false"
+      @save="handleSalvarUsuarioEditado"
+      @delete="handleExcluirUsuario"
+      @resend-password="id => console.log('Reenviar senha para usuário', id)"
+    />
+
+    <PermissoesModal
+      :open="showPermissoesModal"
+      :perfis="perfisPermissao"
+      @close="showPermissoesModal = false"
+      @save="handleSalvarPermissoes"
     />
 
   </div>

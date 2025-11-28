@@ -13,12 +13,12 @@ type ReservaSala = {
   fluxo: FluxoStatus
   status: ResultadoStatus
   dataInicio: string
-  dataFim: string
+  dataFim: string // "dd/mm/aaaa"
   horaInicio: string
   horaFim: string
   participantes: number
   tipoReuniao: 'interna' | 'externa'
-  motivoReuniao?: string   // 👈 motivo que o solicitante escreveu
+  motivoReuniao?: string  
 }
 
 const props = defineProps<{
@@ -28,7 +28,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'aprovar', payload: { id: number; salaEscolhida: string }): void
+  (e: 'aprovar', payload: { id: number; salaEscolhida: string; codigoSala: string }): void
   (e: 'recusar', id: number): void
 }>()
 
@@ -40,6 +40,7 @@ const salasDisponiveis = ref<string[]>([
 ])
 
 const salaSelecionada = ref<string>('')
+const codigoSala = ref<string>('')
 
 watch(
   () => props.open,
@@ -47,6 +48,7 @@ watch(
     if (isOpen && props.reserva) {
       salaSelecionada.value =
         props.reserva.sala || salasDisponiveis.value[0] || ''
+      codigoSala.value = '' // limpa código ao abrir
     }
   },
   { immediate: true }
@@ -54,6 +56,8 @@ watch(
 
 const podeAprovar = computed(
   () => !!props.reserva && !!salaSelecionada.value
+  // se quiser obrigar código, troca por:
+  // () => !!props.reserva && !!salaSelecionada.value && !!codigoSala.value
 )
 
 const tipoReuniaoLabel = computed(() => {
@@ -94,7 +98,8 @@ const aprovar = () => {
   if (!props.reserva || !salaSelecionada.value) return
   emit('aprovar', {
     id: props.reserva.id,
-    salaEscolhida: salaSelecionada.value
+    salaEscolhida: salaSelecionada.value,
+    codigoSala: codigoSala.value.trim()
   })
 }
 
@@ -122,11 +127,6 @@ const fechar = () => emit('close')
         <div class="linha-info">
           <span class="label">Solicitante:</span>
           <span class="valor">{{ reserva.solicitante }}</span>
-        </div>
-
-        <div class="linha-info">
-          <span class="label">Sala solicitada:</span>
-          <span class="valor">{{ reserva.sala }}</span>
         </div>
 
         <div class="linha-info">
@@ -184,6 +184,23 @@ const fechar = () => emit('close')
           </select>
           <p class="hint">
             Você pode manter a sala solicitada ou alterar para outra sala disponível.
+          </p>
+        </div>
+
+        <!-- Caixa de texto para código da sala -->
+        <div class="field">
+          <label class="label" for="codigo-sala">
+            Código da sala (para envio ao solicitante)
+          </label>
+          <input
+            id="codigo-sala"
+            v-model="codigoSala"
+            type="text"
+            class="input"
+            placeholder="Ex: SALA-ALFA-3ANDAR"
+          />
+          <p class="hint">
+            Este código poderá ser enviado ao solicitante junto com a confirmação da reserva.
           </p>
         </div>
       </div>
@@ -323,6 +340,20 @@ const fechar = () => emit('close')
 }
 
 .select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.input {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  outline: none;
+  background: #ffffff;
+}
+
+.input:focus {
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
