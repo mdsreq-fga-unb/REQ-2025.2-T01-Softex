@@ -14,3 +14,6 @@ PyJWT==2.8.0
 
 # CORS (para frontend comunicar com backend)
 django-cors-headers==4.3.0
+django-allauth==0.51.0
+cryptography==41.0.4
+django-environ==0.10.0

@@ -10,7 +10,7 @@ venv/
 env/
 .venv/
 .env
-
+.env.docker
 # Django / Python stuff
 *.sqlite3
 db.sqlite3
