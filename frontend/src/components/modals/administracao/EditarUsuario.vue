@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
+import ConfirmarExclusao from '@/components/modals/ConfirmarExclusao.vue'
 
 type Usuario = {
   id: number
@@ -19,6 +20,7 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'save', payload: Usuario): void
   (e: 'delete', id: number): void
+  (e: 'resend-password', id: number): void
 }>()
 
 const nome = ref('')
@@ -74,6 +76,12 @@ const confirmarExclusao = () => {
   emit('delete', props.usuario.id)
   showConfirmDelete.value = false
 }
+
+// NOVO: reenviar senha
+const reenviarSenha = () => {
+  if (!props.usuario) return
+  emit('resend-password', props.usuario.id)
+}
 </script>
 
 <template>
@@ -127,6 +135,16 @@ const confirmarExclusao = () => {
             </option>
           </select>
         </div>
+
+        <!-- NOVO: botão roxo, pequeno, logo abaixo de função -->
+        <button
+          class="btn-resend"
+          type="button"
+          :disabled="!usuario"
+          @click="reenviarSenha"
+        >
+          Reenviar senha para este usuário
+        </button>
       </div>
 
       <!-- ações -->
@@ -156,25 +174,12 @@ const confirmarExclusao = () => {
       </div>
     </div>
 
-    <!-- mini modal confirmar exclusão -->
-    <div v-if="showConfirmDelete" class="mini-overlay">
-      <div class="mini-modal">
-        <h3 class="mini-title">Excluir usuário</h3>
-        <p class="mini-text">
-          Tem certeza que deseja excluir
-          <strong v-if="usuario">"{{ usuario.nome }}"</strong>?
-          Esta ação não poderá ser desfeita.
-        </p>
-        <div class="mini-actions">
-          <button class="mini-btn ghost" type="button" @click="cancelarExclusao">
-            Cancelar
-          </button>
-          <button class="mini-btn danger" type="button" @click="confirmarExclusao">
-            Excluir
-          </button>
-        </div>
-      </div>
-    </div>
+    <!-- Modal padrão de confirmação de exclusão -->
+    <ConfirmarExclusao
+      :open="showConfirmDelete"
+      @close="cancelarExclusao"
+      @confirm="confirmarExclusao"
+    />
   </div>
 </template>
 
@@ -263,6 +268,31 @@ const confirmarExclusao = () => {
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
+/* botão roxo pequeno */
+.btn-resend {
+  margin-top: 0.2rem;
+  align-self: flex-start;
+  background: #7c3aed; /* roxo */
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.btn-resend:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-resend:not(:disabled):hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
 /* ações */
 .actions {
   padding: 0.9rem 1.5rem 1.1rem;
@@ -315,65 +345,4 @@ const confirmarExclusao = () => {
   transform: translateY(-1px);
 }
 
-/* mini modal confirmação */
-.mini-overlay {
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.mini-modal {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 1.1rem 1.3rem 1rem;
-  width: 100%;
-  max-width: 360px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-}
-
-.mini-title {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.45rem;
-}
-
-.mini-text {
-  font-size: 0.88rem;
-  color: #374151;
-}
-
-.mini-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 0.9rem;
-}
-
-.mini-btn {
-  border-radius: 999px;
-  padding: 0.35rem 0.95rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.1s ease;
-}
-
-.mini-btn:hover {
-  opacity: 0.9;
-}
-
-.mini-btn.ghost {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.mini-btn.danger {
-  background: #dc2626;
-  color: #ffffff;
-}
 </style>

@@ -3,7 +3,8 @@ import { ref, computed } from 'vue'
 import { X, MapPin } from 'lucide-vue-next'
 import plantaImg from '@/assets/planta.png'
 import ModalUploadImagem from '@/components/modals/administracao/ModalUploadImagem.vue'
-import EditarPlanta from '@/components/modals/administracao/Editar_Planta.vue' 
+import EditarPlanta from '@/components/modals/administracao/Editar_Planta.vue'
+import ConfirmarExclusao from '@/components/modals/ConfirmarExclusao.vue' 
 
 // --------- TIPOS ---------
 type Planta = {
@@ -256,29 +257,12 @@ const handleUploadConfirm = (data: { file: File | null; previewUrl: string | nul
         </div>
       </div>
 
-      <!-- Mini modal confirmar exclusão -->
-      <div v-if="showConfirmExcluir" class="mini-overlay" @click="showConfirmExcluir = false">
-        <div class="mini-modal" @click.stop>
-          <div class="mini-header">
-            <h3 class="mini-title">Excluir planta</h3>
-            <button class="mini-close-btn" @click="showConfirmExcluir = false">
-              <X class="mini-close-icon" />
-            </button>
-          </div>
-          <p class="mini-text">
-            Tem certeza que deseja excluir a planta selecionada?
-            Esta ação não poderá ser desfeita.
-          </p>
-          <div class="mini-actions">
-            <button class="mini-btn ghost" @click="showConfirmExcluir = false">
-              Cancelar
-            </button>
-            <button class="mini-btn danger" @click="confirmarExcluir">
-              Excluir
-            </button>
-          </div>
-        </div>
-      </div>
+      <!-- Modal padrão de confirmação de exclusão -->
+      <ConfirmarExclusao
+        :open="showConfirmExcluir"
+        @close="showConfirmExcluir = false"
+        @confirm="confirmarExcluir"
+      />
     </div>
   </div>
 
@@ -558,140 +542,4 @@ const handleUploadConfirm = (data: { file: File | null; previewUrl: string | nul
   transform: translate(-50%, -50%);
 }
 
-.mini-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 1rem;
-  animation: fadeIn 0.2s ease-out;
-}
-
-.mini-modal {
-  background: white;
-  border-radius: 16px;
-  padding: 0;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  animation: slideUp 0.3s ease-out;
-}
-
-.mini-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-  color: white;
-}
-
-.mini-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin: 0;
-  color: white;
-}
-
-.mini-close-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 8px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: white;
-  transition: background 0.2s;
-}
-
-.mini-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.mini-close-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.mini-text {
-  font-size: 0.875rem;
-  color: #374151;
-  line-height: 1.6;
-  padding: 1.25rem 1.5rem;
-  margin: 0;
-}
-
-.mini-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem 1.25rem;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
-}
-
-.mini-btn {
-  border-radius: 8px;
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.mini-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.mini-btn.ghost {
-  background: white;
-  color: #374151;
-  border: 1.5px solid #e5e7eb;
-}
-
-.mini-btn.ghost:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-}
-
-.mini-btn.primary {
-  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-  color: #ffffff;
-}
-
-.mini-btn.danger {
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-  color: #ffffff;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
 </style>

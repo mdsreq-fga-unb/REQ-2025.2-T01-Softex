@@ -2,7 +2,7 @@
 import { ref, watch, computed } from 'vue'
 import { Clock, Calendar, X } from 'lucide-vue-next'
 
-type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' 
+type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' | 'favorito'
 
 type SeatInfo = {
   id: number
@@ -28,7 +28,6 @@ const emit = defineEmits<{
 }>()
 
 const dataInicio = ref('')
-const dataFim = ref('')
 const horaInicio = ref('')
 const horaFim = ref('')
 
@@ -45,27 +44,13 @@ const bloqueado = computed(() => {
   return props.seat.status === 'ocupado' || props.seat.status === 'reservado'
 })
 
-const diffDias = computed(() => {
-  if (!dataInicio.value || !dataFim.value) return null
-  const d1 = new Date(dataInicio.value)
-  const d2 = new Date(dataFim.value)
-  const diffMs = d2.getTime() - d1.getTime()
-  return diffMs / (1000 * 60 * 60 * 24)
-})
-
-const dataValida = computed(() => {
-  if (!dataInicio.value || !dataFim.value) return false
-  const d1 = new Date(dataInicio.value)
-  const d2 = new Date(dataFim.value)
-  if (d2 < d1) return false
-  const d = diffDias.value
-  if (d === null) return false
-  return d <= 2
-})
-
 const horasValidas = computed(() => {
   if (!horaInicio.value || !horaFim.value) return false
   return horaFim.value > horaInicio.value
+})
+
+const dataValida = computed(() => {
+  return !!dataInicio.value
 })
 
 const podeSalvar = computed(() => {
@@ -78,7 +63,6 @@ watch(
   () => {
     if (!props.open) return
     dataInicio.value = ''
-    dataFim.value = ''
     horaInicio.value = ''
     horaFim.value = ''
   }
@@ -94,7 +78,8 @@ const salvar = () => {
   emit('reserve', {
     seatId: props.seat.id,
     dataInicio: dataInicio.value,
-    dataFim: dataFim.value,
+    // como agora é sempre 1 dia, mantemos dataFim igual à dataInicio
+    dataFim: dataInicio.value,
     horaInicio: horaInicio.value,
     horaFim: horaFim.value
   })
@@ -108,9 +93,8 @@ const salvar = () => {
         <div class="header-content">
           <h2 class="title">Reservar estação de trabalho</h2>
           <p class="subtitle">
-            Para que reserve essa estação, precisaremos que declare
-            o horário que deseja utilizar e a data, sendo possível
-            reservar até <strong>3 dias consecutivos</strong>.
+            Para reservar essa estação, informe o horário e
+            <strong> um único dia</strong> de uso.
           </p>
         </div>
         <button class="close-btn" type="button" @click="fechar">
@@ -155,22 +139,15 @@ const salvar = () => {
               class="input-date"
               :disabled="bloqueado"
             />
-          </div>
-          <span class="ate">até</span>
-          <div class="input-wrapper">
-            <input
-              v-model="dataFim"
-              type="date"
-              class="input-date"
-              :disabled="bloqueado"
-            />
             <span class="asterisk">*</span>
           </div>
         </div>
 
-        <p v-if="!bloqueado && diffDias !== null && !dataValida" class="error">
-          A reserva deve ter no máximo 3 dias consecutivos e a data final
-          não pode ser anterior à data inicial.
+        <p
+          v-if="!bloqueado && (!dataValida || !horasValidas)"
+          class="error"
+        >
+          Preencha uma data válida e garanta que o horário final seja maior que o inicial.
         </p>
       </div>
 

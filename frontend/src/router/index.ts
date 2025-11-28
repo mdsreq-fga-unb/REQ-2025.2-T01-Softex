@@ -8,6 +8,7 @@ import Reservas from '@/components/pages/MinhasReservas.vue'
 import Salas from '@/components/pages/SalasDeReuniao.vue'
 
 import { useAuth } from '@/composables/useAuth'
+import { useErrorLogger } from '@/composables/useErrorLogger'
 
 // const router = createRouter({
 //   history: createWebHistory(),
@@ -33,17 +34,50 @@ const router = createRouter({
     { path: '/coworking', component: Coworking},
     { path: '/reservas', component: Reservas},
     { path: '/salas', component: Salas },
+    // Rota catch-all para páginas não encontradas
+    { 
+      path: '/:pathMatch(.*)*', 
+      name: 'NotFound',
+      component: () => import('@/components/pages/NotFound.vue')
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   const { isAuthenticated } = useAuth()
+  const { logError, logWarning } = useErrorLogger()
 
+  // Log de navegação para páginas não encontradas
+  if (to.name === 'NotFound') {
+    logError(
+      'Página não encontrada',
+      { path: to.path, from: from.path, fullPath: to.fullPath },
+      'router.beforeEach'
+    )
+  }
+
+  // Verificar autenticação
   if (to.meta.requiresAuth && !isAuthenticated.value) {
+    logWarning(
+      'Tentativa de acesso a página protegida sem autenticação',
+      { path: to.path, from: from.path },
+      'router.beforeEach'
+    )
     next('/login')
   } else {
     next()
   }
+})
+
+// Log de erros de navegação
+router.onError((error) => {
+  const { logError } = useErrorLogger()
+  logError(
+    'Erro de navegação',
+    { error },
+    'router.onError',
+    error instanceof Error ? error : new Error(String(error))
+  )
 })
 
 export default router

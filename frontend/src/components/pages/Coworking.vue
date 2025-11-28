@@ -11,11 +11,13 @@ import {
   Settings
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/useAuth'
+import { useErrorLogger } from '@/composables/useErrorLogger'
 import plantaImg from '@/assets/planta.png'
 import ModalSalaReuniao from '@/components/modals/coworking/ModalSalaReuniao.vue'
 import ModalCadeira from '@/components/modals/coworking/ModalCadeira.vue'
 
 const { user, logout } = useAuth()
+const { logError, logWarning } = useErrorLogger()
 const router = useRouter()
 const route = useRoute()
 
@@ -44,6 +46,7 @@ type SeatPoint = {
   x: number  
   y: number  
   status: SeatStatus
+  usuarioNome?: string  // Nome do usuário quando ocupado/reservado
 }
 
 type PlantaOption = {
@@ -61,16 +64,13 @@ type ReservaPayload = {
   horaFim: string
 }
 
-type ReservaCadeiraPayload = ReservaPayload & {
-  seatId: number
-}
 
 const plantas = ref<PlantaOption[]>([
   { id: 1, nome: 'Pavimento baixo - Coworking', img: plantaImg },
   { id: 2, nome: 'Pavimento superior - Coworking', img: plantaImg }
 ])
 
-const selectedPlantaId = ref<number>(plantas.value[0].id)
+const selectedPlantaId = ref<number>(plantas.value[0]?.id ?? 1)
 
 const selectedPlantaImg = computed(() => {
   const p = plantas.value.find(p => p.id === selectedPlantaId.value)
@@ -79,15 +79,102 @@ const selectedPlantaImg = computed(() => {
 
 const seats = ref<SeatPoint[]>([
   { id: 1, x: 25, y: 30, status: 'disponivel' },
-  { id: 2, x: 40, y: 32, status: 'ocupado' },
-  { id: 3, x: 55, y: 35, status: 'reservado' },
+  { id: 2, x: 40, y: 32, status: 'disponivel' },
+  { id: 3, x: 55, y: 35, status: 'disponivel' },
   { id: 4, x: 30, y: 55, status: 'disponivel' },
-  { id: 5, x: 45, y: 57, status: 'favorito' },
+  { id: 5, x: 45, y: 57, status: 'disponivel' },
   { id: 6, x: 60, y: 59, status: 'disponivel' },
   { id: 7, x: 28, y: 75, status: 'disponivel' }
 ])
 
-const selectedSeat = ref<SeatPoint | null>(null)
+// Função para obter o nome completo do usuário logado
+const getNomeUsuarioLogado = (): string => {
+  // Tenta obter do user.value primeiro
+  let currentUser = user.value
+  
+  // Se user.value estiver null, tenta carregar do localStorage diretamente
+  if (!currentUser) {
+    try {
+      // Tenta diferentes chaves possíveis
+      const userKey = localStorage.getItem('user')
+      const authUserKey = localStorage.getItem('auth_user')
+      const currentUserKey = localStorage.getItem('currentUser')
+      const storedUser = userKey || authUserKey || currentUserKey
+      
+      if (storedUser) {
+        currentUser = JSON.parse(storedUser)
+      }
+    } catch (e) {
+      logError(
+        'Erro ao carregar usuário do localStorage',
+        { error: e },
+        'Coworking.getNomeUsuarioLogado',
+        e instanceof Error ? e : new Error(String(e))
+      )
+    }
+  }
+  
+  if (!currentUser) {
+    logWarning(
+      'Usuário não encontrado ao tentar obter nome',
+      { userValue: user.value, localStorageKeys: Object.keys(localStorage) },
+      'Coworking.getNomeUsuarioLogado'
+    )
+    return ''
+  }
+  
+  const firstName = currentUser.first_name || ''
+  const lastName = currentUser.last_name || ''
+  const username = currentUser.username || ''
+  
+  console.log('firstName:', firstName, 'lastName:', lastName, 'username:', username)
+  
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`
+  }
+  if (firstName) {
+    return firstName
+  }
+  if (lastName) {
+    return lastName
+  }
+  // Fallback para username se não tiver nome
+  if (username) {
+    return username
+  }
+  return ''
+}
+
+// Função para obter iniciais do usuário
+const getIniciaisUsuario = (nome?: string): string => {
+  if (!nome) return ''
+  const partes = nome.trim().split(' ').filter(p => p.length > 0)
+  if (partes.length >= 2) {
+    const primeira = partes[0]
+    const ultima = partes[partes.length - 1]
+    if (primeira && ultima) {
+      return `${primeira[0]}${ultima[0]}`.toUpperCase()
+    }
+  }
+  if (partes.length === 1 && partes[0]) {
+    // Se for uma palavra só, retorna apenas a primeira letra
+    const primeiraLetra = partes[0]?.[0]
+    return primeiraLetra ? primeiraLetra.toUpperCase() : ''
+  }
+  return ''
+}
+
+// Função para verificar se deve mostrar iniciais
+const deveMostrarIniciais = (seat: SeatPoint): boolean => {
+  const deveMostrar = (seat.status === 'ocupado' || seat.status === 'reservado') && !!seat.usuarioNome
+  // Debug
+  if ((seat.status === 'ocupado' || seat.status === 'reservado') && !seat.usuarioNome) {
+    console.log('Seat sem usuarioNome:', seat.id, seat.status, seat.usuarioNome)
+  }
+  return deveMostrar
+}
+
+const selectedSeat = ref<{ id: number; status: SeatStatus } | null>(null)
 
 const showReservaModal = ref(false)
 
@@ -96,7 +183,11 @@ const showCadeiraModal = ref(false)
 const handleSeatClick = (id: number) => {
   const seat = seats.value.find(s => s.id === id)
   if (!seat) return
-  selectedSeat.value = seat
+  // Converte para o formato esperado pelo ModalCadeira (apenas id e status)
+  selectedSeat.value = {
+    id: seat.id,
+    status: seat.status
+  }
   showCadeiraModal.value = true
   console.log('Assento clicado:', seat)
 }
@@ -115,14 +206,52 @@ const handleSalvarReserva = (payload: ReservaPayload) => {
   showReservaModal.value = false
 }
 
-const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
-  console.log('Reserva de cadeira:', payload)
-  const seat = seats.value.find(s => s.id === payload.seatId)
-  if (seat) {
-    seat.status = 'reservado'
+const handleReservaCadeira = (payload: { seatId: number; dataInicio: string; dataFim: string; horaInicio: string; horaFim: string }) => {
+  const seatIndex = seats.value.findIndex(s => s.id === payload.seatId)
+  if (seatIndex === -1) {
+    logError(
+      'Falha ao reservar cadeira: assento não encontrado',
+      { seatId: payload.seatId, availableSeats: seats.value.map(s => s.id) },
+      'Coworking.handleReservaCadeira'
+    )
+    showCadeiraModal.value = false
+    return
   }
+
+  const seatAtual = seats.value[seatIndex]
+  if (!seatAtual) {
+    logError(
+      'Falha ao reservar cadeira: assento inválido',
+      { seatIndex, seatId: payload.seatId },
+      'Coworking.handleReservaCadeira'
+    )
+    showCadeiraModal.value = false
+    return
+  }
+  
+  // Associa o nome do usuário logado à posição reservada
+  const nomeUsuario = getNomeUsuarioLogado()
+  
+  if (!nomeUsuario) {
+    logWarning(
+      'Reserva realizada sem nome de usuário',
+      { seatId: payload.seatId, user: user.value },
+      'Coworking.handleReservaCadeira'
+    )
+  }
+  
+  // Atualiza usando índice para garantir reatividade
+  seats.value[seatIndex] = {
+    id: seatAtual.id,
+    x: seatAtual.x,
+    y: seatAtual.y,
+    status: 'reservado',
+    usuarioNome: nomeUsuario
+  }
+  
   showCadeiraModal.value = false
 }
+
 </script>
 
 
@@ -247,19 +376,32 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
             class="planta-img"
           />
 
-          <button
+          <div
             v-for="seat in seats"
             :key="seat.id"
-            type="button"
-            class="seat-dot"
-            :class="[
-              seat.status === 'disponivel' ? 'seat-disponivel' : '',
-              seat.status === 'ocupado' ? 'seat-ocupado' : '',
-              seat.status === 'reservado' ? 'seat-reservado' : '',
-            ]"
+            class="seat-wrapper"
             :style="{ left: seat.x + '%', top: seat.y + '%'}"
-            @click.stop="handleSeatClick(seat.id)"
-          />
+          >
+            <button
+              type="button"
+              class="seat-dot"
+              :class="[
+                seat.status === 'disponivel' ? 'seat-disponivel' : '',
+                seat.status === 'ocupado' ? 'seat-ocupado' : '',
+                seat.status === 'reservado' ? 'seat-reservado' : '',
+                deveMostrarIniciais(seat) ? 'seat-com-usuario' : '',
+              ]"
+              @click.stop="handleSeatClick(seat.id)"
+            >
+              <span v-if="deveMostrarIniciais(seat)" class="seat-iniciais">
+                {{ getIniciaisUsuario(seat.usuarioNome) }}
+              </span>
+              <span v-else class="seat-numero">{{ seat.id }}</span>
+            </button>
+            <div v-if="deveMostrarIniciais(seat)" class="seat-label">
+              {{ seat.usuarioNome }}
+            </div>
+          </div>
         </div>
 
         <p class="seat-info" v-if="selectedSeat">
@@ -628,14 +770,44 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
   object-fit: fill;
 }
 
-.seat-dot {
+.seat-wrapper {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.seat-dot {
+  position: relative;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   border: 2px solid #ffffff;
-  transform: translate(-50%, -50%);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seat-dot:hover {
+  transform: scale(1.1);
+}
+
+.seat-numero,
+.seat-iniciais {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
 }
 
 .seat-disponivel {
@@ -656,6 +828,25 @@ const handleReservaCadeira = (payload: ReservaCadeiraPayload) => {
 .seat-favorito {
   background: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.seat-com-usuario {
+  width: 36px;
+  height: 36px;
+}
+
+.seat-label {
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 0.15rem;
 }
 
 .seat-info {

@@ -5,6 +5,7 @@ type NovoUsuario = {
   nome: string
   email: string
   funcao: string
+  enviarSenha: boolean
 }
 
 const props = defineProps<{
@@ -21,7 +22,8 @@ const emit = defineEmits<{
 const form = ref<NovoUsuario>({
   nome: '',
   email: '',
-  funcao: ''
+  funcao: '',
+  enviarSenha: true    // padrão: enviar senha
 })
 
 // Sempre que abrir o modal, limpa o formulário
@@ -29,7 +31,12 @@ watch(
   () => props.open,
   (val) => {
     if (val) {
-      form.value = { nome: '', email: '', funcao: '' }
+      form.value = { 
+        nome: '', 
+        email: '', 
+        funcao: '',
+        enviarSenha: true
+      }
     }
   }
 )
@@ -66,6 +73,22 @@ const salvar = () => {
             <option disabled value="">Selecione uma função</option>
             <option v-for="f in funcoes" :key="f" :value="f">{{ f }}</option>
           </select>
+        </div>
+
+        <!-- Toggle enviar senha -->
+        <div class="toggle-row">
+          <span class="label">Enviar senha por e-mail</span>
+          <button
+            type="button"
+            class="toggle"
+            :class="{ on: form.enviarSenha }"
+            @click="form.enviarSenha = !form.enviarSenha"
+          >
+            <span class="toggle-knob" />
+            <span class="toggle-label">
+              {{ form.enviarSenha ? 'On' : 'Off' }}
+            </span>
+          </button>
         </div>
       </form>
 
@@ -148,5 +171,57 @@ const salvar = () => {
 
 .btn-salvar:hover {
   background: #1e40af;
+}
+
+/* Toggle enviar senha */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  gap: 0.75rem;
+}
+
+.toggle {
+  position: relative;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem 0.1rem 0.15rem;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  min-width: 80px;
+  justify-content: flex-start;
+}
+
+.toggle-knob {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #9ca3af;
+  transition: all 0.12s ease;
+}
+
+.toggle-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.toggle.on {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  justify-content: flex-end;
+}
+
+.toggle.on .toggle-knob {
+  background: #ffffff;
+}
+
+.toggle.on .toggle-label {
+  color: #e5e7eb;
 }
 </style>
