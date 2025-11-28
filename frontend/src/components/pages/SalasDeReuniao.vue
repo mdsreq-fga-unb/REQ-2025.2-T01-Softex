@@ -14,6 +14,7 @@ import { useAuth } from '@/composables/useAuth'
 import AndamentoModal from '@/components/modals/salas/Andamento.vue'
 import ConcluidasModal from '@/components/modals/salas/Concluidas.vue'
 import SalaDeReuniao from '@/components/modals/salas/SalaDeReuniao.vue'
+import CancelarReuniaoModal from '@/components/modals/salas/CancelarReuniao.vue'
 
 const { user, logout } = useAuth()
 const router = useRouter()
@@ -152,9 +153,11 @@ const selecionarTab = (tab: Aba) => {
 
 const showAndamentoModal = ref(false)
 const showConcluidasModal = ref(false)
+const showCancelarModal = ref(false)
 
 const reservaAndamentoSelecionada = ref<ReservaSala | null>(null)
 const reservaConcluidaSelecionada = ref<ReservaSala | null>(null)
+const reservaCancelarSelecionada = ref<ReservaSala | null>(null)
 
 const handleClickReserva = (reserva: ReservaSala) => {
   if (activeTab.value === 'solicitacoes') {
@@ -166,6 +169,52 @@ const handleClickReserva = (reserva: ReservaSala) => {
   } else {
     
   }
+}
+
+const handleAprovarReserva = (payload: { id: number; salaEscolhida: string; codigoSala: string }) => {
+  const reserva = reservasSalas.value.find(r => r.id === payload.id)
+  if (reserva) {
+    reserva.status = 'aprovado'
+    reserva.sala = payload.salaEscolhida
+    // Mantém em andamento (fluxo: 'andamento')
+    console.log('Reserva aprovada:', payload)
+  }
+  showAndamentoModal.value = false
+  reservaAndamentoSelecionada.value = null
+}
+
+const handleRecusarReserva = (id: number) => {
+  const reserva = reservasSalas.value.find(r => r.id === id)
+  if (reserva) {
+    reserva.status = 'negado'
+    reserva.fluxo = 'concluido'
+    console.log('Reserva recusada:', id)
+  }
+  showAndamentoModal.value = false
+  reservaAndamentoSelecionada.value = null
+}
+
+const handleCancelarClick = (id: number) => {
+  // Quando o botão de cancelar é clicado no modal de andamento
+  const reserva = reservasSalas.value.find(r => r.id === id)
+  if (reserva) {
+    reservaCancelarSelecionada.value = reserva
+    showCancelarModal.value = true
+    // Fecha o modal de andamento
+    showAndamentoModal.value = false
+  }
+}
+
+const handleConfirmarCancelamento = (id: number) => {
+  // Atualiza o status da reserva para cancelado/negado e move para concluídas
+  const reserva = reservasSalas.value.find(r => r.id === id)
+  if (reserva) {
+    reserva.status = 'negado'
+    reserva.fluxo = 'concluido'
+  }
+  showCancelarModal.value = false
+  reservaCancelarSelecionada.value = null
+  console.log('Reunião cancelada:', id)
 }
 
 const labelResultado = (resultado: ResultadoStatus): string => {
@@ -185,40 +234,78 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
 
 
 const toIsoFromBr = (dateBr: string): string => {
-  const [dia, mes, ano] = dateBr.split('/')
+  const partes = dateBr.split('/')
+  const dia = partes[0] || '01'
+  const mes = partes[1] || '01'
+  const ano = partes[2] || '2000'
   return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
 }
 
 const filtroDataInicio = ref<string>('')
 const filtroDataFim = ref<string>('')    
 const ordenacao = ref<'recentes' | 'antigas'>('recentes')
-const filtroStatus = ref<'todos' | 'aprovado' | 'pendente' | 'negado'>('todos')
+const filtroStatus = ref<'todos' | 'aprovado' | 'recusado' | 'cancelado'>('todos')
+
+// Função para verificar se uma reserva está dentro do intervalo de datas do filtro
+const reservaEstaNoIntervalo = (reserva: ReservaSala): boolean => {
+  // Se não há filtro de data, retorna true
+  if (!filtroDataInicio.value && !filtroDataFim.value) {
+    return true
+  }
+
+  const reservaInicioIso = toIsoFromBr(reserva.dataInicio)
+  const reservaFimIso = toIsoFromBr(reserva.dataFim)
+
+  // Se só tem data início no filtro
+  if (filtroDataInicio.value && !filtroDataFim.value) {
+    return reservaFimIso >= filtroDataInicio.value
+  }
+
+  // Se só tem data fim no filtro
+  if (!filtroDataInicio.value && filtroDataFim.value) {
+    return reservaInicioIso <= filtroDataFim.value
+  }
+
+  // Se tem ambas as datas no filtro, verifica sobreposição
+  if (filtroDataInicio.value && filtroDataFim.value) {
+    // A reserva está dentro do intervalo se:
+    // - O início da reserva está antes ou igual ao fim do filtro E
+    // - O fim da reserva está depois ou igual ao início do filtro
+    return reservaInicioIso <= filtroDataFim.value && reservaFimIso >= filtroDataInicio.value
+  }
+
+  return true
+}
+
+// Mapeia o status do filtro para o status da reserva
+const mapearStatusFiltro = (statusFiltro: string): ResultadoStatus | null => {
+  switch (statusFiltro) {
+    case 'aprovado':
+      return 'aprovado'
+    case 'recusado':
+      return 'negado' // 'negado' no sistema corresponde a 'recusado' no filtro
+    case 'cancelado':
+      return 'negado' // Por enquanto, cancelado também mapeia para negado
+    default:
+      return null
+  }
+}
 
 const reservasConcluidasFiltradas = computed(() => {
+  // Garante que só trabalha com reservas concluídas
   let lista = reservasConcluidas.value.slice()
 
   // 🔹 Filtro por status
   if (filtroStatus.value !== 'todos') {
-    lista = lista.filter(r => r.status === filtroStatus.value)
+    const statusMapeado = mapearStatusFiltro(filtroStatus.value)
+    if (statusMapeado) {
+      lista = lista.filter(r => r.status === statusMapeado)
+    }
   }
 
-  // 🔹 Filtro Data Início
-  if (filtroDataInicio.value) {
-    const inicioFiltroIso = filtroDataInicio.value
-    lista = lista.filter(r => {
-      const dataIso = toIsoFromBr(r.dataInicio)
-      return dataIso >= inicioFiltroIso
-    })
-  }
-
-  // 🔹 Filtro Data Fim
-  if (filtroDataFim.value) {
-    const fimFiltroIso = filtroDataFim.value
-    lista = lista.filter(r => {
-      const dataIso = toIsoFromBr(r.dataInicio)
-      return dataIso <= fimFiltroIso
-    })
-  }
+  // 🔹 Filtro por intervalo de datas
+  // Verifica se a reserva está dentro do intervalo informado
+  lista = lista.filter(r => reservaEstaNoIntervalo(r))
 
   // 🔹 Ordenação
   lista.sort((a, b) => {
@@ -418,15 +505,15 @@ const reservasConcluidasFiltradas = computed(() => {
               </label>
             </div>
 
-            <!-- 🔹 NOVO FILTRO DE STATUS -->
+            <!-- 🔹 FILTRO DE STATUS -->
             <div class="filtro-status">
               <label class="filtro-label">
                 Status
                 <select v-model="filtroStatus" class="filtro-select">
                   <option value="todos">Todos</option>
-                  <option value="aprovado">Aprovadas</option>
-                  <option value="pendente">Pendentes</option>
-                  <option value="negado">Canceladas</option>
+                  <option value="aprovado">Aprovado</option>
+                  <option value="recusado">Recusado</option>
+                  <option value="cancelado">Cancelado</option>
                 </select>
               </label>
             </div>
@@ -497,14 +584,22 @@ const reservasConcluidasFiltradas = computed(() => {
       :open="showAndamentoModal"
       :reserva="reservaAndamentoSelecionada"
       @close="showAndamentoModal = false"
-      @aprovar="payload => console.log('Aprovar reserva sala:', payload)"
-      @recusar="payload => console.log('Recusar reserva sala:', payload)"
+      @aprovar="handleAprovarReserva"
+      @recusar="handleRecusarReserva"
+      @cancelar="handleCancelarClick"
     />
 
     <ConcluidasModal
       :open="showConcluidasModal"
       :reserva="reservaConcluidaSelecionada"
       @close="showConcluidasModal = false"
+    />
+
+    <CancelarReuniaoModal
+      :open="showCancelarModal"
+      :reserva="reservaCancelarSelecionada"
+      @close="showCancelarModal = false"
+      @cancelar="handleConfirmarCancelamento"
     />
   </div>
 </template>
@@ -834,6 +929,7 @@ const reservasConcluidasFiltradas = computed(() => {
   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
   transform: translateY(-1px);
 }
+
 
 .reserva-main {
   display: flex;

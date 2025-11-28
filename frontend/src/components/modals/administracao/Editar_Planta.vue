@@ -123,7 +123,9 @@ const cancelar = () => {
           :style="{ left: p.x + '%', top: p.y + '%' }"
           @click.stop="removerPonto(p.id)"
           type="button"
-        />
+        >
+          <span class="seat-numero">{{ p.id }}</span>
+        </button>
       </div>
 
       <p class="confirm-text">
@@ -218,8 +220,8 @@ const cancelar = () => {
 
 .seat-dot {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   background: #22c55e;
   border: 2px solid #ffffff;
@@ -227,6 +229,25 @@ const cancelar = () => {
   transform: translate(-50%, -50%);
   cursor: pointer;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #ffffff;
+  transition: transform 0.15s ease;
+}
+
+.seat-dot:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.seat-numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .confirm-text {

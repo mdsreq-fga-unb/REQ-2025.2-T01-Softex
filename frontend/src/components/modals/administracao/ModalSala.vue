@@ -1,6 +1,7 @@
 <!-- src/components/modals/ModalSala.vue -->
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
+import ConfirmarExclusao from '@/components/modals/ConfirmarExclusao.vue'
 
 type SalaPayload = {
   nome: string
@@ -26,7 +27,7 @@ const emit = defineEmits<{
 
 const nome = ref<string>('')
 
-// estado do mini-modal de confirmar exclusão
+// estado do modal de confirmar exclusão
 const showConfirmDelete = ref(false)
 const salaParaExcluir = ref<SalaItem | null>(null)
 
@@ -61,7 +62,7 @@ const salvar = () => {
   emit('save', { nome: nome.value.trim() })
 }
 
-// abrir mini-modal de confirmação
+// abrir modal de confirmação
 const pedirConfirmacaoExclusao = (sala: SalaItem) => {
   salaParaExcluir.value = sala
   showConfirmDelete.value = true
@@ -157,25 +158,12 @@ const confirmarExclusao = () => {
       </div>
     </div>
 
-    <!-- MINI MODAL CONFIRMAR EXCLUSÃO -->
-    <div v-if="showConfirmDelete" class="mini-overlay">
-      <div class="mini-modal">
-        <h3 class="mini-title">Excluir sala</h3>
-        <p class="mini-text">
-          Tem certeza que deseja excluir
-          <strong v-if="salaParaExcluir">"{{ salaParaExcluir.nome }}"</strong>?
-          Esta ação não poderá ser desfeita.
-        </p>
-        <div class="mini-actions">
-          <button type="button" class="mini-btn ghost" @click="cancelarExclusao">
-            Cancelar
-          </button>
-          <button type="button" class="mini-btn danger" @click="confirmarExclusao">
-            Excluir
-          </button>
-        </div>
-      </div>
-    </div>
+    <!-- MODAL PADRÃO DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <ConfirmarExclusao
+      :open="showConfirmDelete"
+      @close="cancelarExclusao"
+      @confirm="confirmarExclusao"
+    />
   </div>
 </template>
 
@@ -378,65 +366,4 @@ const confirmarExclusao = () => {
   transform: translateY(-1px);
 }
 
-/* MINI MODAL DE CONFIRMAÇÃO */
-.mini-overlay {
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 90;
-}
-
-.mini-modal {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 1.1rem 1.3rem 1rem;
-  width: 100%;
-  max-width: 360px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-}
-
-.mini-title {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.45rem;
-}
-
-.mini-text {
-  font-size: 0.88rem;
-  color: #374151;
-}
-
-.mini-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 0.9rem;
-}
-
-.mini-btn {
-  border-radius: 999px;
-  padding: 0.35rem 0.95rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.1s ease;
-}
-
-.mini-btn:hover {
-  opacity: 0.9;
-}
-
-.mini-btn.ghost {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.mini-btn.danger {
-  background: #dc2626;
-  color: #ffffff;
-}
 </style>

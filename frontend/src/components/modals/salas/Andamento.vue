@@ -30,6 +30,7 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'aprovar', payload: { id: number; salaEscolhida: string; codigoSala: string }): void
   (e: 'recusar', id: number): void
+  (e: 'cancelar', id: number): void
 }>()
 
 const salasDisponiveis = ref<string[]>([
@@ -106,6 +107,11 @@ const aprovar = () => {
 const recusar = () => {
   if (!props.reserva) return
   emit('recusar', props.reserva.id)
+}
+
+const cancelar = () => {
+  if (!props.reserva) return
+  emit('cancelar', props.reserva.id)
 }
 
 const fechar = () => emit('close')
@@ -206,6 +212,13 @@ const fechar = () => emit('close')
       </div>
 
       <div class="actions">
+        <button
+          class="btn btn-cancelar"
+          type="button"
+          @click="cancelar"
+        >
+          Cancelar Reunião
+        </button>
         <button
           class="btn btn-ghost"
           type="button"
@@ -369,6 +382,7 @@ const fechar = () => emit('close')
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -379,6 +393,12 @@ const fechar = () => emit('close')
   border: none;
   cursor: pointer;
   transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-cancelar {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .btn-ghost {
@@ -398,6 +418,7 @@ const fechar = () => emit('close')
   box-shadow: none;
 }
 
+.btn-cancelar:hover,
 .btn-primary:not(:disabled):hover,
 .btn-ghost:hover {
   opacity: 0.95;

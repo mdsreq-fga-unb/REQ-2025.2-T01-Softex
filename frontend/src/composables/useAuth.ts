@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { useErrorLogger } from './useErrorLogger'
 
 export interface User {
   id: number
@@ -19,11 +20,18 @@ const error = ref<string | null>(null)
 
 // Carregar usuário do localStorage ao iniciar
 const loadUserFromStorage = () => {
+  const { logError } = useErrorLogger()
   const storedUser = localStorage.getItem('user')
   if (storedUser) {
     try {
       user.value = JSON.parse(storedUser)
     } catch (e) {
+      logError(
+        'Falha ao carregar usuário do localStorage',
+        { error: e, storedUser },
+        'useAuth.loadUserFromStorage',
+        e instanceof Error ? e : new Error(String(e))
+      )
       localStorage.removeItem('user')
     }
   }
@@ -39,6 +47,7 @@ export function useAuth() {
    * Login via Google SSO
    */
   const googleLogin = async (googleToken: string) => {
+    const { logError } = useErrorLogger()
     isLoading.value = true
     error.value = null
 
@@ -54,7 +63,13 @@ export function useAuth() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao fazer login com Google')
+        const errorMsg = data.error || 'Erro ao fazer login com Google'
+        logError(
+          'Falha ao fazer login com Google',
+          { status: response.status, data },
+          'useAuth.googleLogin'
+        )
+        throw new Error(errorMsg)
       }
 
       // Salvar usuário
@@ -63,7 +78,14 @@ export function useAuth() {
       
       return { success: true, isNewUser: data.is_new_user }
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Erro ao fazer login com Google'
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao fazer login com Google'
+      error.value = errorMessage
+      logError(
+        'Erro ao fazer login com Google',
+        { error: err, googleToken: googleToken ? 'presente' : 'ausente' },
+        'useAuth.googleLogin',
+        err instanceof Error ? err : new Error(String(err))
+      )
       return { success: false, isNewUser: false }
     } finally {
       isLoading.value = false
@@ -74,6 +96,7 @@ export function useAuth() {
    * Login tradicional (email/senha)
    */
   const login = async (email: string, password: string) => {
+    const { logError } = useErrorLogger()
     isLoading.value = true
     error.value = null
 
@@ -89,7 +112,23 @@ export function useAuth() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || data.non_field_errors?.[0] || 'Email ou senha incorretos')
+        const errorMsg = data.error || data.non_field_errors?.[0] || 'Email ou senha incorretos'
+        logError(
+          'Falha ao fazer login',
+          { status: response.status, email, hasPassword: !!password, data },
+          'useAuth.login'
+        )
+        throw new Error(errorMsg)
+      }
+
+      // Verificar se usuário foi retornado
+      if (!data.user) {
+        logError(
+          'Usuário não encontrado na resposta do login',
+          { data },
+          'useAuth.login'
+        )
+        throw new Error('Usuário não encontrado')
       }
 
       // Salvar usuário
@@ -98,7 +137,14 @@ export function useAuth() {
       
       return true
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Erro ao fazer login'
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao fazer login'
+      error.value = errorMessage
+      logError(
+        'Erro ao fazer login',
+        { error: err, email },
+        'useAuth.login',
+        err instanceof Error ? err : new Error(String(err))
+      )
       return false
     } finally {
       isLoading.value = false
@@ -125,6 +171,7 @@ export function useAuth() {
     password: string
     tipo_permissao?: string
   }) => {
+    const { logError } = useErrorLogger()
     isLoading.value = true
     error.value = null
 
@@ -143,14 +190,26 @@ export function useAuth() {
       const data = await response.json()
 
       if (!response.ok) {
-        const errorMsg = Object.values(data).flat().join(', ')
-        throw new Error(errorMsg || 'Erro ao criar conta')
+        const errorMsg = Object.values(data).flat().join(', ') || 'Erro ao criar conta'
+        logError(
+          'Falha ao cadastrar usuário',
+          { status: response.status, data, email: userData.email, username: userData.username },
+          'useAuth.register'
+        )
+        throw new Error(errorMsg)
       }
 
       // Fazer login automaticamente após cadastro
       return await login(userData.email, userData.password)
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Erro ao criar conta'
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao criar conta'
+      error.value = errorMessage
+      logError(
+        'Erro ao cadastrar usuário',
+        { error: err, email: userData.email, username: userData.username },
+        'useAuth.register',
+        err instanceof Error ? err : new Error(String(err))
+      )
       return false
     } finally {
       isLoading.value = false

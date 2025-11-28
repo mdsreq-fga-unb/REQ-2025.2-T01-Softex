@@ -30,6 +30,10 @@ const startDate = ref<Date | null>(null)
 const endDate = ref<Date | null>(null)
 const currentMonth = ref(new Date())
 
+// Filtro por tipo de reserva
+type TipoReserva = 'todas' | 'sala' | 'cadeira'
+const tipoReservaFiltro = ref<TipoReserva>('todas')
+
 const users = ref([
   'Claudio santana',
   'Maria Silva',
@@ -239,6 +243,170 @@ const monthNames = [
 ]
 
 const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+
+// Dados mockados para métricas
+const metricasSala = {
+  posicoesOcupadas: { valor: 0, total: 0 },
+  salasEmUso: { valor: 4, total: 6 },
+  reservasHoje: { valor: 12, total: 20 },
+  taxaOcupacao: 67
+}
+
+const metricasCadeira = {
+  posicoesOcupadas: { valor: 32, total: 58 },
+  salasEmUso: { valor: 0, total: 0 },
+  reservasHoje: { valor: 6, total: 10 },
+  taxaOcupacao: 55
+}
+
+const metricasTodas = {
+  posicoesOcupadas: { valor: 32, total: 58 },
+  salasEmUso: { valor: 4, total: 6 },
+  reservasHoje: { valor: 18, total: 30 },
+  taxaOcupacao: 75
+}
+
+// Dados mockados para gráfico de barras (ocupação por horário)
+const ocupacaoPorHorarioSala = [
+  { hora: '8h', porcentagem: 30 },
+  { hora: '10h', porcentagem: 60 },
+  { hora: '12h', porcentagem: 90 },
+  { hora: '14h', porcentagem: 85 },
+  { hora: '16h', porcentagem: 50 },
+  { hora: '18h', porcentagem: 25 }
+]
+
+const ocupacaoPorHorarioCadeira = [
+  { hora: '8h', porcentagem: 45 },
+  { hora: '10h', porcentagem: 85 },
+  { hora: '12h', porcentagem: 100 },
+  { hora: '14h', porcentagem: 60 },
+  { hora: '16h', porcentagem: 60 },
+  { hora: '18h', porcentagem: 50 }
+]
+
+const ocupacaoPorHorarioTodas = [
+  { hora: '8h', porcentagem: 50 },
+  { hora: '10h', porcentagem: 78 },
+  { hora: '12h', porcentagem: 98 },
+  { hora: '14h', porcentagem: 70 },
+  { hora: '16h', porcentagem: 55 },
+  { hora: '18h', porcentagem: 40 }
+]
+
+// Dados mockados para gráfico de rosca (distribuição)
+const distribuicaoSala = {
+  ocupado: 70,
+  livre: 30,
+  total: 100
+}
+
+const distribuicaoCadeira = {
+  ocupado: 55,
+  livre: 45,
+  total: 100
+}
+
+const distribuicaoTodas = {
+  coworking: 50,
+  salas: 30,
+  livre: 20,
+  ocupado: 0, // Não usado quando é 'todas', mas necessário para evitar erros
+  total: 100
+}
+
+// Dados mockados para atividades recentes
+const atividadesSala = [
+  { tipo: 'reserva', texto: 'Maria santos reservou sala Zeus', tempo: '14:30-16:00 hoje', cor: 'green' },
+  { tipo: 'liberacao', texto: 'Sala Apolo liberada', tempo: '14:30-16:00 hoje', cor: 'orange' },
+  { tipo: 'reserva', texto: 'João Silva reservou sala Hermes', tempo: '15:00 hoje', cor: 'green' }
+]
+
+const atividadesCadeira = [
+  { tipo: 'ocupacao', texto: 'Pedro Lima ocupou Posição A-15', tempo: '13:45 hoje', cor: 'blue' },
+  { tipo: 'reserva', texto: 'Ana Costa reservou Posição B-22', tempo: '14:00 hoje', cor: 'green' },
+  { tipo: 'liberacao', texto: 'Posição C-10 liberada', tempo: '14:15 hoje', cor: 'orange' }
+]
+
+const atividadesTodas = [
+  { tipo: 'reserva', texto: 'Maria santos reservou sala Zeus', tempo: '14:30-16:00 hoje', cor: 'green' },
+  { tipo: 'ocupacao', texto: 'Pedro Lima ocupou Posição A-15', tempo: '13:45 hoje', cor: 'blue' },
+  { tipo: 'liberacao', texto: 'Sala Apolo liberada', tempo: '14:30-16:00 hoje', cor: 'orange' }
+]
+
+// Dados mockados para próximas reservas
+const proximasReservasSala = [
+  { titulo: 'Reunião de Projeto', subtitulo: 'Sala Hermes - 15:00-16:30', tempo: 'Em 30 min', tag: 'purple' },
+  { titulo: 'Apresentação Cliente', subtitulo: 'Sala Zeus - 16:00-17:00', tempo: 'Em 1h30', tag: 'green' },
+  { titulo: 'Workshop Técnico', subtitulo: 'Sala Apolo - 17:30-19:00', tempo: 'Em 3h', tag: 'orange' }
+]
+
+const proximasReservasCadeira = [
+  { titulo: 'Trabalho Individual', subtitulo: 'Posição A-15 - 15:00-17:00', tempo: 'Em 30 min', tag: 'purple' },
+  { titulo: 'Reunião Remota', subtitulo: 'Posição B-22 - 16:00-18:00', tempo: 'Em 1h30', tag: 'green' }
+]
+
+const proximasReservasTodas = [
+  { titulo: 'Reunião de Projeto', subtitulo: 'Sala Hermes - 15:00-16:30', tempo: 'Em 30 min', tag: 'purple' },
+  { titulo: 'Apresentação Cliente', subtitulo: 'Sala Zeus - 16:00-17:00', tempo: 'Em 1h30', tag: 'green' },
+  { titulo: 'Workshop Técnico', subtitulo: 'Sala Apolo - 17:30-19:00', tempo: 'Em 3h', tag: 'orange' }
+]
+
+// Computed properties para dados filtrados
+const metricasFiltradas = computed(() => {
+  switch (tipoReservaFiltro.value) {
+    case 'sala':
+      return metricasSala
+    case 'cadeira':
+      return metricasCadeira
+    default:
+      return metricasTodas
+  }
+})
+
+const ocupacaoPorHorarioFiltrada = computed(() => {
+  switch (tipoReservaFiltro.value) {
+    case 'sala':
+      return ocupacaoPorHorarioSala
+    case 'cadeira':
+      return ocupacaoPorHorarioCadeira
+    default:
+      return ocupacaoPorHorarioTodas
+  }
+})
+
+const distribuicaoFiltrada = computed(() => {
+  switch (tipoReservaFiltro.value) {
+    case 'sala':
+      return distribuicaoSala
+    case 'cadeira':
+      return distribuicaoCadeira
+    default:
+      return distribuicaoTodas
+  }
+})
+
+const atividadesFiltradas = computed(() => {
+  switch (tipoReservaFiltro.value) {
+    case 'sala':
+      return atividadesSala
+    case 'cadeira':
+      return atividadesCadeira
+    default:
+      return atividadesTodas
+  }
+})
+
+const proximasReservasFiltradas = computed(() => {
+  switch (tipoReservaFiltro.value) {
+    case 'sala':
+      return proximasReservasSala
+    case 'cadeira':
+      return proximasReservasCadeira
+    default:
+      return proximasReservasTodas
+  }
+})
 </script>
 
 <template>
@@ -316,6 +484,12 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
             <p class="dashboard-subtitle">Visão Geral do co-working da Softex</p>
           </div>
           <div class="header-right-section">
+            <!-- Filtro por tipo de reserva -->
+            <select v-model="tipoReservaFiltro" class="reserva-filter-select">
+              <option value="todas">Todas as Reservas</option>
+              <option value="sala">Reservas de Sala</option>
+              <option value="cadeira">Reservas de Cadeira</option>
+            </select>
             <Button class="report-button">
               Gerar Relatórios
             </Button>
@@ -332,8 +506,8 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
           </div>
           <div class="card-content">
             <h3 class="card-title">Posições Ocupadas</h3>
-            <p class="card-value">32</p>
-            <p class="card-detail">de 58 totais</p>
+            <p class="card-value">{{ metricasFiltradas.posicoesOcupadas.valor }}</p>
+            <p class="card-detail">de {{ metricasFiltradas.posicoesOcupadas.total }} totais</p>
           </div>
         </div>
 
@@ -344,8 +518,8 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
           </div>
           <div class="card-content">
             <h3 class="card-title">Salas em uso</h3>
-            <p class="card-value">4</p>
-            <p class="card-detail">de 6 Salas disponíveis</p>
+            <p class="card-value">{{ metricasFiltradas.salasEmUso.valor }}</p>
+            <p class="card-detail">de {{ metricasFiltradas.salasEmUso.total }} Salas disponíveis</p>
           </div>
         </div>
 
@@ -356,8 +530,8 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
           </div>
           <div class="card-content">
             <h3 class="card-title">Reservas hoje</h3>
-            <p class="card-value">18</p>
-            <p class="card-detail">de 30 reservas ativas</p>
+            <p class="card-value">{{ metricasFiltradas.reservasHoje.valor }}</p>
+            <p class="card-detail">de {{ metricasFiltradas.reservasHoje.total }} reservas ativas</p>
           </div>
         </div>
 
@@ -368,7 +542,7 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
           </div>
           <div class="card-content">
             <h3 class="card-title">Taxa de Ocupação</h3>
-            <p class="card-value">75%</p>
+            <p class="card-value">{{ metricasFiltradas.taxaOcupacao }}%</p>
             <p class="card-detail">média semanal</p>
           </div>
         </div>
@@ -381,32 +555,31 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
             <h3 class="chart-title">Ocupação por Horário</h3>
             <div class="bar-chart-container">
               <div class="bars-container">
-                <div class="bar bar-blue" style="height: 50%;">
-                  <span class="bar-value">50%</span>
-                </div>
-                <div class="bar bar-light-blue" style="height: 78%;">
-                  <span class="bar-value">78%</span>
-                </div>
-                <div class="bar bar-magenta" style="height: 98%;">
-                  <span class="bar-value">98%</span>
-                </div>
-                <div class="bar bar-dark-blue" style="height: 70%;">
-                  <span class="bar-value">70%</span>
-                </div>
-                <div class="bar bar-green" style="height: 55%;">
-                  <span class="bar-value">55%</span>
-                </div>
-                <div class="bar bar-orange" style="height: 40%;">
-                  <span class="bar-value">40%</span>
+                <div
+                  v-for="(item, index) in ocupacaoPorHorarioFiltrada"
+                  :key="index"
+                  class="bar"
+                  :class="[
+                    'bar-blue',
+                    'bar-light-blue',
+                    'bar-magenta',
+                    'bar-dark-blue',
+                    'bar-green',
+                    'bar-orange'
+                  ][index % 6]"
+                  :style="{ height: item.porcentagem + '%' }"
+                >
+                  <span class="bar-value">{{ item.porcentagem }}%</span>
                 </div>
               </div>
               <div class="bar-labels">
-                <span class="bar-label">8h</span>
-                <span class="bar-label">10h</span>
-                <span class="bar-label">12h</span>
-                <span class="bar-label">14h</span>
-                <span class="bar-label">16h</span>
-                <span class="bar-label">18h</span>
+                <span
+                  v-for="item in ocupacaoPorHorarioFiltrada"
+                  :key="item.hora"
+                  class="bar-label"
+                >
+                  {{ item.hora }}
+                </span>
               </div>
             </div>
           </div>
@@ -416,57 +589,97 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
             <h3 class="chart-title">Distribuição de uso</h3>
             <div class="donut-chart-container">
               <svg class="donut-chart" viewBox="0 0 200 200">
-                <!-- Segmento Coworking (50%) -->
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="none"
-                  stroke="#1E3A8A"
-                  stroke-width="30"
-                  stroke-dasharray="219.91 439.82"
-                  stroke-dashoffset="0"
-                  transform="rotate(-90 100 100)"
-                  class="donut-segment"
-                  @mouseenter="(e) => showTooltip(e, 'Coworking', '50%')"
-                  @mouseleave="hideTooltip"
-                  @mousemove="updateTooltipPosition"
-                />
-                <!-- Segmento Salas (30%) -->
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="none"
-                  stroke="#3B82F6"
-                  stroke-width="30"
-                  stroke-dasharray="131.95 439.82"
-                  stroke-dashoffset="-219.91"
-                  transform="rotate(-90 100 100)"
-                  class="donut-segment"
-                  @mouseenter="(e) => showTooltip(e, 'Salas', '30%')"
-                  @mouseleave="hideTooltip"
-                  @mousemove="updateTooltipPosition"
-                />
-                <!-- Segmento Livre (20%) -->
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="none"
-                  stroke="#EC4899"
-                  stroke-width="30"
-                  stroke-dasharray="87.96 439.82"
-                  stroke-dashoffset="-351.86"
-                  transform="rotate(-90 100 100)"
-                  class="donut-segment"
-                  @mouseenter="(e) => showTooltip(e, 'Livre', '20%')"
-                  @mouseleave="hideTooltip"
-                  @mousemove="updateTooltipPosition"
-                />
+                <!-- Renderização dinâmica baseada no filtro -->
+                <template v-if="tipoReservaFiltro === 'todas'">
+                  <!-- Segmento Coworking -->
+                  <circle
+                    v-if="'coworking' in distribuicaoFiltrada"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                    fill="none"
+                    stroke="#1E3A8A"
+                    stroke-width="30"
+                    :stroke-dasharray="`${((distribuicaoFiltrada as any).coworking / 100) * 439.82} 439.82`"
+                    stroke-dashoffset="0"
+                    transform="rotate(-90 100 100)"
+                    class="donut-segment"
+                    @mouseenter="(e) => showTooltip(e, 'Coworking', (distribuicaoFiltrada as any).coworking + '%')"
+                    @mouseleave="hideTooltip"
+                    @mousemove="updateTooltipPosition"
+                  />
+                  <!-- Segmento Salas -->
+                  <circle
+                    v-if="'salas' in distribuicaoFiltrada"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                    fill="none"
+                    stroke="#3B82F6"
+                    stroke-width="30"
+                    :stroke-dasharray="`${((distribuicaoFiltrada as any).salas / 100) * 439.82} 439.82`"
+                    :stroke-dashoffset="`-${((distribuicaoFiltrada as any).coworking / 100) * 439.82}`"
+                    transform="rotate(-90 100 100)"
+                    class="donut-segment"
+                    @mouseenter="(e) => showTooltip(e, 'Salas', (distribuicaoFiltrada as any).salas + '%')"
+                    @mouseleave="hideTooltip"
+                    @mousemove="updateTooltipPosition"
+                  />
+                  <!-- Segmento Livre -->
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="70"
+                    fill="none"
+                    stroke="#EC4899"
+                    stroke-width="30"
+                    :stroke-dasharray="`${(distribuicaoFiltrada.livre / 100) * 439.82} 439.82`"
+                    :stroke-dashoffset="`-${tipoReservaFiltro === 'todas' && 'coworking' in distribuicaoFiltrada && 'salas' in distribuicaoFiltrada ? (((distribuicaoFiltrada as any).coworking + (distribuicaoFiltrada as any).salas) / 100) * 439.82 : (distribuicaoFiltrada.ocupado / 100) * 439.82}`"
+                    transform="rotate(-90 100 100)"
+                    class="donut-segment"
+                    @mouseenter="(e) => showTooltip(e, 'Livre', distribuicaoFiltrada.livre + '%')"
+                    @mouseleave="hideTooltip"
+                    @mousemove="updateTooltipPosition"
+                  />
+                </template>
+                <template v-else>
+                  <!-- Para sala ou cadeira, mostra apenas ocupado/livre -->
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="70"
+                    fill="none"
+                    stroke="#1E3A8A"
+                    stroke-width="30"
+                    :stroke-dasharray="`${(distribuicaoFiltrada.ocupado / 100) * 439.82} 439.82`"
+                    stroke-dashoffset="0"
+                    transform="rotate(-90 100 100)"
+                    class="donut-segment"
+                    @mouseenter="(e) => showTooltip(e, 'Ocupado', distribuicaoFiltrada.ocupado + '%')"
+                    @mouseleave="hideTooltip"
+                    @mousemove="updateTooltipPosition"
+                  />
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="70"
+                    fill="none"
+                    stroke="#EC4899"
+                    stroke-width="30"
+                    :stroke-dasharray="`${(distribuicaoFiltrada.livre / 100) * 439.82} 439.82`"
+                    :stroke-dashoffset="`-${(distribuicaoFiltrada.ocupado / 100) * 439.82}`"
+                    transform="rotate(-90 100 100)"
+                    class="donut-segment"
+                    @mouseenter="(e) => showTooltip(e, 'Livre', distribuicaoFiltrada.livre + '%')"
+                    @mouseleave="hideTooltip"
+                    @mousemove="updateTooltipPosition"
+                  />
+                </template>
                 <!-- Texto central -->
                 <text x="100" y="95" text-anchor="middle" class="donut-center-text">
-                  80%
+                  {{ tipoReservaFiltro === 'todas' && 'coworking' in distribuicaoFiltrada && 'salas' in distribuicaoFiltrada
+                    ? ((distribuicaoFiltrada as any).coworking + (distribuicaoFiltrada as any).salas) 
+                    : distribuicaoFiltrada.ocupado }}%
                 </text>
                 <text x="100" y="110" text-anchor="middle" class="donut-center-subtext">
                   Ocupação
@@ -482,18 +695,30 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
                 <div class="tooltip-percentage">{{ tooltip.percentage }}</div>
               </div>
               <div class="donut-legend">
-                <div class="legend-item">
-                  <div class="legend-dot dot-dark-blue"></div>
-                  <span>Coworking (50%)</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot dot-light-blue"></div>
-                  <span>Salas (30%)</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot dot-magenta"></div>
-                  <span>Livre (20%)</span>
-                </div>
+                <template v-if="tipoReservaFiltro === 'todas' && 'coworking' in distribuicaoFiltrada && 'salas' in distribuicaoFiltrada">
+                  <div class="legend-item">
+                    <div class="legend-dot dot-dark-blue"></div>
+                    <span>Coworking ({{ (distribuicaoFiltrada as any).coworking }}%)</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot dot-light-blue"></div>
+                    <span>Salas ({{ (distribuicaoFiltrada as any).salas }}%)</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot dot-magenta"></div>
+                    <span>Livre ({{ distribuicaoFiltrada.livre }}%)</span>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="legend-item">
+                    <div class="legend-dot dot-dark-blue"></div>
+                    <span>Ocupado ({{ distribuicaoFiltrada.ocupado }}%)</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot dot-magenta"></div>
+                    <span>Livre ({{ distribuicaoFiltrada.livre }}%)</span>
+                  </div>
+                </template>
               </div>
             </div>
           </div>
@@ -505,25 +730,16 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
           <div class="activity-card">
             <h3 class="activity-card-title">Atividade Recente</h3>
             <div class="activity-list">
-              <div class="activity-item activity-green">
-                <div class="activity-dot dot-green"></div>
+              <div
+                v-for="(atividade, index) in atividadesFiltradas"
+                :key="index"
+                class="activity-item"
+                :class="`activity-${atividade.cor}`"
+              >
+                <div class="activity-dot" :class="`dot-${atividade.cor}`"></div>
                 <div class="activity-content">
-                  <p class="activity-text">Maria santos reservou sala Zeus</p>
-                  <p class="activity-time">14:30-16:00 hoje</p>
-                </div>
-              </div>
-              <div class="activity-item activity-blue">
-                <div class="activity-dot dot-blue"></div>
-                <div class="activity-content">
-                  <p class="activity-text">Pedro Lima ocupou Posição A-15</p>
-                  <p class="activity-time">13:45 hoje</p>
-                </div>
-              </div>
-              <div class="activity-item activity-orange">
-                <div class="activity-dot dot-orange"></div>
-                <div class="activity-content">
-                  <p class="activity-text">Sala Apolo liberada</p>
-                  <p class="activity-time">14:30-16:00 hoje</p>
+                  <p class="activity-text">{{ atividade.texto }}</p>
+                  <p class="activity-time">{{ atividade.tempo }}</p>
                 </div>
               </div>
             </div>
@@ -533,26 +749,16 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
           <div class="reservations-card">
             <h3 class="activity-card-title">Próximas Reservas</h3>
             <div class="reservations-list">
-              <div class="reservation-item">
+              <div
+                v-for="(reserva, index) in proximasReservasFiltradas"
+                :key="index"
+                class="reservation-item"
+              >
                 <div class="reservation-content">
-                  <p class="reservation-title">Reunião de Projeto</p>
-                  <p class="reservation-subtitle">Sala Hermes - 15:00-16:30</p>
+                  <p class="reservation-title">{{ reserva.titulo }}</p>
+                  <p class="reservation-subtitle">{{ reserva.subtitulo }}</p>
                 </div>
-                <span class="reservation-tag tag-purple">Em 30 min</span>
-              </div>
-              <div class="reservation-item">
-                <div class="reservation-content">
-                  <p class="reservation-title">Apresentação Cliente</p>
-                  <p class="reservation-subtitle">Sala Zeus - 16:00-17:00</p>
-                </div>
-                <span class="reservation-tag tag-green">Em 1h30</span>
-              </div>
-              <div class="reservation-item">
-                <div class="reservation-content">
-                  <p class="reservation-title">Workshop Técnico</p>
-                  <p class="reservation-subtitle">Sala Apolo - 17:30-19:00</p>
-                </div>
-                <span class="reservation-tag tag-orange">Em 3h</span>
+                <span class="reservation-tag" :class="`tag-${reserva.tag}`">{{ reserva.tempo }}</span>
               </div>
             </div>
           </div>
@@ -906,6 +1112,39 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.reserva-filter-select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+}
+
+.reserva-filter-select:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.reserva-filter-select:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.reserva-filter-select option {
+  background: #1C2457;
+  color: white;
 }
 
 .report-button {
@@ -1605,6 +1844,13 @@ const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   cursor: pointer;
   color: white;
   transition: background 0.2s;
+  padding: 0.5rem;
+}
+
+.calendar-nav-button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .calendar-nav-button:hover {
