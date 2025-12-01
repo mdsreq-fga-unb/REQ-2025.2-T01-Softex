@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import {api } from '@/services/api'
 
 type NovoUsuario = {
   nome: string
@@ -45,10 +46,28 @@ const fechar = () => {
   emit('close')
 }
 
-const salvar = () => {
-  emit('save', { ...form.value })
-  emit('close')
+const salvar = async () => {
+  try {
+    const payload = {
+      first_name: form.value.nome,
+      email: form.value.email,
+      username: form.value.email,
+      password:form.value.enviarSenha ? 'TrocarSenha': '',
+      tipo_permissao: form.value.funcao,
+
+    }
+
+const response = await api.post('/cadastro/', payload)
+    console.log('Usuário criado:', response.data)
+
+    emit('save', { ...form.value })
+    emit('close')
+  } catch (err) {
+    console.error('Erro ao criar usuário:', err.response?.status, err.response?.data)
+    return
+  }
 }
+
 </script>
 
 <template>
