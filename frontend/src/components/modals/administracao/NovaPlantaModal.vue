@@ -35,15 +35,12 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "close"): void;
   (e: "save", payload: NovaPlantaPayload): void;
-  (
-    e: "edit-save",
-    payload: {
-      plantaId: number;
-      nome: string;
-      pontos: SeatPoint[];
-      imagemArquivo?: File | null;
-    }
-  ): void;
+  (e: "edit-save", payload: {
+    plantaId: number;
+    nome: string;
+    pontos: SeatPoint[];
+    imagemArquivo?: File | null;
+  }): void;
 }>();
 
 // --------- STATE PRINCIPAL ---------
@@ -52,62 +49,95 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const selectedPlantaId = ref<number | null>(null);
 
-// Carregar plantas do backend
+// Preview e pontos da planta selecionada
+const previewUrl = ref<string | null>(null);
+const pontos = ref<SeatPoint[]>([]);
+
+// --------- MODAIS INTERNOS ---------
+const showUploadModal = ref(false);
+const showEditarPlanta = ref(false);
+const showConfirmExcluir = ref(false);
+
+// --------- CAMPOS DA NOVA PLANTA / UPLOAD ---------
+const novoNome = ref("");
+const novoEscritorio = ref("");
+const arquivo = ref<File | null>(null);
+
+// --------- HELPERS BACKEND ---------
+const buildImageUrl = (path?: string | null): string | null => {
+  if (!path) return null;
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+  return `${API_URL}${path.startsWith("/") ? "" : "/"}${path}`;
+};
+
+// --------- CARREGAR PLANTAS ---------
 const carregarPlantas = async () => {
   try {
     console.log("📥 Carregando plantas do backend...");
     const response = await fetch(`${API_URL}/api/plantas/`);
-    const data = await response.json();
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(
+        `Erro ao carregar plantas: ${response.status} - ${text}`
+      );
+    }
 
+    const data = await response.json();
     console.log("✅ Plantas carregadas:", data);
 
     // Mapear do formato do backend (id_planta) para o formato do frontend (id)
     plantas.value = data.map((p: any) => ({
-      id: p.id_planta, // Backend retorna id_planta, frontend usa id
+      id: p.id_planta,
       nome: p.nome,
-      escritorio: "Escritório", // TODO: adicionar escritorio no backend se necessário
+      escritorio: "Escritório", // placeholder, se precisar vem do backend depois
     }));
 
-    if (plantas.value.length > 0 && !selectedPlantaId.value) {
-      const firstPlanta = plantas.value[0];
-      if (firstPlanta) {
-        selectedPlantaId.value = firstPlanta.id;
-        // Carregar imagem e pontos da primeira planta
-        await carregarImagemPlanta(firstPlanta.id);
-        await carregarPontosPlanta(firstPlanta.id);
-      }
+    if (plantas.value.length === 0) {
+      selectedPlantaId.value = null;
+      previewUrl.value = null;
+      pontos.value = [];
+      return;
+    }
+
+    // Se não houver planta selecionada ainda, seleciona a primeira
+    if (!selectedPlantaId.value) {
+      selectedPlantaId.value = plantas.value[0].id;
+    }
+
+    // Carrega dados da planta selecionada
+    if (selectedPlantaId.value) {
+      await carregarImagemPlanta(selectedPlantaId.value);
+      await carregarPontosPlanta(selectedPlantaId.value);
     }
   } catch (error) {
     console.error("❌ Erro ao carregar plantas:", error);
-    // Em caso de erro, manter vazio ou usar dados mockados
     plantas.value = [];
+    selectedPlantaId.value = null;
+    previewUrl.value = null;
+    pontos.value = [];
   }
 };
 
-// Função para carregar a imagem da planta do backend
+// --------- CARREGAR IMAGEM DA PLANTA ---------
 const carregarImagemPlanta = async (plantaId: number) => {
   try {
     console.log("🖼️ Carregando imagem da planta:", plantaId);
     const response = await fetch(`${API_URL}/api/plantas/${plantaId}/`);
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(
+        `Erro ao carregar planta ${plantaId}: ${response.status} - ${text}`
+      );
+    }
+
     const data = await response.json();
 
     if (data.mapa_imagem) {
-      // Verificar se já é uma URL completa ou apenas o caminho
-      if (
-        data.mapa_imagem.startsWith("http://") ||
-        data.mapa_imagem.startsWith("https://")
-      ) {
-        // Já é URL completa
-        previewUrl.value = data.mapa_imagem;
-      } else {
-        // É caminho relativo, adicionar API_URL
-        previewUrl.value = `${API_URL}${
-          data.mapa_imagem.startsWith("/") ? "" : "/"
-        }${data.mapa_imagem}`;
-      }
+      previewUrl.value = buildImageUrl(data.mapa_imagem);
       console.log("✅ Imagem carregada:", previewUrl.value);
     } else {
-      // Se não houver imagem, usar padrão
       previewUrl.value = null;
       console.log("ℹ️ Planta sem imagem, usando padrão");
     }
@@ -117,36 +147,23 @@ const carregarImagemPlanta = async (plantaId: number) => {
   }
 };
 
-// Carregar plantas quando o modal abrir
-watch(
-  () => props.open,
-  (isOpen) => {
-    if (isOpen) {
-      carregarPlantas();
-    }
-  }
-);
-
-// Carregar imagem e pontos da planta selecionada quando mudar
-watch(selectedPlantaId, async (newId, oldId) => {
-  if (newId && newId !== oldId) {
-    console.log(`🔄 Planta trocada: ${oldId} → ${newId}`);
-    await carregarImagemPlanta(newId);
-    await carregarPontosPlanta(newId);
-  }
-});
-
-// Função para carregar pontos da planta do backend
+// --------- CARREGAR PONTOS DA PLANTA ---------
 const carregarPontosPlanta = async (plantaId: number) => {
   try {
     console.log(`📍 Carregando pontos da planta ${plantaId}...`);
     const response = await fetch(`${API_URL}/api/plantas/${plantaId}/`);
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(
+        `Erro ao carregar pontos da planta ${plantaId}: ${response.status} - ${text}`
+      );
+    }
+
     const data = await response.json();
 
     if (data.pontos && Array.isArray(data.pontos)) {
-      // Resetar IDs começando do 1 para cada planta
       pontos.value = data.pontos.map((p: any, index: number) => ({
-        id: index + 1, // IDs sempre começam do 1 para cada planta
+        id: index + 1, // sempre começa em 1
         x: p.x,
         y: p.y,
       }));
@@ -166,64 +183,27 @@ const carregarPontosPlanta = async (plantaId: number) => {
   }
 };
 
+// --------- REAÇÕES ---------
+watch(
+  () => props.open,
+  (isOpen) => {
+    if (isOpen) {
+      carregarPlantas();
+    }
+  }
+);
+
+watch(selectedPlantaId, async (newId, oldId) => {
+  if (newId && newId !== oldId) {
+    console.log(`🔄 Planta trocada: ${oldId} → ${newId}`);
+    await carregarImagemPlanta(newId);
+    await carregarPontosPlanta(newId);
+  }
+});
+
 const selectedPlanta = computed(
   () => plantas.value.find((p) => p.id === selectedPlantaId.value) ?? null
 );
-
-const pontos = ref<SeatPoint[]>([
-  { id: 2, x: 40, y: 32 },
-  { id: 3, x: 55, y: 35 },
-  { id: 4, x: 0, y: 55 },
-]);
-
-// --------- MODAIS INTERNOS ---------
-const showUploadModal = ref(false);
-const showEditarPlanta = ref(false);
-const showConfirmExcluir = ref(false);
-
-// --------- CAMPOS DA NOVA PLANTA / UPLOAD ---------
-const novoNome = ref("");
-const novoEscritorio = ref("");
-const arquivo = ref<File | null>(null);
-const previewUrl = ref<string | null>(null);
-
-const handleArquivoChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (!file) {
-    arquivo.value = null;
-    previewUrl.value = null;
-    return;
-  }
-  arquivo.value = file;
-  previewUrl.value = URL.createObjectURL(file);
-};
-
-const abrirNovaPlanta = () => {
-  novoNome.value = "";
-  novoEscritorio.value = props.escritorios[0] ?? "";
-  arquivo.value = null;
-  previewUrl.value = null;
-};
-
-const salvarPlanta = () => {
-  const nome = novoNome.value || `Planta ${plantas.value.length + 1}`;
-  const escritorio =
-    novoEscritorio.value || props.escritorios[0] || "Sem escritório";
-
-  const payload: NovaPlantaPayload = {
-    nome,
-    escritorio,
-    arquivo: arquivo.value,
-    previewUrl: previewUrl.value,
-  };
-
-  // Não criar ID local - o backend retornará o ID real após salvar
-  emit("save", payload);
-
-  // Recarregar plantas após salvar (o handler no componente pai fará o POST)
-  // A lista será atualizada quando o modal for reaberto
-};
 
 // --------- EXCLUIR PLANTA ---------
 const excluirCarregando = ref(false);
@@ -253,14 +233,12 @@ const confirmarExcluir = async () => {
 
     console.log("✅ Planta excluída no backend com sucesso");
 
-    // Remove da lista local
     plantas.value = plantas.value.filter((p) => p.id !== id);
 
     if (plantas.value.length > 0) {
       const novaSelecionada = plantas.value[0];
 
       if (!novaSelecionada) {
-        // fallback de segurança
         selectedPlantaId.value = null;
         previewUrl.value = null;
         pontos.value = [];
@@ -269,12 +247,9 @@ const confirmarExcluir = async () => {
       }
 
       selectedPlantaId.value = novaSelecionada.id;
-
-      // Recarrega imagem e pontos da nova planta
       await carregarImagemPlanta(novaSelecionada.id);
       await carregarPontosPlanta(novaSelecionada.id);
     } else {
-      // Não sobrou nenhuma planta
       selectedPlantaId.value = null;
       previewUrl.value = null;
       pontos.value = [];
@@ -290,7 +265,6 @@ const confirmarExcluir = async () => {
   }
 };
 
-
 // --------- FECHAR MODAL PRINCIPAL ---------
 const fechar = () => {
   emit("close");
@@ -302,6 +276,17 @@ const handleOverlayClick = (e: MouseEvent) => {
   }
 };
 
+// --------- ABRIR NOVA PLANTA ---------
+const abrirNovaPlanta = () => {
+  selectedPlantaId.value = null;
+  novoNome.value = "";
+  novoEscritorio.value = props.escritorios[0] ?? "";
+  arquivo.value = null;
+  previewUrl.value = null;
+
+  showUploadModal.value = true;
+};
+
 // --------- EDITAR PLANTA (ABRIR MODAL EDITOR) ---------
 const abrirEditarPlanta = async () => {
   if (!selectedPlanta.value) {
@@ -311,7 +296,6 @@ const abrirEditarPlanta = async () => {
 
   console.log("✏️ Abrindo edição da planta:", selectedPlanta.value);
 
-  // Carregar pontos da planta do backend se houver
   try {
     const response = await fetch(
       `${API_URL}/api/plantas/${selectedPlanta.value.id}/`
@@ -319,9 +303,8 @@ const abrirEditarPlanta = async () => {
     const data = await response.json();
 
     if (data.pontos) {
-      // Resetar IDs começando do 1 para esta planta
       pontos.value = data.pontos.map((p: any, index: number) => ({
-        id: index + 1, // IDs sempre começam do 1 para cada planta
+        id: index + 1,
         x: p.x,
         y: p.y,
       }));
@@ -335,30 +318,18 @@ const abrirEditarPlanta = async () => {
       pontos.value = [];
     }
 
-    // Atualizar URL da imagem se existir
     if (data.mapa_imagem) {
-      // Verificar se já é URL completa
-      if (
-        data.mapa_imagem.startsWith("http://") ||
-        data.mapa_imagem.startsWith("https://")
-      ) {
-        previewUrl.value = data.mapa_imagem;
-      } else {
-        previewUrl.value = `${API_URL}${
-          data.mapa_imagem.startsWith("/") ? "" : "/"
-        }${data.mapa_imagem}`;
-      }
+      previewUrl.value = buildImageUrl(data.mapa_imagem);
       console.log("🖼️ Imagem atualizada:", previewUrl.value);
     }
   } catch (error) {
     console.error("⚠️ Erro ao carregar detalhes da planta:", error);
-    // Continuar mesmo com erro - pode ser planta nova sem dados ainda
   }
 
   showEditarPlanta.value = true;
 };
 
-// recebe nome + pontos do Editar_Planta
+// --------- SALVAR EDIÇÃO (RECEBE DO Editar_Planta) ---------
 const handleSalvarEdicao = (payload: {
   nome: string;
   pontos: SeatPoint[];
@@ -404,7 +375,6 @@ const handleSalvarEdicao = (payload: {
   // Recarregar plantas, imagem e pontos após editar
   setTimeout(async () => {
     await carregarPlantas();
-    // Recarregar imagem e pontos da planta atualizada
     if (plantaId) {
       await carregarImagemPlanta(plantaId);
       await carregarPontosPlanta(plantaId);
@@ -412,12 +382,7 @@ const handleSalvarEdicao = (payload: {
   }, 1000);
 };
 
-// --------- UPLOAD MODAL (CONFIRM) ---------
-
-void handleArquivoChange
-void abrirNovaPlanta
-void salvarPlanta
-
+// --------- UPLOAD MODAL (CRIAR NOVA PLANTA) ---------
 const handleUploadConfirm = async (data: {
   file: File | null;
   previewUrl: string | null;
@@ -427,210 +392,69 @@ const handleUploadConfirm = async (data: {
   novoNome.value = data.nome;
   showUploadModal.value = false;
 
-  console.log("📤 HandleUploadConfirm:", {
+  console.log("📤 HandleUploadConfirm (CRIAÇÃO):", {
     temArquivo: !!data.file,
-    temPlantaSelecionada: !!selectedPlanta.value,
-    plantaId: selectedPlanta.value?.id,
+    plantaSelecionadaId: selectedPlantaId.value,
     nome: data.nome,
   });
 
-  // Se houver uma planta selecionada E uma imagem, atualizar a planta no backend
-  if (selectedPlanta.value && data.file) {
-    try {
-      console.log("💾 Atualizando planta com nova imagem...");
+  if (!data.file) {
+    console.warn("⚠️ Nenhum arquivo enviado, não vou criar planta.");
+    return;
+  }
 
-      const formData = new FormData();
-      formData.append("nome", data.nome || selectedPlanta.value.nome);
-      formData.append("mapa_imagem", data.file);
+  try {
+    console.log("🆕 Criando nova planta com imagem...");
 
-      // Manter pontos existentes
-      const responseGet = await fetch(
-        `${API_URL}/api/plantas/${selectedPlanta.value.id}/`
-      );
-      const plantaAtual = await responseGet.json();
+    const formData = new FormData();
+    formData.append(
+      "nome",
+      data.nome || `Planta ${plantas.value.length + 1}`
+    );
+    formData.append("mapa_imagem", data.file);
 
-      // Enviar pontos apenas se existirem
-      if (
-        plantaAtual.pontos &&
-        Array.isArray(plantaAtual.pontos) &&
-        plantaAtual.pontos.length > 0
-      ) {
-        const pontosLimpos = plantaAtual.pontos.map((p: any) => ({
-          x: p.x,
-          y: p.y,
-        }));
-        formData.append("pontos", JSON.stringify(pontosLimpos));
-      }
-      // Se não houver pontos, não enviar - o serializer usa lista vazia por padrão
+    const response = await fetch(`${API_URL}/api/plantas/`, {
+      method: "POST",
+      body: formData,
+    });
 
-      const response = await fetch(
-        `${API_URL}/api/plantas/${selectedPlanta.value.id}/`,
-        {
-          method: "PUT",
-          body: formData,
-        }
-      );
+    console.log("📥 Resposta do POST:", {
+      status: response.status,
+      statusText: response.statusText,
+      contentType: response.headers.get("content-type"),
+      ok: response.ok,
+    });
 
-      // Verificar se a resposta é JSON antes de fazer parse
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
-        console.error("❌ Resposta não é JSON:", text.substring(0, 200));
-        console.error(
-          `Erro ao atualizar planta: O servidor retornou uma resposta inválida (status ${response.status}). Verifique o console para mais detalhes.`
-        );
-        return;
-      }
+    const contentType = response.headers.get("content-type") || "";
+    let newPlanta: any;
 
-      const updatedData = await response.json();
-
-      if (!response.ok) {
-        console.error("❌ Erro ao atualizar planta:", updatedData);
-        console.error(
-          "Erro ao salvar imagem: " +
-            (updatedData.detail || JSON.stringify(updatedData))
-        );
-        return;
-      }
-
-      console.log("✅ Planta atualizada com sucesso!", updatedData);
-
-      // Atualizar preview com a URL do backend
-      if (updatedData.mapa_imagem) {
-        // Verificar se já é URL completa
-        if (
-          updatedData.mapa_imagem.startsWith("http://") ||
-          updatedData.mapa_imagem.startsWith("https://")
-        ) {
-          previewUrl.value = updatedData.mapa_imagem;
-        } else {
-          previewUrl.value = `${API_URL}${
-            updatedData.mapa_imagem.startsWith("/") ? "" : "/"
-          }${updatedData.mapa_imagem}`;
-        }
-        console.log("🖼️ Imagem atualizada:", previewUrl.value);
-      }
-
-      // Recarregar plantas para atualizar lista
-      await carregarPlantas();
-
-      console.log("✅ Imagem salva com sucesso!");
-    } catch (error) {
-      console.error("❌ Erro ao salvar imagem:", error);
-      console.error(
-        "Erro ao salvar imagem: " +
-          (error instanceof Error ? error.message : String(error))
-      );
+    if (contentType.includes("application/json")) {
+      newPlanta = await response.json();
+    } else {
+      const text = await response.text();
+      console.error("❌ Resposta não é JSON:", text);
+      return;
     }
-  } else if (data.file && data.previewUrl && !selectedPlanta.value) {
-    // Se não houver planta selecionada, criar nova planta com a imagem
-    try {
-      console.log("🆕 Criando nova planta com imagem...");
 
-      const formData = new FormData();
-      formData.append(
-        "nome",
-        data.nome || `Planta ${plantas.value.length + 1}`
-      );
-      formData.append("mapa_imagem", data.file);
-      // Não enviar pontos se for vazio - o backend tratará como lista vazia
-
-      console.log("📤 Enviando POST para criar planta...");
-
-      const response = await fetch(`${API_URL}/api/plantas/`, {
-        method: "POST",
-        body: formData,
-      });
-
-      console.log("📥 Resposta recebida:", {
-        status: response.status,
-        statusText: response.statusText,
-        contentType: response.headers.get("content-type"),
-        ok: response.ok,
-      });
-
-      // Verificar se a resposta é JSON antes de fazer parse
-      const contentType = response.headers.get("content-type") || "";
-      let newPlanta;
-
-      if (contentType.includes("application/json")) {
-        newPlanta = await response.json();
-      } else {
-        // Se não for JSON, ler como texto para ver o erro
-        const text = await response.text();
-        console.error("❌ Resposta não é JSON. Resposta completa:", text);
-        console.error(
-          `Erro ao criar planta (Status ${response.status}): O servidor retornou uma resposta inválida. Verifique o console e o terminal do Django para mais detalhes.`
-        );
-        return;
-      }
-
-      if (!response.ok) {
-        console.error("❌ Erro ao criar planta:", newPlanta);
-        console.error(
-          "Erro ao criar planta: " +
-            (newPlanta.detail || JSON.stringify(newPlanta))
-        );
-        return;
-      }
-
-      console.log("✅ Nova planta criada com sucesso!", newPlanta);
-
-      // Atualizar preview com a URL do backend
-      if (newPlanta.mapa_imagem) {
-        // Verificar se já é URL completa
-        if (
-          newPlanta.mapa_imagem.startsWith("http://") ||
-          newPlanta.mapa_imagem.startsWith("https://")
-        ) {
-          previewUrl.value = newPlanta.mapa_imagem;
-        } else {
-          previewUrl.value = `${API_URL}${
-            newPlanta.mapa_imagem.startsWith("/") ? "" : "/"
-          }${newPlanta.mapa_imagem}`;
-        }
-        console.log("🖼️ Imagem da nova planta:", previewUrl.value);
-      }
-
-      // Limpar campos
-      arquivo.value = null;
-      novoNome.value = "";
-
-      // Recarregar plantas para incluir a nova
-      await carregarPlantas();
-
-      // Selecionar a planta recém-criada
-      if (newPlanta.id_planta) {
-        selectedPlantaId.value = newPlanta.id_planta;
-        console.log("📌 Selecionando nova planta:", newPlanta.id_planta);
-
-        // Aguardar um pouco para garantir que a planta foi adicionada à lista
-        setTimeout(async () => {
-          if (selectedPlanta.value) {
-            console.log("✅ Nova planta selecionada:", selectedPlanta.value);
-            // Recarregar imagem da planta recém-criada
-            await carregarImagemPlanta(newPlanta.id_planta);
-          } else {
-            console.warn(
-              "⚠️ Planta não encontrada na lista, tentando recarregar..."
-            );
-            await carregarPlantas();
-            selectedPlantaId.value = newPlanta.id_planta;
-          }
-        }, 500);
-      }
-
-      console.log("✅ Planta criada com sucesso!");
-    } catch (error) {
-      console.error("❌ Erro ao criar planta:", error);
-      console.error(
-        "Erro ao criar planta: " +
-          (error instanceof Error ? error.message : String(error))
-      );
+    if (!response.ok) {
+      console.error("❌ Erro ao criar planta:", newPlanta);
+      return;
     }
-  } else if (selectedPlanta.value && !data.file) {
-    // Se não houver arquivo novo, recarregar imagem do backend
-    await carregarImagemPlanta(selectedPlanta.value.id);
+
+    console.log("✅ Nova planta criada!", newPlanta);
+
+    if (newPlanta.mapa_imagem) {
+      previewUrl.value = buildImageUrl(newPlanta.mapa_imagem);
+    }
+
+    await carregarPlantas();
+
+    if (newPlanta.id_planta) {
+      selectedPlantaId.value = newPlanta.id_planta;
+      console.log("📌 Selecionando nova planta:", newPlanta.id_planta);
+    }
+  } catch (error) {
+    console.error("❌ Erro ao criar planta:", error);
   }
 };
 </script>

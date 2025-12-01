@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue' 
 import { useRouter, useRoute } from 'vue-router'
-import { 
-  Home, 
-  LogOut, 
-  Gauge, 
-  MapPin, 
-  Sofa, 
-  Calendar, 
-  Settings
-} from 'lucide-vue-next'
+import { Home, LogOut, Gauge, MapPin, Sofa, Calendar, Settings } from 'lucide-vue-next'
 import { useAuth } from '@/composables/useAuth'
 import { useErrorLogger } from '@/composables/useErrorLogger'
 import plantaImg from '@/assets/planta.png'
@@ -21,10 +13,18 @@ const { logError, logWarning } = useErrorLogger()
 const router = useRouter()
 const route = useRoute()
 
+// ⭐ URL da API
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+// -------------------------------------------------------
+// USER INITIALS
+// -------------------------------------------------------
 const userInitials = computed(() => {
   if (!user.value) return 'U'
+
   const firstName = user.value.first_name || ''
   const lastName = user.value.last_name || ''
+
   if (firstName && lastName) {
     return `${firstName[0]}${lastName[0]}`.toUpperCase()
   }
@@ -34,25 +34,31 @@ const userInitials = computed(() => {
   return 'U'
 })
 
+// -------------------------------------------------------
+// LOGOUT
+// -------------------------------------------------------
 const handleLogout = () => {
   logout()
   router.push('/login')
 }
 
-type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' 
+// -------------------------------------------------------
+// TIPOS
+// -------------------------------------------------------
+type SeatStatus = 'disponivel' | 'ocupado' | 'reservado'
 
 type SeatPoint = {
   id: number
-  x: number  
-  y: number  
+  x: number
+  y: number
   status: SeatStatus
-  usuarioNome?: string  // Nome do usuário quando ocupado/reservado
+  usuarioNome?: string
 }
 
 type PlantaOption = {
   id: number
   nome: string
-  img: string
+  img: string | null
 }
 
 type ReservaPayload = {
@@ -64,46 +70,151 @@ type ReservaPayload = {
   horaFim: string
 }
 
+// -------------------------------------------------------
+// UTIL
+// -------------------------------------------------------
+const buildImageUrl = (path?: string | null): string | null => {
+  if (!path) return null
+  if (path.startsWith('http://') || path.startsWith('https://')) return path
+  return `${API_URL}${path.startsWith('/') ? '' : '/'}${path}`
+}
 
-const plantas = ref<PlantaOption[]>([
-  { id: 1, nome: 'Pavimento baixo - Coworking', img: plantaImg },
-  { id: 2, nome: 'Pavimento superior - Coworking', img: plantaImg }
-])
-
-const selectedPlantaId = ref<number>(plantas.value[0]?.id ?? 1)
+// -------------------------------------------------------
+// ESTADOS
+// -------------------------------------------------------
+const plantas = ref<PlantaOption[]>([])
+const selectedPlantaId = ref<number | null>(null)
 
 const selectedPlantaImg = computed(() => {
   const p = plantas.value.find(p => p.id === selectedPlantaId.value)
-  return p ? p.img : plantaImg
+  return p && p.img ? p.img : plantaImg
 })
 
-const seats = ref<SeatPoint[]>([
-  { id: 1, x: 25, y: 30, status: 'disponivel' },
-  { id: 2, x: 40, y: 32, status: 'disponivel' },
-  { id: 3, x: 55, y: 35, status: 'disponivel' },
-  { id: 4, x: 30, y: 55, status: 'disponivel' },
-  { id: 5, x: 45, y: 57, status: 'disponivel' },
-  { id: 6, x: 60, y: 59, status: 'disponivel' },
-  { id: 7, x: 28, y: 75, status: 'disponivel' }
-])
+const seats = ref<SeatPoint[]>([])
 
-// Função para obter o nome completo do usuário logado
+// -------------------------------------------------------
+// CARREGAR PLANTAS
+// -------------------------------------------------------
+const carregarPlantas = async () => {
+  try {
+    console.log('📥 Carregando plantas (coworking)...')
+
+    const resp = await fetch(`${API_URL}/api/plantas/`)
+    if (!resp.ok) {
+      const text = await resp.text()
+      throw new Error(`Erro ao carregar plantas: ${resp.status} - ${text}`)
+    }
+
+    const data = await resp.json()
+    console.log('✅ Plantas recebidas:', data)
+
+    plantas.value = data.map((p: any) => ({
+      id: p.id_planta,
+      nome: p.nome,
+      img: buildImageUrl(p.mapa_imagem) || null
+    }))
+
+    if (plantas.value.length === 0) {
+      console.warn('⚠️ Nenhuma planta cadastrada na API.')
+      selectedPlantaId.value = null
+      seats.value = []
+      return
+    }
+
+    if (!selectedPlantaId.value) {
+      selectedPlantaId.value = plantas.value[0].id
+    }
+
+    if (selectedPlantaId.value) {
+      await carregarSeatsDaPlanta(selectedPlantaId.value)
+    }
+
+  } catch (e) {
+    console.error('❌ Erro ao carregar plantas:', e)
+    logError(
+      'Erro ao carregar plantas do coworking',
+      { error: e },
+      'Coworking.carregarPlantas',
+      e instanceof Error ? e : new Error(String(e))
+    )
+  }
+}
+
+// -------------------------------------------------------
+// CARREGAR SEATS
+// -------------------------------------------------------
+const carregarSeatsDaPlanta = async (plantaId: number) => {
+  try {
+    console.log(`📍 Carregando pontos da planta ${plantaId} para coworking...`)
+
+    const resp = await fetch(`${API_URL}/api/plantas/${plantaId}/`)
+    if (!resp.ok) {
+      const text = await resp.text()
+      throw new Error(`Erro ao carregar planta ${plantaId}: ${resp.status} - ${text}`)
+    }
+
+    const data = await resp.json()
+    console.log('📄 Detalhes da planta:', data)
+
+    if (data.pontos && Array.isArray(data.pontos)) {
+      seats.value = data.pontos.map((p: any, index: number) => ({
+        id: index + 1,
+        x: p.x,
+        y: p.y,
+        status: 'disponivel',
+        usuarioNome: undefined
+      }))
+      console.log(`✅ ${seats.value.length} assentos gerados para planta ${plantaId}`)
+    } else {
+      console.log('ℹ️ Planta sem pontos cadastrados.')
+      seats.value = []
+    }
+
+  } catch (e) {
+    console.error(`❌ Erro ao carregar pontos da planta ${plantaId}:`, e)
+    logError(
+      'Erro ao carregar seats da planta',
+      { plantaId, error: e },
+      'Coworking.carregarSeatsDaPlanta',
+      e instanceof Error ? e : new Error(String(e))
+    )
+    seats.value = []
+  }
+
+  selectedSeat.value = null
+}
+
+// -------------------------------------------------------
+// MONTAGEM
+// -------------------------------------------------------
+onMounted(() => {
+  carregarPlantas()
+})
+
+watch(selectedPlantaId, async (novoId, antigoId) => {
+  if (novoId && novoId !== antigoId) {
+    console.log(`🔄 Mudando para planta ${novoId}`)
+    await carregarSeatsDaPlanta(novoId)
+  }
+})
+
+// -------------------------------------------------------
+// FUNÇÕES DE USUÁRIO
+// -------------------------------------------------------
 const getNomeUsuarioLogado = (): string => {
-  // Tenta obter do user.value primeiro
   let currentUser = user.value
-  
-  // Se user.value estiver null, tenta carregar do localStorage diretamente
+
   if (!currentUser) {
     try {
-      // Tenta diferentes chaves possíveis
-      const userKey = localStorage.getItem('user')
-      const authUserKey = localStorage.getItem('auth_user')
-      const currentUserKey = localStorage.getItem('currentUser')
-      const storedUser = userKey || authUserKey || currentUserKey
-      
+      const storedUser =
+        localStorage.getItem('user') ||
+        localStorage.getItem('auth_user') ||
+        localStorage.getItem('currentUser')
+
       if (storedUser) {
         currentUser = JSON.parse(storedUser)
       }
+
     } catch (e) {
       logError(
         'Erro ao carregar usuário do localStorage',
@@ -113,81 +224,72 @@ const getNomeUsuarioLogado = (): string => {
       )
     }
   }
-  
+
   if (!currentUser) {
     logWarning(
-      'Usuário não encontrado ao tentar obter nome',
-      { userValue: user.value, localStorageKeys: Object.keys(localStorage) },
+      'Usuário não encontrado ao obter nome',
+      { localStorageKeys: Object.keys(localStorage) },
       'Coworking.getNomeUsuarioLogado'
     )
     return ''
   }
-  
+
   const firstName = currentUser.first_name || ''
   const lastName = currentUser.last_name || ''
   const username = currentUser.username || ''
-  
-  console.log('firstName:', firstName, 'lastName:', lastName, 'username:', username)
-  
-  if (firstName && lastName) {
-    return `${firstName} ${lastName}`
-  }
-  if (firstName) {
-    return firstName
-  }
-  if (lastName) {
-    return lastName
-  }
-  // Fallback para username se não tiver nome
-  if (username) {
-    return username
-  }
+
+  if (firstName && lastName) return `${firstName} ${lastName}`
+  if (firstName) return firstName
+  if (lastName) return lastName
+  if (username) return username
+
   return ''
 }
 
-// Função para obter iniciais do usuário
 const getIniciaisUsuario = (nome?: string): string => {
   if (!nome) return ''
+
   const partes = nome.trim().split(' ').filter(p => p.length > 0)
+
   if (partes.length >= 2) {
     const primeira = partes[0]
     const ultima = partes[partes.length - 1]
-    if (primeira && ultima) {
-      return `${primeira[0]}${ultima[0]}`.toUpperCase()
-    }
+    return `${primeira[0]}${ultima[0]}`.toUpperCase()
   }
-  if (partes.length === 1 && partes[0]) {
-    // Se for uma palavra só, retorna apenas a primeira letra
-    const primeiraLetra = partes[0]?.[0]
-    return primeiraLetra ? primeiraLetra.toUpperCase() : ''
+
+  if (partes.length === 1) {
+    return partes[0][0]?.toUpperCase() || ''
   }
+
   return ''
 }
 
-// Função para verificar se deve mostrar iniciais
 const deveMostrarIniciais = (seat: SeatPoint): boolean => {
-  const deveMostrar = (seat.status === 'ocupado' || seat.status === 'reservado') && !!seat.usuarioNome
-  // Debug
-  if ((seat.status === 'ocupado' || seat.status === 'reservado') && !seat.usuarioNome) {
-    console.log('Seat sem usuarioNome:', seat.id, seat.status, seat.usuarioNome)
+  const mostrar = (seat.status === 'ocupado' || seat.status === 'reservado') && !!seat.usuarioNome
+
+  if (!mostrar && (seat.status === 'ocupado' || seat.status === 'reservado')) {
+    console.log('Seat sem usuarioNome:', seat)
   }
-  return deveMostrar
+
+  return mostrar
 }
 
+// -------------------------------------------------------
+// INTERAÇÃO COM OS ASSENTOS
+// -------------------------------------------------------
 const selectedSeat = ref<{ id: number; status: SeatStatus } | null>(null)
-
 const showReservaModal = ref(false)
-
 const showCadeiraModal = ref(false)
 
 const handleSeatClick = (id: number) => {
   const seat = seats.value.find(s => s.id === id)
   if (!seat) return
-  // Converte para o formato esperado pelo ModalCadeira (apenas id e status)
+
   selectedSeat.value = {
     id: seat.id,
     status: seat.status
   }
+
   showCadeiraModal.value = true
   console.log('Assento clicado:', seat)
 }
@@ -200,17 +302,30 @@ const labelFromStatus = (status: SeatStatus): string => {
   }
 }
 
+// -------------------------------------------------------
+// RESERVA DE SALA
+// -------------------------------------------------------
 const handleSalvarReserva = (payload: ReservaPayload) => {
   console.log('Reserva de sala salva:', payload)
   showReservaModal.value = false
 }
 
-const handleReservaCadeira = (payload: { seatId: number; dataInicio: string; dataFim: string; horaInicio: string; horaFim: string }) => {
+// -------------------------------------------------------
+// RESERVA DE CADEIRA
+// -------------------------------------------------------
+const handleReservaCadeira = (payload: {
+  seatId: number
+  dataInicio: string
+  dataFim: string
+  horaInicio: string
+  horaFim: string
+}) => {
   const seatIndex = seats.value.findIndex(s => s.id === payload.seatId)
+
   if (seatIndex === -1) {
     logError(
       'Falha ao reservar cadeira: assento não encontrado',
-      { seatId: payload.seatId, availableSeats: seats.value.map(s => s.id) },
+      { seatId: payload.seatId },
       'Coworking.handleReservaCadeira'
     )
     showCadeiraModal.value = false
@@ -218,6 +333,7 @@ const handleReservaCadeira = (payload: { seatId: number; dataInicio: string; dat
   }
 
   const seatAtual = seats.value[seatIndex]
+
   if (!seatAtual) {
     logError(
       'Falha ao reservar cadeira: assento inválido',
@@ -227,19 +343,17 @@ const handleReservaCadeira = (payload: { seatId: number; dataInicio: string; dat
     showCadeiraModal.value = false
     return
   }
-  
-  // Associa o nome do usuário logado à posição reservada
+
   const nomeUsuario = getNomeUsuarioLogado()
-  
+
   if (!nomeUsuario) {
     logWarning(
-      'Reserva realizada sem nome de usuário',
-      { seatId: payload.seatId, user: user.value },
+      'Reserva feita sem nome de usuário',
+      { seatId: payload.seatId },
       'Coworking.handleReservaCadeira'
     )
   }
-  
-  // Atualiza usando índice para garantir reatividade
+
   seats.value[seatIndex] = {
     id: seatAtual.id,
     x: seatAtual.x,
@@ -247,11 +361,11 @@ const handleReservaCadeira = (payload: { seatId: number; dataInicio: string; dat
     status: 'reservado',
     usuarioNome: nomeUsuario
   }
-  
+
   showCadeiraModal.value = false
 }
-
 </script>
+
 
 
 
