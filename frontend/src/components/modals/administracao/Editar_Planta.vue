@@ -1,86 +1,109 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import plantaImgDefault from '@/assets/planta.png'
+import { ref, watch, computed } from "vue";
+import plantaImgDefault from "@/assets/planta.png";
 
 type SeatPoint = {
-  id: number
-  x: number   // em %
-  y: number   // em %
-}
+  id: number;
+  x: number; // em %
+  y: number; // em %
+};
 
 type SavePayload = {
-  nome: string
-  pontos: SeatPoint[]
-}
+  nome: string;
+  pontos: SeatPoint[];
+};
 
 const props = defineProps<{
-  open: boolean
-  nomeInicial?: string
-  plantaUrl?: string | null
-  pontosIniciais?: SeatPoint[]
-}>()
+  open: boolean;
+  nomeInicial?: string;
+  plantaUrl?: string | null;
+  pontosIniciais?: SeatPoint[];
+  plantaId?: number; // ID da planta para edição
+  imagemArquivo?: File | null; // Arquivo de imagem novo (opcional)
+}>();
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'save', payload: SavePayload): void
-}>()
+  (e: "close"): void;
+  (
+    e: "save",
+    payload: SavePayload & { plantaId?: number; imagemArquivo?: File | null }
+  ): void;
+}>();
 
-const nome = ref<string>(props.nomeInicial ?? '')
-const pontos = ref<SeatPoint[]>([])
-const nextId = ref<number>(1)
+const nome = ref<string>(props.nomeInicial ?? "");
+const pontos = ref<SeatPoint[]>([]);
+const nextId = ref<number>(1);
 
-const plantaWrapper = ref<HTMLElement | null>(null)
+const plantaWrapper = ref<HTMLElement | null>(null);
 
-const imagemPlanta = computed(() => props.plantaUrl || plantaImgDefault)
+const imagemPlanta = computed(() => props.plantaUrl || plantaImgDefault);
 
 watch(
   () => props.open,
   (isOpen) => {
     if (isOpen) {
-      nome.value = props.nomeInicial ?? ''
-      pontos.value = props.pontosIniciais
-        ? props.pontosIniciais.map(p => ({ ...p }))
-        : []
-      nextId.value = pontos.value.length
-        ? Math.max(...pontos.value.map(p => p.id)) + 1
-        : 1
+      nome.value = props.nomeInicial ?? "";
+
+      // Resetar pontos e IDs começando do 1 para esta planta
+      if (props.pontosIniciais && props.pontosIniciais.length > 0) {
+        pontos.value = props.pontosIniciais.map((p, index) => ({
+          id: index + 1, // IDs sempre começam do 1 para cada planta
+          x: p.x,
+          y: p.y,
+        }));
+        nextId.value = pontos.value.length + 1;
+        console.log(
+          `📍 Pontos carregados no editor: ${pontos.value.length} pontos`
+        );
+        console.log(
+          `   IDs resetados: ${pontos.value.map((p) => p.id).join(", ")}`
+        );
+      } else {
+        pontos.value = [];
+        nextId.value = 1;
+      }
     }
   },
   { immediate: true }
-)
+);
 
 const onPlantaClick = (event: MouseEvent) => {
-  if (!plantaWrapper.value) return
+  if (!plantaWrapper.value) return;
 
-  const rect = plantaWrapper.value.getBoundingClientRect()
-  const x = ((event.clientX - rect.left) / rect.width) * 100
-  const y = ((event.clientY - rect.top) / rect.height) * 100
+  const rect = plantaWrapper.value.getBoundingClientRect();
+  const x = ((event.clientX - rect.left) / rect.width) * 100;
+  const y = ((event.clientY - rect.top) / rect.height) * 100;
 
-  if (x < 0 || x > 100 || y < 0 || y > 100) return
+  if (x < 0 || x > 100 || y < 0 || y > 100) return;
 
   pontos.value.push({
     id: nextId.value++,
     x,
-    y
-  })
-}
+    y,
+  });
+};
 
 const removerPonto = (id: number) => {
-  pontos.value = pontos.value.filter(p => p.id !== id)
-}
+  pontos.value = pontos.value.filter((p) => p.id !== id);
+};
 
 const salvar = () => {
-  console.log('Pontos atuais da planta:', pontos.value)
-  emit('save', {
-    nome: nome.value.trim(),
-    pontos: pontos.value.map(p => ({ ...p }))
-  })
-}
+  console.log("💾 Editar_Planta: Salvando...");
+  console.log("   Nome:", nome.value.trim());
+  console.log("   Pontos:", pontos.value.length);
+  console.log("   Planta ID:", props.plantaId);
 
+  emit("save", {
+    nome: nome.value.trim(),
+    pontos: pontos.value.map((p) => ({ ...p })),
+    plantaId: props.plantaId,
+    imagemArquivo: props.imagemArquivo || null,
+  });
+};
 
 const cancelar = () => {
-  emit('close')
-}
+  emit("close");
+};
 </script>
 
 <template>
@@ -100,16 +123,11 @@ const cancelar = () => {
       </div>
 
       <p class="texto-ajuda">
-        Clique em qualquer ponto da planta para adicionar um lugar
-        (marcado com o ponto verde). Para remover um lugar, clique
-        diretamente sobre o ponto.
+        Clique em qualquer ponto da planta para adicionar um lugar (marcado com
+        o ponto verde). Para remover um lugar, clique diretamente sobre o ponto.
       </p>
 
-      <div
-        ref="plantaWrapper"
-        class="planta-container"
-        @click="onPlantaClick"
-      >
+      <div ref="plantaWrapper" class="planta-container" @click="onPlantaClick">
         <img
           :src="imagemPlanta"
           alt="Planta do escritório"
@@ -128,17 +146,11 @@ const cancelar = () => {
         </button>
       </div>
 
-      <p class="confirm-text">
-        Gostaria de salvar as edições?
-      </p>
+      <p class="confirm-text">Gostaria de salvar as edições?</p>
 
       <div class="actions-row">
-        <button class="btn btn-sim" type="button" @click="salvar">
-          Sim
-        </button>
-        <button class="btn btn-nao" type="button" @click="cancelar">
-          Não
-        </button>
+        <button class="btn btn-sim" type="button" @click="salvar">Sim</button>
+        <button class="btn btn-nao" type="button" @click="cancelar">Não</button>
       </div>
     </div>
   </div>
@@ -214,8 +226,8 @@ const cancelar = () => {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;  
-  pointer-events: none;  
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .seat-dot {
