@@ -53,7 +53,7 @@ const salvar = async () => {
       email: form.value.email,
       username: form.value.email,
       password:form.value.enviarSenha ? 'TrocarSenha': '',
-      tipo_permissao: form.value.funcao,
+      tipo_funcao: form.value.funcao,
 
     }
 

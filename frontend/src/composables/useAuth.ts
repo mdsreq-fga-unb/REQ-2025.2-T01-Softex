@@ -8,7 +8,7 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
-  tipo_permissao: "colaborador" | "lider" | "rh" | "admin";
+  tipo_funcao: "colaborador" | "lider" | "rh" | "admin";
 }
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -162,7 +162,7 @@ export function useAuth() {
     first_name: string;
     last_name: string;
     password: string;
-    tipo_permissao?: string;
+    tipo_funcao?: string;
   }) => {
     const { logError } = useErrorLogger();
     isLoading.value = true;
@@ -173,7 +173,7 @@ export function useAuth() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...userData,
-          tipo_permissao: userData.tipo_permissao || "colaborador",
+          tipo_funcao: userData.tipo_funcao || "colaborador",
         }),
       });
       const data = await response.json();

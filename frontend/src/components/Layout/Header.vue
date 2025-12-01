@@ -33,7 +33,7 @@ const handleLogout = () => {
       <!-- USER -->
       <div class="user-section">
         <span class="user-name">{{ user?.first_name }} {{ user?.last_name }}</span>
-        <span class="user-role">{{ user?.tipo_permissao }}</span>
+        <span class="user-role">{{ user?.tipo_funcao }}</span>
 
         <div class="user-avatar">
           {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}

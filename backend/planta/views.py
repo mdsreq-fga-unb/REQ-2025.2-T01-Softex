@@ -137,7 +137,7 @@ class PlantaViewSet(viewsets.ModelViewSet):
                         'username': 'admin_default',
                         'first_name': 'Admin',
                         'last_name': 'Default',
-                        'tipo_permissao': 'admin',
+                        'tipo_funcao': 'admin',
                     }
                 )
                 if created:

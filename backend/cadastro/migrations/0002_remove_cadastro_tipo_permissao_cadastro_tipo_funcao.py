@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RemoveField(
             model_name='cadastro',
-            name='tipo_permissao',
+            name='tipo_funcao',
         ),
         migrations.AddField(
             model_name='cadastro',

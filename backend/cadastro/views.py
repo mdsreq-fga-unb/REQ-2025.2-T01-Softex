@@ -169,7 +169,7 @@ def google_callback(request):
                 'username': email.split('@')[0],
                 'first_name': first_name,
                 'last_name': last_name,
-                'tipo_permissao': 'colaborador',
+                'tipo_funcao': 'colaborador',
             }
         )
         
@@ -184,7 +184,7 @@ def google_callback(request):
             'email': user.email,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'tipo_permissao': user.tipo_permissao,
+            'tipo_funcao': user.tipo_funcao,
         })
         
         # Redirecionar para frontend com sucesso
@@ -226,7 +226,7 @@ def login_view(request):
                 'email': user_data['email'],
                 'first_name': user_data['first_name'],
                 'last_name': user_data['last_name'],
-                'tipo_permissao': user_data['tipo_permissao'],
+                'tipo_funcao': user_data['tipo_funcao'],
             }
         }, status=status.HTTP_200_OK)
     

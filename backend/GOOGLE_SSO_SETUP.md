@@ -115,7 +115,7 @@ POST http://localhost:8000/api/auth/google/
     "email": "felipe@gmail.com",
     "first_name": "Felipe",
     "last_name": "Pedroza",
-    "tipo_permissao": "colaborador"
+    "tipo_funcao": "colaborador"
   },
   "is_new_user": false
 }
