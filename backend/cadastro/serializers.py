@@ -54,7 +54,7 @@ class LoginSerializer(serializers.Serializer):
                         'username': user.username,
                         'first_name': user.first_name,
                         'last_name': user.last_name,
-                        'tipo_funcao': user.tipo_fucao,
+                        'tipo_funcao': user.tipo_funcao,
                     }
                 else:
                     raise serializers.ValidationError('Email ou senha incorretos.')
