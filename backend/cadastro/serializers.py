@@ -11,7 +11,7 @@ class CadastroSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
-            'tipo_permissao',
+            'tipo_funcao',
             'password'          #write_only
         ]
 
@@ -54,7 +54,7 @@ class LoginSerializer(serializers.Serializer):
                         'username': user.username,
                         'first_name': user.first_name,
                         'last_name': user.last_name,
-                        'tipo_permissao': user.tipo_permissao,
+                        'tipo_permissao': user.tipo_fucao,
                     }
                 else:
                     raise serializers.ValidationError('Email ou senha incorretos.')
