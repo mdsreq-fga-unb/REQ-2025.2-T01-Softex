@@ -6,6 +6,7 @@ COPY package*.json ./
 
 RUN npm install
 
+RUN npm install axios@1.13.2
 COPY . .
 
 EXPOSE 5173

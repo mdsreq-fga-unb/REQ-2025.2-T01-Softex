@@ -53,7 +53,7 @@ type AdminUsuario  = {
 const usuarios = ref<AdminUsuario[]>([
   { id: 1, nome: 'Ana Claudia', email: 'ana@softex.br', funcao: 'TI', status: 'Ativo' },
   { id: 2, nome: 'Ana Claudia 2', email: 'ana2@softex.br', funcao: 'Marketing', status: 'Ativo' }
-
+])
 
 const filteredUsuarios = computed(() => {
   return usuarios.value.filter(
@@ -79,7 +79,9 @@ const abrirModalNovoUsuario = () => {
   showNovoUsuarioModal.value = true;
 };
 
-const handleSalvarUsuario = (novo: Omit<AdminUsuario, 'id' | 'status'>) => 
+const handleSalvarUsuario = (
+  novo: Omit<AdminUsuario, 'id' | 'status'>
+) => {
   const novoId = usuarios.value.length
     ? Math.max(...usuarios.value.map((u) => u.id)) + 1
     : 1;
@@ -92,6 +94,7 @@ const handleSalvarUsuario = (novo: Omit<AdminUsuario, 'id' | 'status'>) =>
 
   console.log("Usuário salvo:", novo);
 };
+
 
 type SlackConfig = {
   reservaEstacao: string;
