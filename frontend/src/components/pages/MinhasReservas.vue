@@ -44,10 +44,13 @@ type ReservaBase = {
   id: number
   titulo: string
   descricao: string
-  status: ReservaStatus        // em andamento / concluído (aba)
+  status: ReservaStatus    
   dataInicio: string
   dataFim: string
+  horaInicio?: string
+  horaFim?: string
 }
+
 
 type ReservaSala = ReservaBase & {
   tipo: 'sala'
@@ -119,8 +122,8 @@ const selecionarTab = (tab: ReservaStatus) => {
 const showCadeiraModal = ref(false)
 const showSalaModal = ref(false)
 
-const reservaCadeiraSelecionada = ref<ReservaEstacao | null>(null)
-const reservaSalaSelecionada = ref<ReservaSala | null>(null)
+const reservaCadeiraSelecionada = ref<any | null>(null)
+const reservaSalaSelecionada = ref<any | null>(null)
 
 const handleClickReserva = (reserva: Reserva) => {
   console.log('Reserva clicada:', reserva)
@@ -292,6 +295,7 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
       :reserva="reservaSalaSelecionada"
       @close="showSalaModal = false"
     />
+
   </div>
 </template>
 

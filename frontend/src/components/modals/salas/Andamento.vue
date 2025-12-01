@@ -12,13 +12,12 @@ type ReservaSala = {
   sala: string
   fluxo: FluxoStatus
   status: ResultadoStatus
-  dataInicio: string
-  dataFim: string // "dd/mm/aaaa"
+  data: string          
   horaInicio: string
   horaFim: string
   participantes: number
   tipoReuniao: 'interna' | 'externa'
-  motivoReuniao?: string  
+  motivoReuniao?: string
 }
 
 const props = defineProps<{
@@ -79,8 +78,7 @@ const salaOcupadaNaReserva = (salaNome: string): boolean => {
   const conflitosMock = [
     {
       sala: 'Sala Alfa',
-      dataInicio: '10/03/2026',
-      dataFim: '10/03/2026',
+      data: '10/03/2026',
       horaInicio: '09:00',
       horaFim: '10:00'
     }
@@ -88,12 +86,13 @@ const salaOcupadaNaReserva = (salaNome: string): boolean => {
 
   return conflitosMock.some((c) =>
     c.sala === salaNome &&
-    c.dataInicio === props.reserva!.dataInicio &&
-    c.dataFim === props.reserva!.dataFim &&
+    c.data === props.reserva!.data &&
     c.horaInicio === props.reserva!.horaInicio &&
     c.horaFim === props.reserva!.horaFim
   )
 }
+
+
 
 const aprovar = () => {
   if (!props.reserva || !salaSelecionada.value) return
@@ -135,12 +134,13 @@ const fechar = () => emit('close')
           <span class="valor">{{ reserva.solicitante }}</span>
         </div>
 
-        <div class="linha-info">
-          <span class="label">Período:</span>
+       <div class="linha-info">
+          <span class="label">Data:</span>
           <span class="valor">
-            {{ reserva.dataInicio }} → {{ reserva.dataFim }}
+            {{ reserva.data }}
           </span>
         </div>
+
 
         <div class="linha-info">
           <span class="label">Horário:</span>

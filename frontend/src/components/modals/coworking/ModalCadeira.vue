@@ -2,7 +2,7 @@
 import { ref, watch, computed } from 'vue'
 import { Clock, Calendar, X } from 'lucide-vue-next'
 
-type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' | 'favorito'
+type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' 
 
 type SeatInfo = {
   id: number

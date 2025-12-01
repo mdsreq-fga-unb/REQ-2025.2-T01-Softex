@@ -39,7 +39,9 @@ watch(
   () => props.open,
   (isOpen) => {
     if (isOpen) {
-      perfisLocais.value = props.perfis.map(p => ({ ...p }))
+      perfisLocais.value = props.perfis.map(
+        p => ({ ...p } as PerfilPermissao)
+      )
       resetNovoPerfil()
       showNovoPerfil.value = false
     }
@@ -48,16 +50,17 @@ watch(
 )
 
 const toggleCampo = (
-  perfilId: number,
+  perfilId: number | undefined,
   campo: 'acessoBasico' | 'dashboards' | 'salasReuniao' | 'administracao'
 ) => {
-  const idx = perfisLocais.value.findIndex(p => p.id === perfilId)
-  if (idx === -1) return
-  perfisLocais.value[idx] = {
-    ...perfisLocais.value[idx],
-    [campo]: !perfisLocais.value[idx][campo]
-  }
+  if (perfilId == null) return
+
+  const perfil = perfisLocais.value.find(p => p.id === perfilId)
+  if (!perfil) return
+
+  perfil[campo] = !perfil[campo]
 }
+
 
 const abrirNovoPerfil = () => {
   showNovoPerfil.value = true

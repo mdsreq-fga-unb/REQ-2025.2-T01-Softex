@@ -161,6 +161,11 @@ const handleUploadConfirm = (data: { file: File | null; previewUrl: string | nul
   novoNome.value = data.nome
   showUploadModal.value = false
 }
+
+void handleArquivoChange
+void abrirNovaPlanta
+void salvarPlanta
+
 </script>
 
 <template>

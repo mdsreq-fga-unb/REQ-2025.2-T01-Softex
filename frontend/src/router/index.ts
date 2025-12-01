@@ -2,11 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Auth from '@/components/pages/Auth.vue'
 import Dashboard from '@/components/pages/Dashboard.vue'
 import Administracao from '@/components/pages/Administracao.vue'
-import Cadastro from '@/components/pages/Cadastro.vue'
 import Coworking from '@/components/pages/Coworking.vue'
 import Reservas from '@/components/pages/MinhasReservas.vue'
 import Salas from '@/components/pages/SalasDeReuniao.vue'
-
 import { useAuth } from '@/composables/useAuth'
 import { useErrorLogger } from '@/composables/useErrorLogger'
 
@@ -30,11 +28,9 @@ const router = createRouter({
     { path: '/login', component: Auth },
     { path: '/dashboard', component: Dashboard},
     { path: '/administracao', component: Administracao},
-    { path: '/cadastro', component: Cadastro },
     { path: '/coworking', component: Coworking},
     { path: '/reservas', component: Reservas},
     { path: '/salas', component: Salas },
-    // Rota catch-all para páginas não encontradas
     { 
       path: '/:pathMatch(.*)*', 
       name: 'NotFound',
@@ -47,7 +43,6 @@ router.beforeEach((to, from, next) => {
   const { isAuthenticated } = useAuth()
   const { logError, logWarning } = useErrorLogger()
 
-  // Log de navegação para páginas não encontradas
   if (to.name === 'NotFound') {
     logError(
       'Página não encontrada',
@@ -56,7 +51,6 @@ router.beforeEach((to, from, next) => {
     )
   }
 
-  // Verificar autenticação
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     logWarning(
       'Tentativa de acesso a página protegida sem autenticação',
@@ -69,7 +63,6 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-// Log de erros de navegação
 router.onError((error) => {
   const { logError } = useErrorLogger()
   logError(
