@@ -226,14 +226,70 @@ const salvarPlanta = () => {
 };
 
 // --------- EXCLUIR PLANTA ---------
-const confirmarExcluir = () => {
+const excluirCarregando = ref(false);
+const excluirErro = ref<string | null>(null);
+
+const confirmarExcluir = async () => {
   if (!selectedPlanta.value) return;
+
   const id = selectedPlanta.value.id;
-  plantas.value = plantas.value.filter((p) => p.id !== id);
-  selectedPlantaId.value = plantas.value[0]?.id ?? id;
-  console.log("Excluir planta ID:", id);
-  showConfirmExcluir.value = false;
+  excluirErro.value = null;
+  excluirCarregando.value = true;
+
+  try {
+    console.log("🗑️ Chamando DELETE para planta ID:", id);
+
+    const response = await fetch(`${API_URL}/api/plantas/${id}/`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("❌ Erro ao excluir planta (resposta):", text);
+      excluirErro.value =
+        "Erro ao excluir planta. Verifique o backend ou tente novamente.";
+      return;
+    }
+
+    console.log("✅ Planta excluída no backend com sucesso");
+
+    // Remove da lista local
+    plantas.value = plantas.value.filter((p) => p.id !== id);
+
+    if (plantas.value.length > 0) {
+      const novaSelecionada = plantas.value[0];
+
+      if (!novaSelecionada) {
+        // fallback de segurança
+        selectedPlantaId.value = null;
+        previewUrl.value = null;
+        pontos.value = [];
+        showConfirmExcluir.value = false;
+        return;
+      }
+
+      selectedPlantaId.value = novaSelecionada.id;
+
+      // Recarrega imagem e pontos da nova planta
+      await carregarImagemPlanta(novaSelecionada.id);
+      await carregarPontosPlanta(novaSelecionada.id);
+    } else {
+      // Não sobrou nenhuma planta
+      selectedPlantaId.value = null;
+      previewUrl.value = null;
+      pontos.value = [];
+    }
+
+    showConfirmExcluir.value = false;
+  } catch (error) {
+    console.error("❌ Erro de rede ao excluir planta:", error);
+    excluirErro.value =
+      "Erro de comunicação com o servidor ao excluir a planta.";
+  } finally {
+    excluirCarregando.value = false;
+  }
 };
+
 
 // --------- FECHAR MODAL PRINCIPAL ---------
 const fechar = () => {

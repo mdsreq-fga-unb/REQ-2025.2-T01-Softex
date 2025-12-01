@@ -3,6 +3,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 import json
+
 from .models import Planta
 from .serializers import PlantaSerializer
 
@@ -148,3 +149,32 @@ class PlantaViewSet(viewsets.ModelViewSet):
                 
                 serializer.save(cadastro=default_user)
 
+    def destroy(self, request, *args, **kwargs):
+        """Override destroy para logar exclusão de planta"""
+        print("\n" + "="*70)
+        print("🗑️  INICIANDO EXCLUSÃO DE PLANTA")
+        print("="*70)
+        print(f"📋 Método: {request.method}")
+        print(f"🔗 URL: {request.path}")
+        print(f"🆔 ID da planta: {kwargs.get('pk')}")
+        print(f"👤 Usuário: {request.user if request.user.is_authenticated else 'Anônimo'}")
+
+        instance = self.get_object()
+        nome = instance.nome
+
+        # Se você quiser logar também salas/cadeiras ligadas, dá pra inspecionar aqui
+        try:
+            salas_count = instance.salas.count()
+        except Exception:
+            salas_count = "desconhecido"
+        print(f"🏢 Salas relacionadas: {salas_count}")
+
+        self.perform_destroy(instance)
+
+        print(f"✅ Planta '{nome}' (ID={kwargs.get('pk')}) excluída com sucesso!")
+        print("="*70 + "\n")
+
+        return Response(
+            {"detail": f'Planta "{nome}" excluída com sucesso.'},
+            status=status.HTTP_200_OK
+        )
