@@ -5,11 +5,13 @@ type ReservaSala = {
   id: number
   sala: string
   solicitante: string
-  dataInicio: string   
-  dataFim: string     
-  horaInicio: string  
-  horaFim: string      
+  data: string       
+  horaInicio: string
+  horaFim: string
+  [key: string]: any
 }
+
+
 
 const props = defineProps<{
   reservas: ReservaSala[]
@@ -26,8 +28,8 @@ const getTodayIso = () => {
 const selectedDate = ref<string>(getTodayIso())
 
 type TimeSlot = {
-  start: string   
-  end: string    
+  start: string
+  end: string
 }
 
 const timeSlots = computed<TimeSlot[]>(() => {
@@ -68,20 +70,28 @@ const salas = computed(() => {
 })
 
 const toIsoFromBr = (dateBr: string): string => {
-  const [dia, mes, ano] = dateBr.split('/')
+  if (!dateBr) return ''
+
+  const parts = dateBr.split('/')
+  const dia = parts[0]
+  const mes = parts[1]
+  const ano = parts[2]
+
+  if (!dia || !mes || !ano) return ''
+
   return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
 }
 
+
+
 const reservasDoDia = computed(() =>
   props.reservas.filter((r) => {
-    const inicioIso = toIsoFromBr(r.dataInicio)
-    const fimIso = toIsoFromBr(r.dataFim)
-    return selectedDate.value >= inicioIso && selectedDate.value <= fimIso
+    const dataIso = toIsoFromBr(r.data)
+    return selectedDate.value === dataIso
   })
 )
 
-
-const getReservaForCell = (salaNome: string, slot: TimeSlot) => {
+const getReservaForCell = (salaNome: string, slot: TimeSlot): ReservaSala | undefined => {
   return reservasDoDia.value.find((r) => {
     if (r.sala !== salaNome) return false
     return slot.start >= r.horaInicio && slot.start < r.horaFim

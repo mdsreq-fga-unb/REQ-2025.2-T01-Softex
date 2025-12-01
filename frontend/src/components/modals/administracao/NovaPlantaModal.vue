@@ -357,6 +357,11 @@ const handleSalvarEdicao = (payload: {
 };
 
 // --------- UPLOAD MODAL (CONFIRM) ---------
+
+void handleArquivoChange
+void abrirNovaPlanta
+void salvarPlanta
+
 const handleUploadConfirm = async (data: {
   file: File | null;
   previewUrl: string | null;

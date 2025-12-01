@@ -2,23 +2,23 @@
 import { ref, watch, computed } from 'vue'
 import ConfirmarExclusao from '@/components/modals/ConfirmarExclusao.vue'
 
-type Usuario = {
+type AdminUsuario = {
   id: number
   nome: string
   email: string
   funcao: string
-  status?: string
+  status: string
 }
 
 const props = defineProps<{
   open: boolean
-  usuario: Usuario | null
+  usuario: AdminUsuario | null
   funcoes: string[]
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'save', payload: Usuario): void
+  (e: 'save', payload: AdminUsuario): void
   (e: 'delete', id: number): void
   (e: 'resend-password', id: number): void
 }>()

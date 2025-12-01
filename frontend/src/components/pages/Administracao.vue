@@ -42,30 +42,18 @@ const handleLogout = () => {
 
 const search = ref("");
 
-type Usuario = {
-  id: number;
-  nome: string;
-  email: string;
-  funcao: string;
-  status: string;
-};
+type AdminUsuario  = {
+  id: number
+  nome: string
+  email: string
+  funcao: string
+  status: string
+}
 
-const usuarios = ref<Usuario[]>([
-  {
-    id: 1,
-    nome: "Ana Claudia",
-    email: "ana@softex.br",
-    funcao: "TI",
-    status: "Ativo",
-  },
-  {
-    id: 2,
-    nome: "Ana Claudia 2",
-    email: "ana2@softex.br",
-    funcao: "Marketing",
-    status: "Ativo",
-  },
-]);
+const usuarios = ref<AdminUsuario[]>([
+  { id: 1, nome: 'Ana Claudia', email: 'ana@softex.br', funcao: 'TI', status: 'Ativo' },
+  { id: 2, nome: 'Ana Claudia 2', email: 'ana2@softex.br', funcao: 'Marketing', status: 'Ativo' }
+
 
 const filteredUsuarios = computed(() => {
   return usuarios.value.filter(
@@ -91,7 +79,7 @@ const abrirModalNovoUsuario = () => {
   showNovoUsuarioModal.value = true;
 };
 
-const handleSalvarUsuario = (novo: Omit<Usuario, "id" | "status">) => {
+const handleSalvarUsuario = (novo: Omit<AdminUsuario, 'id' | 'status'>) => 
   const novoId = usuarios.value.length
     ? Math.max(...usuarios.value.map((u) => u.id)) + 1
     : 1;
@@ -289,16 +277,17 @@ const handleExcluirSala = (salaId: number) => {
   salas.value = salas.value.filter((s) => s.id !== salaId);
 };
 
-const showEditarUsuarioModal = ref(false);
-const usuarioSelecionado = ref<Usuario | null>(null);
+const showEditarUsuarioModal = ref(false)
+const usuarioSelecionado = ref<AdminUsuario | null>(null)
 
-const abrirEditarUsuario = (usuario: Usuario) => {
-  usuarioSelecionado.value = { ...usuario };
-  showEditarUsuarioModal.value = true;
-};
+const abrirEditarUsuario = (usuario: AdminUsuario) => {
+  usuarioSelecionado.value = { ...usuario }
+  showEditarUsuarioModal.value = true
+}
 
-const handleSalvarUsuarioEditado = (atualizado: Usuario) => {
-  const idx = usuarios.value.findIndex((u) => u.id === atualizado.id);
+const handleSalvarUsuarioEditado = (atualizado: AdminUsuario) => {
+  const idx = usuarios.value.findIndex(u => u.id === atualizado.id)
+
   if (idx !== -1) {
     usuarios.value[idx] = { ...usuarios.value[idx], ...atualizado };
   }

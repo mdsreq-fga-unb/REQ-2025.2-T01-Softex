@@ -39,7 +39,7 @@ const handleLogout = () => {
   router.push('/login')
 }
 
-type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' | 'favorito'
+type SeatStatus = 'disponivel' | 'ocupado' | 'reservado' 
 
 type SeatPoint = {
   id: number
@@ -197,7 +197,6 @@ const labelFromStatus = (status: SeatStatus): string => {
     case 'disponivel': return 'Disponível'
     case 'ocupado': return 'Ocupado'
     case 'reservado': return 'Reservado'
-    case 'favorito': return 'Seu favorito'
   }
 }
 

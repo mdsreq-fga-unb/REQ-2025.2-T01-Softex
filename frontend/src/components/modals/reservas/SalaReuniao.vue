@@ -10,7 +10,8 @@ type ReservaSala = {
   sala: string            
   fluxo: FluxoStatus       
   status: ResultadoStatus  
-  dataFim: string
+  dataInicio: string       // ✅ adiciona
+  dataFim: string          // "dd/mm/aaaa"
   horaInicio: string      
   horaFim: string          
   participantes?: number

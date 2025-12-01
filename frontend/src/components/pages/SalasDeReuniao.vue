@@ -48,8 +48,9 @@ type ReservaSala = {
   sala: string         
   fluxo: FluxoStatus
   status: ResultadoStatus
-  dataInicio: string  
-  dataFim: string     
+  data: string                
+  dataInicio: string          
+  dataFim: string            
   horaInicio: string   
   horaFim: string      
   participantes: number
@@ -57,10 +58,10 @@ type ReservaSala = {
   motivoReuniao?: string  
 }
 
+
 type Aba = 'solicitacoes' | 'salas' | 'concluidas'
 
 const activeTab = ref<Aba>('solicitacoes')
-
 const reservasSalas = ref<ReservaSala[]>([
   {
     id: 1,
@@ -69,6 +70,7 @@ const reservasSalas = ref<ReservaSala[]>([
     sala: 'Sala Alfa',
     fluxo: 'andamento',
     status: 'pendente',
+    data: '10/03/2026',
     dataInicio: '10/03/2026',
     dataFim: '10/03/2026',
     horaInicio: '09:00',
@@ -84,6 +86,7 @@ const reservasSalas = ref<ReservaSala[]>([
     sala: 'Sala Beta',
     fluxo: 'andamento',
     status: 'aprovado',
+    data: '11/03/2026',
     dataInicio: '11/03/2026',
     dataFim: '11/03/2026',
     horaInicio: '14:00',
@@ -99,6 +102,7 @@ const reservasSalas = ref<ReservaSala[]>([
     sala: 'Sala Ômega',
     fluxo: 'concluido',
     status: 'aprovado',
+    data: '02/03/2026',
     dataInicio: '02/03/2026',
     dataFim: '02/03/2026',
     horaInicio: '16:00',
@@ -114,6 +118,7 @@ const reservasSalas = ref<ReservaSala[]>([
     sala: 'Sala Gama',
     fluxo: 'concluido',
     status: 'negado',
+    data: '25/02/2026',
     dataInicio: '25/02/2026',
     dataFim: '25/02/2026',
     horaInicio: '11:00',
@@ -129,6 +134,7 @@ const reservasSalas = ref<ReservaSala[]>([
     sala: 'Sala Alpha',
     fluxo: 'concluido',
     status: 'negado',
+    data: '21/11/2025',
     dataInicio: '21/11/2025',
     dataFim: '21/11/2025',
     horaInicio: '11:00',
@@ -155,9 +161,9 @@ const showAndamentoModal = ref(false)
 const showConcluidasModal = ref(false)
 const showCancelarModal = ref(false)
 
-const reservaAndamentoSelecionada = ref<ReservaSala | null>(null)
-const reservaConcluidaSelecionada = ref<ReservaSala | null>(null)
-const reservaCancelarSelecionada = ref<ReservaSala | null>(null)
+const reservaAndamentoSelecionada = ref<any | null>(null)
+const reservaConcluidaSelecionada = ref<any | null>(null)
+const reservaCancelarSelecionada = ref<any | null>(null)
 
 const handleClickReserva = (reserva: ReservaSala) => {
   if (activeTab.value === 'solicitacoes') {
@@ -167,7 +173,7 @@ const handleClickReserva = (reserva: ReservaSala) => {
     reservaConcluidaSelecionada.value = reserva
     showConcluidasModal.value = true
   } else {
-    
+    // aba "salas" não abre modal aqui
   }
 }
 
@@ -176,7 +182,6 @@ const handleAprovarReserva = (payload: { id: number; salaEscolhida: string; codi
   if (reserva) {
     reserva.status = 'aprovado'
     reserva.sala = payload.salaEscolhida
-    // Mantém em andamento (fluxo: 'andamento')
     console.log('Reserva aprovada:', payload)
   }
   showAndamentoModal.value = false
@@ -195,18 +200,15 @@ const handleRecusarReserva = (id: number) => {
 }
 
 const handleCancelarClick = (id: number) => {
-  // Quando o botão de cancelar é clicado no modal de andamento
   const reserva = reservasSalas.value.find(r => r.id === id)
   if (reserva) {
     reservaCancelarSelecionada.value = reserva
     showCancelarModal.value = true
-    // Fecha o modal de andamento
     showAndamentoModal.value = false
   }
 }
 
 const handleConfirmarCancelamento = (id: number) => {
-  // Atualiza o status da reserva para cancelado/negado e move para concluídas
   const reserva = reservasSalas.value.find(r => r.id === id)
   if (reserva) {
     reserva.status = 'negado'
@@ -234,68 +236,68 @@ const labelTipoReuniao = (tipo: 'interna' | 'externa'): string =>
 
 
 const toIsoFromBr = (dateBr: string): string => {
-  const partes = dateBr.split('/')
-  const dia = partes[0] || '01'
-  const mes = partes[1] || '01'
-  const ano = partes[2] || '2000'
+  if (!dateBr) return ''
+
+  const parts = dateBr.split('/')
+  const dia = parts[0]
+  const mes = parts[1]
+  const ano = parts[2]
+
+  if (!dia || !mes || !ano) return ''
+
   return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
 }
 
-const filtroDataInicio = ref<string>('')
-const filtroDataFim = ref<string>('')    
+
+
+const filtroDataInicio = ref<string>('')   // yyyy-MM-dd (input type="date")
+const filtroDataFim = ref<string>('')      // yyyy-MM-dd
 const ordenacao = ref<'recentes' | 'antigas'>('recentes')
 const filtroStatus = ref<'todos' | 'aprovado' | 'recusado' | 'cancelado'>('todos')
 
-// Função para verificar se uma reserva está dentro do intervalo de datas do filtro
 const reservaEstaNoIntervalo = (reserva: ReservaSala): boolean => {
-  // Se não há filtro de data, retorna true
   if (!filtroDataInicio.value && !filtroDataFim.value) {
     return true
   }
 
-  const reservaInicioIso = toIsoFromBr(reserva.dataInicio)
-  const reservaFimIso = toIsoFromBr(reserva.dataFim)
+  const reservaIso = toIsoFromBr(reserva.data)
+  if (!reservaIso) return false
 
-  // Se só tem data início no filtro
+  // Só data início
   if (filtroDataInicio.value && !filtroDataFim.value) {
-    return reservaFimIso >= filtroDataInicio.value
+    return reservaIso >= filtroDataInicio.value
   }
 
-  // Se só tem data fim no filtro
+  // Só data fim
   if (!filtroDataInicio.value && filtroDataFim.value) {
-    return reservaInicioIso <= filtroDataFim.value
+    return reservaIso <= filtroDataFim.value
   }
 
-  // Se tem ambas as datas no filtro, verifica sobreposição
+  // Ambos os filtros
   if (filtroDataInicio.value && filtroDataFim.value) {
-    // A reserva está dentro do intervalo se:
-    // - O início da reserva está antes ou igual ao fim do filtro E
-    // - O fim da reserva está depois ou igual ao início do filtro
-    return reservaInicioIso <= filtroDataFim.value && reservaFimIso >= filtroDataInicio.value
+    return reservaIso >= filtroDataInicio.value && reservaIso <= filtroDataFim.value
   }
 
   return true
 }
 
-// Mapeia o status do filtro para o status da reserva
 const mapearStatusFiltro = (statusFiltro: string): ResultadoStatus | null => {
   switch (statusFiltro) {
     case 'aprovado':
       return 'aprovado'
     case 'recusado':
-      return 'negado' // 'negado' no sistema corresponde a 'recusado' no filtro
+      return 'negado'
     case 'cancelado':
-      return 'negado' // Por enquanto, cancelado também mapeia para negado
+      return 'negado'
     default:
       return null
   }
 }
 
 const reservasConcluidasFiltradas = computed(() => {
-  // Garante que só trabalha com reservas concluídas
   let lista = reservasConcluidas.value.slice()
 
-  // 🔹 Filtro por status
+  // Filtro por status
   if (filtroStatus.value !== 'todos') {
     const statusMapeado = mapearStatusFiltro(filtroStatus.value)
     if (statusMapeado) {
@@ -303,14 +305,13 @@ const reservasConcluidasFiltradas = computed(() => {
     }
   }
 
-  // 🔹 Filtro por intervalo de datas
-  // Verifica se a reserva está dentro do intervalo informado
+  // Filtro por intervalo de datas
   lista = lista.filter(r => reservaEstaNoIntervalo(r))
 
-  // 🔹 Ordenação
+  // Ordenação
   lista.sort((a, b) => {
-    const aKey = `${toIsoFromBr(a.dataInicio)}T${a.horaInicio}`
-    const bKey = `${toIsoFromBr(b.dataInicio)}T${b.horaInicio}`
+    const aKey = `${toIsoFromBr(a.data)}T${a.horaInicio}`
+    const bKey = `${toIsoFromBr(b.data)}T${b.horaInicio}`
 
     if (ordenacao.value === 'recentes') {
       return aKey < bKey ? 1 : -1
@@ -321,11 +322,8 @@ const reservasConcluidasFiltradas = computed(() => {
 
   return lista
 })
-
-
-
-
 </script>
+
 
 <template>
   <div class="salas-container min-h-screen">
@@ -457,7 +455,7 @@ const reservasConcluidasFiltradas = computed(() => {
                   Motivo: {{ reserva.motivoReuniao }}
                 </p>
                 <p class="reserva-sub">
-                  {{ reserva.dataInicio }} – {{ reserva.dataFim }}
+                  {{ reserva.data }}
                   · {{ reserva.horaInicio }} → {{ reserva.horaFim }}
                 </p>
               </div>
@@ -554,7 +552,7 @@ const reservasConcluidasFiltradas = computed(() => {
                   Motivo: {{ reserva.motivoReuniao }}
                 </p>
                 <p class="reserva-sub">
-                  {{ reserva.dataInicio }} – {{ reserva.dataFim }}
+                  {{ reserva.data }}
                   · {{ reserva.horaInicio }} → {{ reserva.horaFim }}
                 </p>
               </div>
