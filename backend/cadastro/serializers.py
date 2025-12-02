@@ -4,7 +4,7 @@ from .models import Cadastro
 
 class CadastroSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cadastro 
+        model = Cadastro
         fields = [
             'id',
             'username',
@@ -12,22 +12,35 @@ class CadastroSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'tipo_funcao',
-            'password',        #write_only
+            'password',
+            'perfil',
         ]
-
         extra_kwargs = {
-            'password': {'write_only':True}
+            'password': {'write_only': True}
         }
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)
+        # remove password e perfil do dict antes de criar o usuário
+        password = validated_data.pop("password")
+        perfil = validated_data.pop("perfil", None)
 
-        if password:
-            instance.set_password(password)
+        # cria o usuário sem senha primeiro
+        user = Cadastro(**validated_data)
 
-        instance.save()
-        return instance
+        # aplica as permissões do perfil (se houver)
+        if perfil:
+            user.perfil = perfil
+            user.acessoBasico = perfil.acessoBasico
+            user.dashboards = perfil.dashboards
+            user.salasReuniao = perfil.salasReuniao
+            user.administracao = perfil.administracao
+
+        # aplica a senha corretamente
+        user.set_password(password)
+        user.save()
+
+        return user
+
 
 
 class LoginSerializer(serializers.Serializer):

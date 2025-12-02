@@ -55,22 +55,33 @@ type AdminUsuario = {
   status: string;
 };
 
-const usuarios = ref<AdminUsuario[]>([
-  {
-    id: 1,
-    nome: "Ana Claudia",
-    email: "ana@softex.br",
-    funcao: "TI",
-    status: "Ativo",
-  },
-  {
-    id: 2,
-    nome: "Ana Claudia 2",
-    email: "ana2@softex.br",
-    funcao: "Marketing",
-    status: "Ativo",
-  },
-]);
+const usuarios = ref<AdminUsuario[]>([]);
+
+const carregarUsuarios = async () => {
+  try {
+    const resp = await authenticatedFetch(`${API_URL}/api/permissoes/usuarios-gerenciamento/`);
+
+    if (!resp.ok) throw new Error("Erro ao buscar usuários");
+
+    const data = await resp.json();
+
+    usuarios.value = data.map((u: any) => ({
+      id: u.id,
+      nome: `${u.first_name} ${u.last_name}`,
+      email: u.email,
+      funcao: u.tipo_funcao,
+      status: "Ativo",  // você pode mudar depois se houver campo real
+    }));
+  } catch (e) {
+    console.error("❌ Erro ao carregar usuários:", e);
+  }
+};
+
+onMounted(() => {
+  carregarPerfisPermissao();
+  carregarUsuarios(); 
+  carregarSalas();
+});
 
 const filteredUsuarios = computed(() => {
   return usuarios.value.filter(
@@ -412,44 +423,46 @@ type PerfilPermissao = {
 
 const showPermissoesModal = ref(false);
 
-const perfisPermissao = ref<PerfilPermissao[]>([
-  {
-    id: 1,
-    nome: "Padrão (colaboradores)",
-    descricao: "Acesso ao coworking e Minhas Reservas",
-    acessoBasico: true,
-    dashboards: false,
-    salasReuniao: false,
-    administracao: false,
-  },
-  {
-    id: 2,
-    nome: "Gestores",
-    descricao: "Dashboards e salas de reunião",
-    acessoBasico: true,
-    dashboards: true,
-    salasReuniao: true,
-    administracao: false,
-  },
-  {
-    id: 3,
-    nome: "Administradores",
-    descricao: "Acesso total ao sistema",
-    acessoBasico: true,
-    dashboards: true,
-    salasReuniao: true,
-    administracao: true,
-  },
-]);
+const perfisPermissao = ref<PerfilPermissao[]>([]);
+
+const carregarPerfisPermissao = async () => {
+  try {
+    const resp = await authenticatedFetch(`${API_URL}/api/permissoes/perfis/`);
+    if (!resp.ok) throw new Error("Erro ao buscar perfis");
+
+    const data = await resp.json();
+    perfisPermissao.value = data;
+  } catch (e) {
+    console.error("❌ Erro ao carregar perfis:", e);
+  }
+};
+
+
 
 const abrirPermissoes = () => {
   showPermissoesModal.value = true;
 };
 
-const handleSalvarPermissoes = (novos: PerfilPermissao[]) => {
-  perfisPermissao.value = novos;
-  console.log("Perfis de permissão atualizados:", novos);
+const handleSalvarPermissoes = async (novos) => {
+  try {
+    const resp = await authenticatedFetch(
+      `${API_URL}/api/permissoes/perfis/update-all-profiles/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(novos),
+      }
+    );
+
+    if (!resp.ok) throw new Error("Erro ao salvar permissões");
+
+    const data = await resp.json();
+    perfisPermissao.value = data; // atualiza tela com o retorno
+  } catch (e) {
+    console.error("❌ Erro ao salvar perfis:", e);
+  }
 };
+
 </script>
 
 <template>

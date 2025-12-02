@@ -41,14 +41,13 @@ router.register(r'salas-reuniao', SalaDeReuniaoViewSet, basename='sala-de-reunia
 # Regista 'api/cadeiras/'
 router.register(r'cadeiras', CadeiraViewSet, basename='cadeira')
 
-# Regista 'api/permissoes/'
-router.register(r'perfis', PerfilPermissaoViewSet, basename='perfil-permissao')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/reservas/', include('reserva.urls')),  # Rotas de reserva
+    path('api/permissoes/', include('permissoes.urls')),
     path('api/auth/google/login/', google_login_redirect, name='google-login-redirect'),  # Inicia OAuth2
     path('api/auth/google/callback/', google_callback, name='google-callback'),  # Callback OAuth2
     path('api/auth/check/', check_auth, name='check-auth'),  # Verificar autenticação
