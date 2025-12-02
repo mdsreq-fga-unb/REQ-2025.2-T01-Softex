@@ -12,7 +12,7 @@ class CadastroSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'tipo_funcao',
-            'password'          #write_only
+            'password',        #write_only
         ]
 
         extra_kwargs = {

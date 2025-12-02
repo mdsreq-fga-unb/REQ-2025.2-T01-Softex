@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db import transaction
 from .models import PerfilDePermissao
-from .serializers import PerfilPermissaoSerializer
+from .serializers import PerfilPermissaoSerializer, UsuarioGerenciamentoSerializer
+from cadastro.models import Cadastro
+
 
 class PerfilPermissaoViewSet(viewsets.ModelViewSet):
     # Garante que todos os perfis sejam listados e ordenados
@@ -49,3 +51,7 @@ class PerfilPermissaoViewSet(viewsets.ModelViewSet):
         # Retorna a lista completa e atualizada para o Front
         return Response(updated_profiles, status=200)
 
+class UsuarioGerenciamentoViewSet(viewsets.ModelViewSet):
+    # Lista todos os usuários
+    queryset = Cadastro.objects.all().order_by('first_name')
+    serializer_class = UsuarioGerenciamentoSerializer
