@@ -91,6 +91,7 @@ type ReservaPayload = {
   data: string;
   horaInicio: string;
   horaFim: string;
+  salaId: number;
 };
 
 // -------------------------------------------------------
@@ -111,6 +112,10 @@ const selectedPlantaId = ref<number | null>(null);
 const selectedPlantaImg = computed(() => {
   const p = plantas.value.find((p) => p.id === selectedPlantaId.value);
   return p && p.img ? p.img : plantaImg;
+});
+
+const selectedPlanta = computed(() => {
+  return plantas.value.find((p) => p.id === selectedPlantaId.value);
 });
 
 const seats = ref<SeatPoint[]>([]);
@@ -420,9 +425,121 @@ const labelFromStatus = (status: SeatStatus): string => {
 // -------------------------------------------------------
 // RESERVA DE SALA
 // -------------------------------------------------------
-const handleSalvarReserva = (payload: ReservaPayload) => {
-  console.log("Reserva de sala salva:", payload);
-  showReservaModal.value = false;
+// -------------------------------------------------------
+// RESERVA DE SALA DE REUNIÃO
+// -------------------------------------------------------
+const handleSalvarReserva = async (payload: {
+  pessoas: number;
+  tipo: "interna" | "externa";
+  motivo: string;
+  data: string;
+  horaInicio: string;
+  horaFim: string;
+  salaId?: number;
+}) => {
+  if (!user.value) {
+    alert("Você precisa estar autenticado para fazer uma reserva.");
+    showReservaModal.value = false;
+    return;
+  }
+
+  if (!payload.salaId) {
+    alert("Por favor, selecione uma sala.");
+    return;
+  }
+
+  try {
+    // Combinar data e hora para criar DateTime
+    const dataInicioStr = `${payload.data}T${payload.horaInicio}:00`;
+    const dataFimStr = `${payload.data}T${payload.horaFim}:00`;
+
+    const url = `${API_URL}/api/reservas/`;
+    const payloadData = {
+      sala: payload.salaId,
+      data_inicio: dataInicioStr,
+      data_fim: dataFimStr,
+      descricao:
+        payload.motivo ||
+        `Reunião ${payload.tipo} - ${payload.pessoas} pessoas`,
+    };
+
+    console.log("🔗 Criando reserva de sala em:", url);
+    console.log("📦 Dados da reserva:", payloadData);
+
+    const response = await authenticatedFetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payloadData),
+    });
+
+    console.log(
+      "📡 Resposta do servidor:",
+      response.status,
+      response.statusText
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ Erro na resposta:", errorText);
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { error: errorText };
+      }
+
+      if (response.status === 401 || response.status === 403) {
+        if (
+          errorData.detail?.includes("Authentication credentials") ||
+          errorData.detail?.includes("not provided")
+        ) {
+          alert("Sua sessão expirou. Por favor, faça login novamente.");
+          logout();
+          router.push("/login");
+          showReservaModal.value = false;
+          return;
+        }
+      }
+
+      if (response.status === 400) {
+        const errorMessage =
+          errorData.non_field_errors?.[0] ||
+          errorData.detail ||
+          (typeof errorData === "string"
+            ? errorData
+            : errorData.error || errorData.message) ||
+          "Erro ao criar reserva. Verifique os dados informados.";
+        alert(errorMessage);
+        return;
+      }
+
+      throw new Error(
+        errorData.detail ||
+          errorData.error ||
+          errorData.message ||
+          `Erro ao criar reserva: ${response.status} - ${errorText}`
+      );
+    }
+
+    const reservaCriada = await response.json();
+    console.log("✅ Reserva de sala criada com sucesso:", reservaCriada);
+
+    showReservaModal.value = false;
+    alert("Reserva de sala criada com sucesso!");
+  } catch (e) {
+    console.error("❌ Erro ao criar reserva de sala:", e);
+    logError(
+      "Erro ao criar reserva de sala",
+      { error: e, payload },
+      "Coworking.handleSalvarReserva",
+      e instanceof Error ? e : new Error(String(e))
+    );
+    alert(
+      e instanceof Error ? e.message : "Erro ao criar reserva. Tente novamente."
+    );
+  }
 };
 
 // -------------------------------------------------------
@@ -791,8 +908,7 @@ const handleReservaCadeira = async (payload: {
 
         <div class="planta-card">
           <div class="planta-header">
-            <p class="planta-title">Espaço Coworking</p>
-
+            <p class="planta-title">Espaço {{ selectedPlanta?.nome || "" }}</p>
             <select v-model.number="selectedPlantaId" class="planta-select">
               <option
                 v-for="planta in plantas"

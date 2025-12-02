@@ -4,9 +4,34 @@ from datetime import datetime, time
 from .models import Reserva, ReservaCadeira
 
 class ReservaSerializer(serializers.ModelSerializer):
+    sala_nome = serializers.CharField(source='sala.nome_sala', read_only=True)
+    sala_id = serializers.IntegerField(source='sala.id_sala', read_only=True)
+    usuario_email = serializers.EmailField(source='usuario.email', read_only=True)
+    usuario_nome = serializers.SerializerMethodField()
+    
     class Meta:
         model = Reserva 
-        fields = '__all__'
+        fields = [
+            'id_reserva',
+            'usuario',
+            'usuario_email',
+            'usuario_nome',
+            'sala',
+            'sala_id',
+            'sala_nome',
+            'data_inicio',
+            'data_fim',
+            'descricao',
+            'status',
+            'data_criacao',
+            'data_modificacao',
+        ]
+        read_only_fields = ['usuario', 'data_criacao', 'data_modificacao']
+    
+    def get_usuario_nome(self, obj):
+        if obj.usuario:
+            return f"{obj.usuario.first_name} {obj.usuario.last_name}".strip()
+        return None
 
 
 class ReservaCadeiraSerializer(serializers.ModelSerializer):
