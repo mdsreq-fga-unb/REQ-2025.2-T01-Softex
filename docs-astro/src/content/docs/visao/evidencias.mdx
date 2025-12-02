@@ -1,0 +1,128 @@
+---
+title: Evidências
+description: Evidências das atividades de elicitação e descoberta de requisitos
+---
+
+Este documento apresenta as evidências das atividades realizadas durante o processo de engenharia de requisitos do Sistema de Gestão de Recursos.
+
+## Elicitação e Descoberta
+
+
+| Data | Tipo | Participantes | Descrição |
+|------|------|---------------|-----------|
+| 04/09/2025 | Reunião de Kick off | Cliente, equipe | Discussão do escopo inicial do projeto |
+| 19/09/2025 | Reunião/apresentação | Cliente, Yuri | Apresentação do documento de pontos que não ficaram tão claros na primeira reunião |
+| 10/10/2025 | Reunião | Cliente, Yuri e Felipe | Verificar gestão de permissão de usuário |
+
+
+A reunião de Kick-off foi realizada no dia 04/09, com o cliente, na plataforma Google Meet. Na reunião tinhamos como objetivo discutir os objetivos principais conversados previamente observando mais profundamente as expectativas do cliente e definindo o escopo do projeto. A partir disso o grupo começou o levantamento de requisitos. Formações adicionais foram conversadas entre o líder do projeto e o cliente.                          
+
+No dia 19/09, houve mais uma reunião com o cliente e apresentamos o documento de visão do produto afim de validar alguns pontos importantes detectados na primeira reunião.
+
+No dia 10/10 foi realizada uma reunião com o cliente para verificar pontos como a planta e a gestão de permissões de usuário. Com base nisso identificamos e refinamos mais requisitos.
+
+A equipe configurou os requisitos que acreditavam ser mais importantes e validaram junto aos critérios de aceitação no formato MoSCow junto ao cliente para desenvolvimento dos requisitos e as validações foram realizadas pelo Slack.
+
+<div class="video-container">
+  <iframe 
+    width="100%" 
+    height="315" 
+    src="https://www.youtube.com/embed/vq4QjZtCTcc" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+    referrerpolicy="strict-origin-when-cross-origin" 
+    allowfullscreen>
+  </iframe>
+</div>
+
+<div class="video-container">
+  <iframe 
+    width="100%" 
+    height="315" 
+    src="https://www.youtube.com/embed/nz9sB0NPVok" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+    referrerpolicy="strict-origin-when-cross-origin" 
+    allowfullscreen>
+  </iframe>
+</div>
+
+### Técnicas Utilizadas
+
+- **Entrevistas estruturadas** com stakeholders principais
+- **Reuniões de descoberta** para mapeamento de processos
+- **Análise de documentos** existentes
+- **Observação** de processos atuais
+- **Brainstorming** com a equipe técnica
+
+## Entrega e validação do Protótipo
+
+| Data | Tipo | Participantes | Objetivo/Descrição |
+|------|------|---------------|-----------|
+| 28/11/2024 | entrega do protótipo | Cliente, Yuri | Entrega e validação do protótipo da área |
+
+
+## Declaração de Requisitos
+
+### Documento de visão
+
+Os requisitos declarados no Documento de Visão estão disponíveis no GitPages do projeto em [Backlog](/REQ-2025.2-T01-Softex/visao/backlog/).
+
+### User Storys e Estruturação
+
+Os requisitos foram declarados usando user story garantindo um foco em entregas de valor sobre a perspectiva do usuário.
+
+### Critérios de aceitação DoD
+
+A equipe começou a trabalhar o [Definition of done (DoD)](/REQ-2025.2-T01-Softex/visao/dor-dod/) junto com o cliente para o desenvolvimento dos requisitos, as validações feitas pelo Slack.
+
+## Verificação e validação de requisitos
+
+### Revisões em pares
+
+Abertura de issues no repositório do projeto, a branch principal é gerenciada pelo líder que faz as revisões a partir do DoR e do DoD antes de subir as alterações.
+
+Exemplo de issue
+
+[Issue #25](https://github.com/mdsreq-fga-unb/REQ-2025.2-T01-Softex/issues/25)
+
+[Issue #26](https://github.com/mdsreq-fga-unb/REQ-2025.2-T01-Softex/issues/26)
+
+### Feedback com Cliente
+
+Foi utilizado técnica de feedback contínuo com Slack para manter um backlog de produto verificado e validado de acordo com a evolução do produto e sugestões de melhoria.
+
+## Organização e Atualização de Requisitos
+
+### Priorização MoSCow
+
+No dia 22/10 foi feita uma reunião com o cliente para priorizar os requisitos de acordo com o método MoSCow, foi utilizada a técnica de [matriz de priorização](/REQ-2025.2-T01-Softex/visao/backlog/) para definir os requisitos do MVP considerando a classificação MoSCow.
+
+### Feedback para atualização
+
+Conforme o feedback do cliente os requisitos foram refinado continuamente afim de garantir entregas de valor alinhadas com a necessidade da empresa.
+
+## Entrevistas e Reunião com o Cliente
+
+As entrevistas e reuniões com o cliente foram realizadas ao longo do projeto para validar requisitos, esclarecer dúvidas e garantir o alinhamento entre as expectativas do cliente e o desenvolvimento do sistema.
+
+### Protótipo por Meio do Docker
+
+O protótipo implementado utilizando Docker permite uma demonstração funcional do sistema em um ambiente containerizado, facilitando a validação técnica e funcional dos requisitos.
+
+#### Benefícios do Protótipo Docker
+
+- **Ambiente isolado**: Execução em containers independentes
+- **Reprodutibilidade**: Mesmo ambiente em diferentes máquinas
+- **Facilidade de deploy**: Distribuição simplificada do protótipo
+- **Validação técnica**: Teste de integração entre componentes
+
+#### Informações do Protótipo
+
+- **Repositório**: https://github.com/mdsreq-fga-unb/REQ-2025.2-T01-Softex
+- **Comandos de execução**: `docker-compose up` para iniciar o ambiente completo
+- **Documentação técnica**: Protótipo funcional com frontend Vue.js e backend Django REST Framework, containerizado com Docker
+- **Data de disponibilização**: 08/11/2024
+- **Ambiente de demonstração**: Disponível localmente via Docker, permitindo validação de funcionalidades principais
