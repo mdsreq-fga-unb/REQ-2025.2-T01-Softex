@@ -24,6 +24,7 @@ from planta.views import PlantaViewSet
 from cadastro.views import CadastroViewSet, login_view, google_login_redirect, google_callback, check_auth
 from sala.views import SalaViewSet, SalaDeReuniaoViewSet
 from cadeira.views import CadeiraViewSet
+from permissoes.views import PerfilPermissaoViewSet
 
 router = DefaultRouter()
 
@@ -39,6 +40,10 @@ router.register(r'salas-reuniao', SalaDeReuniaoViewSet, basename='sala-de-reunia
 
 # Regista 'api/cadeiras/'
 router.register(r'cadeiras', CadeiraViewSet, basename='cadeira')
+
+# Regista 'api/permissoes/'
+router.register(r'perfis', PerfilPermissaoViewSet, basename='perfil-permissao')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
