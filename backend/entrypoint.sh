@@ -7,6 +7,7 @@ done
 echo "Postgres pronto!"
 
 echo "==> Aplicando migrations..."
+python manage.py makemigrations
 python manage.py migrate
 
 echo "==> Criando superusuário (se não existir)..."
