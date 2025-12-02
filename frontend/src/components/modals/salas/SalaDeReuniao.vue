@@ -13,8 +13,14 @@ type ReservaSala = {
 
 
 
+type Sala = {
+  id: number
+  nome: string
+}
+
 const props = defineProps<{
   reservas: ReservaSala[]
+  salas?: Sala[]  // Salas cadastradas (opcional)
 }>()
 
 const getTodayIso = () => {
@@ -64,6 +70,12 @@ const timeSlots = computed<TimeSlot[]>(() => {
 })
 
 const salas = computed(() => {
+  // Se salas foram passadas como prop, usar essas
+  if (props.salas && props.salas.length > 0) {
+    return props.salas.map(s => s.nome).sort()
+  }
+  
+  // Caso contrário, extrair das reservas (comportamento antigo)
   const set = new Set<string>()
   props.reservas.forEach((r) => set.add(r.sala))
   return Array.from(set).sort()

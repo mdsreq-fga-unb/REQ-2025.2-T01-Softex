@@ -441,7 +441,8 @@ const handleSalvarReserva = async (payload: {
     const dataInicioStr = `${payload.data}T${payload.horaInicio}:00`;
     const dataFimStr = `${payload.data}T${payload.horaFim}:00`;
 
-    const url = `${API_URL}/api/reservas/`;
+    // Usar o endpoint de reserva na API de salas
+    const url = `${API_URL}/api/salas-reuniao/reservar/`;
     const payloadData = {
       sala: payload.salaId,
       data_inicio: dataInicioStr,

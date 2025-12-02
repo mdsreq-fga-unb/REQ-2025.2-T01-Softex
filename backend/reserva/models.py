@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from sala.models import Sala
+from sala.models import Sala, SalaDeReuniao
 from cadastro.models import Cadastro
 from cadeira.models import Cadeira
 

@@ -241,8 +241,8 @@ class DashboardStatsView(APIView):
         # ---------------------------------------------------------
         
         def formatar_grafico_horario(dados_banco, capacidade_item):
-            # Cria mapa das 8h as 19h zerado
-            mapa_horas = {h: 0 for h in range(8, 20)}
+            # Cria mapa das 8h as 21h zerado (8h até 21h = 8, 9, 10, ..., 20, 21)
+            mapa_horas = {h: 0 for h in range(8, 22)}
             
             for item in dados_banco:
                 h = item['hora']
@@ -251,7 +251,7 @@ class DashboardStatsView(APIView):
                     porcentagem_atual = round((item['total'] / capacidade_item * 100), 1)
                     mapa_horas[h] = max(mapa_horas[h], porcentagem_atual)
             
-            # Retorna TODOS os horários (8h-19h) para o frontend agrupar
+            # Retorna TODOS os horários (8h-21h) para o frontend agrupar
             # O frontend vai agrupar horários próximos nas labels corretas
             return [
                 {"hora": f"{h}h", "porcentagem": mapa_horas[h]} 

@@ -10,7 +10,7 @@ class SalaSerializer(serializers.ModelSerializer):
         fields = [
             'id_sala',
             'nome_sala',
-            'tipo_sala',
+            'tipo',
             'status',
             'capacidade',
             'descricao',
@@ -25,7 +25,7 @@ class SalaSerializer(serializers.ModelSerializer):
         agora = timezone.now()
 
         for reserva in obj.reservas.all():
-            if(reserva.data_inicio <= agora and reserva.data_fim >= reserva.status == 'confirmada'):
+            if(reserva.data_inicio <= agora and reserva.data_fim >= agora and reserva.status == 'confirmada'):
                 return 'ocupada'
         
         return 'desocupada'

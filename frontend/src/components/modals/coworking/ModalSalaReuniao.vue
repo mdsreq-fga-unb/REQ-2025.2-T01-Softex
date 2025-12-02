@@ -6,10 +6,8 @@ import { useAuth } from "@/composables/useAuth";
 type TipoReuniao = "interna" | "externa";
 
 type Sala = {
-  id_sala: number;
-  nome_sala: string;
-  capacidade: number;
-  tipo: string;
+  id: number;
+  nome: string;
 };
 
 type ReservaPayload = {
@@ -49,7 +47,8 @@ const errors = ref<Record<string, string>>({});
 const carregarSalas = async () => {
   isLoadingSalas.value = true;
   try {
-    const response = await authenticatedFetch(`${API_URL}/api/salas/`, {
+    // Buscar apenas do endpoint de salas de reunião
+    const response = await authenticatedFetch(`${API_URL}/api/salas-reuniao/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -58,13 +57,15 @@ const carregarSalas = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      // Filtrar apenas salas de reunião
-      salas.value = Array.isArray(data)
-        ? data.filter((s: Sala) => s.tipo === "reuniao")
-        : [];
+      salas.value = Array.isArray(data) ? data : [];
+      console.log("✅ Salas de reunião carregadas:", salas.value);
+    } else {
+      console.error("❌ Erro ao carregar salas:", response.status);
+      const errorText = await response.text();
+      console.error("Detalhes do erro:", errorText);
     }
   } catch (e) {
-    console.error("Erro ao carregar salas:", e);
+    console.error("❌ Erro ao carregar salas:", e);
   } finally {
     isLoadingSalas.value = false;
   }
@@ -82,9 +83,8 @@ watch(
       horaFim.value = "";
       salaId.value = null;
       errors.value = {};
-      if (salas.value.length === 0) {
-        carregarSalas();
-      }
+      // Sempre recarregar salas ao abrir o modal para ter as mais recentes
+      carregarSalas();
     }
   }
 );
@@ -151,7 +151,7 @@ const fechar = () => {
   emit("close");
 };
 
-const salvar = () => {
+const salvar = async () => {
   if (!validar() || !podeSalvar.value) return;
 
   if (!salaId.value) {
@@ -159,15 +159,106 @@ const salvar = () => {
     return;
   }
 
-  emit("save", {
-    pessoas: Number(pessoas.value),
-    tipo: tipo.value,
-    motivo: motivo.value.trim(),
-    data: data.value,
-    horaInicio: horaInicio.value,
-    horaFim: horaFim.value,
-    salaId: salaId.value,
-  });
+  try {
+    // Combinar data e hora para criar DateTime
+    const dataInicioStr = `${data.value}T${horaInicio.value}:00`;
+    const dataFimStr = `${data.value}T${horaFim.value}:00`;
+
+    // Usar o endpoint de reserva na API de salas
+    const url = `${API_URL}/api/salas-reuniao/reservar/`;
+    const payloadData = {
+      sala: salaId.value,
+      data_inicio: dataInicioStr,
+      data_fim: dataFimStr,
+      descricao:
+        motivo.value.trim() ||
+        `Reunião ${tipo.value} - ${pessoas.value} pessoas`,
+    };
+
+    console.log("🔗 Criando reserva de sala em:", url);
+    console.log("📦 Dados da reserva:", payloadData);
+
+    const response = await authenticatedFetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payloadData),
+    });
+
+    console.log(
+      "📡 Resposta do servidor:",
+      response.status,
+      response.statusText
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ Erro na resposta:", errorText);
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { error: errorText };
+      }
+
+      if (response.status === 401 || response.status === 403) {
+        alert("Sua sessão expirou. Por favor, faça login novamente.");
+        return;
+      }
+
+      if (response.status === 405) {
+        alert(
+          "Erro: Método POST não permitido neste endpoint. Verifique a configuração do servidor."
+        );
+        console.error("❌ Endpoint não aceita POST:", url);
+        return;
+      }
+
+      if (response.status === 400) {
+        const errorMessage =
+          errorData.non_field_errors?.[0] ||
+          errorData.detail ||
+          errorData.sala?.[0] ||
+          (typeof errorData === "string"
+            ? errorData
+            : errorData.error || errorData.message) ||
+          "Erro ao criar reserva. Verifique os dados informados.";
+        alert(errorMessage);
+        return;
+      }
+
+      throw new Error(
+        errorData.detail ||
+          errorData.error ||
+          errorData.message ||
+          `Erro ao criar reserva: ${response.status} - ${errorText}`
+      );
+    }
+
+    const reservaCriada = await response.json();
+    console.log("✅ Reserva de sala criada com sucesso:", reservaCriada);
+
+    // Emitir evento de sucesso para o componente pai
+    emit("save", {
+      pessoas: Number(pessoas.value),
+      tipo: tipo.value,
+      motivo: motivo.value.trim(),
+      data: data.value,
+      horaInicio: horaInicio.value,
+      horaFim: horaFim.value,
+      salaId: salaId.value,
+    });
+
+    // Fechar o modal
+    emit("close");
+    alert("Reserva de sala criada com sucesso!");
+  } catch (e) {
+    console.error("❌ Erro ao criar reserva de sala:", e);
+    alert(
+      e instanceof Error ? e.message : "Erro ao criar reserva. Tente novamente."
+    );
+  }
 };
 
 onMounted(() => {
@@ -199,12 +290,8 @@ onMounted(() => {
             :class="{ 'input-error': errors.sala }"
           >
             <option :value="null">Selecione uma sala</option>
-            <option
-              v-for="sala in salas"
-              :key="sala.id_sala"
-              :value="sala.id_sala"
-            >
-              {{ sala.nome_sala }} (Capacidade: {{ sala.capacidade }})
+            <option v-for="sala in salas" :key="sala.id" :value="sala.id">
+              {{ sala.nome }}
             </option>
           </select>
           <span v-if="errors.sala" class="error-text">{{ errors.sala }}</span>

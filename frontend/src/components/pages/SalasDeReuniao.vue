@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   Home,
@@ -12,6 +12,7 @@ import {
 } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
 import { useFormatTipoFuncao } from "@/composables/useFormatTipoFuncao";
+import api from "@/services/api";
 import AndamentoModal from "@/components/modals/salas/Andamento.vue";
 import ConcluidasModal from "@/components/modals/salas/Concluidas.vue";
 import SalaDeReuniao from "@/components/modals/salas/SalaDeReuniao.vue";
@@ -60,98 +61,203 @@ type ReservaSala = {
   motivoReuniao?: string;
 };
 
+type SalaFisica = {
+  id: number;
+  nome: string;
+};
+
 type Aba = "solicitacoes" | "salas" | "concluidas";
 
 const activeTab = ref<Aba>("solicitacoes");
-const reservasSalas = ref<ReservaSala[]>([
-  {
-    id: 1,
-    titulo: "Sala Alfa - Andar 3",
-    solicitante: "Ana Souza",
-    sala: "Sala Alfa",
-    fluxo: "andamento",
-    status: "pendente",
-    data: "10/03/2026",
-    dataInicio: "10/03/2026",
-    dataFim: "10/03/2026",
-    horaInicio: "09:00",
-    horaFim: "10:00",
-    participantes: 6,
-    tipoReuniao: "interna",
-    motivoReuniao: "Alinhamento semanal com o time de produto.",
-  },
-  {
-    id: 2,
-    titulo: "Sala Beta - Andar 2",
-    solicitante: "Carlos Lima",
-    sala: "Sala Beta",
-    fluxo: "andamento",
-    status: "aprovado",
-    data: "11/03/2026",
-    dataInicio: "11/03/2026",
-    dataFim: "11/03/2026",
-    horaInicio: "14:00",
-    horaFim: "15:30",
-    participantes: 4,
-    tipoReuniao: "externa",
-    motivoReuniao: "Reunião com cliente para apresentação de proposta.",
-  },
-  {
-    id: 3,
-    titulo: "Sala Ômega - Andar 1",
-    solicitante: "Mariana Costa",
-    sala: "Sala Ômega",
-    fluxo: "concluido",
-    status: "aprovado",
-    data: "02/03/2026",
-    dataInicio: "02/03/2026",
-    dataFim: "02/03/2026",
-    horaInicio: "16:00",
-    horaFim: "17:00",
-    participantes: 8,
-    tipoReuniao: "interna",
-    motivoReuniao: "Retrospectiva do projeto e planejamento do próximo ciclo.",
-  },
-  {
-    id: 4,
-    titulo: "Sala Gama - Andar 4",
-    solicitante: "João Pedro",
-    sala: "Sala Gama",
-    fluxo: "concluido",
-    status: "negado",
-    data: "25/02/2026",
-    dataInicio: "25/02/2026",
-    dataFim: "25/02/2026",
-    horaInicio: "11:00",
-    horaFim: "12:00",
-    participantes: 5,
-    tipoReuniao: "externa",
-    motivoReuniao: "Reunião extra com parceiro, fora do calendário padrão.",
-  },
-  {
-    id: 5,
-    titulo: "Sala Alpha - Andar 4",
-    solicitante: "João Pedro",
-    sala: "Sala Alpha",
-    fluxo: "concluido",
-    status: "negado",
-    data: "21/11/2025",
-    dataInicio: "21/11/2025",
-    dataFim: "21/11/2025",
-    horaInicio: "11:00",
-    horaFim: "12:00",
-    participantes: 5,
-    tipoReuniao: "externa",
-    motivoReuniao: "Reunião extra com parceiro, fora do calendário padrão.",
-  },
-]);
+const reservasSalas = ref<ReservaSala[]>([]);
+const salasFisicas = ref<SalaFisica[]>([]);
+const isLoading = ref(false);
 
+// Função para extrair hora de DateTime ISO
+const extrairHora = (dataISO: string | undefined): string => {
+  if (!dataISO) return "";
+  const data = new Date(dataISO);
+  const horas = String(data.getHours()).padStart(2, "0");
+  const minutos = String(data.getMinutes()).padStart(2, "0");
+  return `${horas}:${minutos}`;
+};
+
+// Função para extrair data de DateTime ISO (sem hora)
+const extrairData = (dataISO: string | undefined): string => {
+  if (!dataISO) return "";
+  const data = new Date(dataISO);
+  const dia = String(data.getDate()).padStart(2, "0");
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const ano = data.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+};
+
+// Função para determinar o fluxo baseado na data
+const determinarFluxo = (dataFimISO: string | undefined): FluxoStatus => {
+  if (!dataFimISO) return "andamento";
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const dataFim = new Date(dataFimISO);
+  dataFim.setHours(0, 0, 0, 0);
+  return dataFim < hoje ? "concluido" : "andamento";
+};
+
+// Função para mapear status do backend para o frontend
+const mapearStatus = (statusBackend: string): ResultadoStatus => {
+  if (statusBackend === "confirmada") return "aprovado";
+  if (statusBackend === "cancelada") return "negado";
+  return "aprovado";
+};
+
+// Função para extrair tipo de reunião da descrição
+const extrairTipoReuniao = (
+  descricao: string | undefined
+): "interna" | "externa" => {
+  if (!descricao) return "interna";
+  const descLower = descricao.toLowerCase();
+  return descLower.includes("externa") ? "externa" : "interna";
+};
+
+// Função para extrair número de participantes da descrição
+const extrairParticipantes = (descricao: string | undefined): number => {
+  if (!descricao) return 0;
+  const match = descricao.match(/(\d+)\s*pessoa/i);
+  return match && match[1] ? parseInt(match[1], 10) : 0;
+};
+
+// Flag para evitar chamadas simultâneas
+let isFetching = false;
+
+// Função para carregar dados do backend
+const fetchDados = async () => {
+  if (!user.value) {
+    console.log("⚠️ Usuário não autenticado");
+    return;
+  }
+
+  // Evitar chamadas simultâneas
+  if (isFetching) {
+    console.log("⏳ Já está carregando dados, ignorando chamada duplicada");
+    return;
+  }
+
+  isFetching = true;
+  isLoading.value = true;
+  try {
+    // Buscar Reservas
+    const resReservas = await api.get("/reservas/reservas/");
+    console.log("📋 Reservas recebidas:", resReservas.data);
+
+    // Mapear dados do backend para o formato do componente
+    const reservasMapeadas = resReservas.data.map((r: any) => {
+      const dataInicioISO = r.data_inicio;
+      const dataFimISO = r.data_fim;
+      const descricao = r.descricao || "";
+
+      return {
+        id: r.id_reserva,
+        titulo: r.sala_nome || `Sala ${r.sala_id}`,
+        solicitante: r.usuario_nome || "Usuário desconhecido",
+        sala: r.sala_nome || `Sala ${r.sala_id}`,
+        fluxo: determinarFluxo(dataFimISO),
+        status: mapearStatus(r.status || "confirmada"),
+        data: extrairData(dataInicioISO),
+        dataInicio: extrairData(dataInicioISO),
+        dataFim: extrairData(dataFimISO),
+        horaInicio: extrairHora(dataInicioISO),
+        horaFim: extrairHora(dataFimISO),
+        participantes: extrairParticipantes(descricao),
+        tipoReuniao: extrairTipoReuniao(descricao),
+        motivoReuniao: descricao,
+      };
+    });
+
+    // Remover duplicatas baseado no ID (caso o backend retorne duplicados)
+    const idsVistos = new Set<number>();
+    reservasSalas.value = reservasMapeadas.filter((r: ReservaSala) => {
+      if (idsVistos.has(r.id)) {
+        console.warn(
+          `⚠️ Reserva duplicada detectada (ID: ${r.id}), removendo...`
+        );
+        return false;
+      }
+      idsVistos.add(r.id);
+      return true;
+    });
+
+    console.log(`✅ ${reservasSalas.value.length} reservas únicas carregadas`);
+
+    // Buscar Salas Físicas (para a aba "Salas")
+    const resSalas = await api.get("/salas-reuniao/");
+    const salasMapeadas = Array.isArray(resSalas.data)
+      ? resSalas.data.map((s: any) => ({
+          id: s.id,
+          nome: s.nome,
+        }))
+      : [];
+
+    // Remover duplicatas de salas também
+    const idsSalasVistos = new Set<number>();
+    salasFisicas.value = salasMapeadas.filter((s) => {
+      if (idsSalasVistos.has(s.id)) {
+        return false;
+      }
+      idsSalasVistos.add(s.id);
+      return true;
+    });
+
+    console.log("✅ Salas físicas carregadas:", salasFisicas.value);
+  } catch (error: any) {
+    console.error("❌ Erro ao buscar dados:", error);
+    if (error.response?.status === 401) {
+      console.log("⚠️ Não autenticado");
+    }
+  } finally {
+    isLoading.value = false;
+    isFetching = false;
+  }
+};
+
+// Recarregar quando a aba mudar (mas não no momento inicial)
+watch(activeTab, (_newTab, oldTab) => {
+  // Só recarregar se a aba realmente mudou (não no mount inicial)
+  if (oldTab !== undefined) {
+    fetchDados();
+  }
+});
+
+// Recarregar quando a página ganhar foco
+const handleVisibilityChange = () => {
+  if (!document.hidden) {
+    fetchDados();
+  }
+};
+
+// Carregar dados ao montar o componente
+onMounted(() => {
+  fetchDados();
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+});
+
+// Limpar listener ao desmontar
+onUnmounted(() => {
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+});
+
+// Solicitações em andamento: todas as reservas que ainda não foram concluídas
 const solicitacoesEmAndamento = computed(() =>
   reservasSalas.value.filter((r) => r.fluxo === "andamento")
 );
 
 const reservasConcluidas = computed(() =>
   reservasSalas.value.filter((r) => r.fluxo === "concluido")
+);
+
+// Reservas aprovadas para exibir na agenda (apenas as confirmadas/aprovadas)
+const reservasAprovadas = computed(() =>
+  reservasSalas.value.filter(
+    (r) => r.status === "aprovado" && r.fluxo === "andamento"
+  )
 );
 
 const selecionarTab = (tab: Aba) => {
@@ -178,30 +284,85 @@ const handleClickReserva = (reserva: ReservaSala) => {
   }
 };
 
-const handleAprovarReserva = (payload: {
+const handleAprovarReserva = async (payload: {
   id: number;
   salaEscolhida: string;
   codigoSala: string;
 }) => {
-  const reserva = reservasSalas.value.find((r) => r.id === payload.id);
-  if (reserva) {
-    reserva.status = "aprovado";
-    reserva.sala = payload.salaEscolhida;
-    console.log("Reserva aprovada:", payload);
+  try {
+    // Apenas atualizar o status da reserva para "confirmada"
+    // Não alteramos a sala porque a reserva já foi criada com uma sala específica
+    // e o modelo Reserva usa Sala (não SalaDeReuniao)
+    await api.patch(`/reservas/reservas/${payload.id}/`, {
+      status: "confirmada",
+      // Não enviamos 'sala' porque a reserva já tem uma sala associada
+      // e tentar alterar pode causar erro se o ID não corresponder
+    });
+
+    // Atualizar interface localmente
+    const reserva = reservasSalas.value.find((r) => r.id === payload.id);
+    if (reserva) {
+      reserva.status = "aprovado";
+      // Atualizar o nome da sala apenas na interface se foi selecionada uma diferente
+      if (payload.salaEscolhida && payload.salaEscolhida !== reserva.sala) {
+        reserva.sala = payload.salaEscolhida;
+      }
+    }
+
+    showAndamentoModal.value = false;
+    reservaAndamentoSelecionada.value = null;
+
+    // Recarregar dados para garantir sincronia
+    await fetchDados();
+    console.log("✅ Reserva aprovada com sucesso");
+  } catch (err: any) {
+    console.error("❌ Erro ao aprovar:", err);
+
+    let mensagemErro = "Não foi possível aprovar a reserva.";
+    if (err.response?.data?.detail) {
+      mensagemErro = err.response.data.detail;
+    } else if (err.response?.data?.sala) {
+      mensagemErro = "Erro na sala: " + err.response.data.sala[0];
+    } else if (err.response?.data?.non_field_errors) {
+      mensagemErro = err.response.data.non_field_errors[0];
+    }
+    alert(mensagemErro);
   }
-  showAndamentoModal.value = false;
-  reservaAndamentoSelecionada.value = null;
 };
 
-const handleRecusarReserva = (id: number) => {
-  const reserva = reservasSalas.value.find((r) => r.id === id);
-  if (reserva) {
-    reserva.status = "negado";
-    reserva.fluxo = "concluido";
-    console.log("Reserva recusada:", id);
+const handleRecusarReserva = async (id: number) => {
+  try {
+    // Atualizar apenas o status para "cancelada" (recusar = cancelar)
+    await api.patch(`/reservas/reservas/${id}/`, {
+      status: "cancelada",
+    });
+
+    // Atualizar interface localmente
+    const reserva = reservasSalas.value.find((r) => r.id === id);
+    if (reserva) {
+      reserva.status = "negado";
+      reserva.fluxo = "concluido";
+    }
+
+    showAndamentoModal.value = false;
+    reservaAndamentoSelecionada.value = null;
+
+    // Recarregar dados para garantir sincronia
+    await fetchDados();
+    console.log("✅ Reserva recusada com sucesso");
+  } catch (err: any) {
+    console.error("❌ Erro ao recusar:", err);
+
+    let mensagemErro = "Não foi possível recusar a reserva.";
+    if (err.response?.data?.detail) {
+      mensagemErro = err.response.data.detail;
+    } else if (err.response?.data?.non_field_errors) {
+      mensagemErro = err.response.data.non_field_errors[0];
+    } else if (err.response?.data?.status) {
+      mensagemErro = "Erro no status: " + err.response.data.status[0];
+    }
+    alert(mensagemErro);
   }
-  showAndamentoModal.value = false;
-  reservaAndamentoSelecionada.value = null;
 };
 
 const handleCancelarClick = (id: number) => {
@@ -213,15 +374,39 @@ const handleCancelarClick = (id: number) => {
   }
 };
 
-const handleConfirmarCancelamento = (id: number) => {
-  const reserva = reservasSalas.value.find((r) => r.id === id);
-  if (reserva) {
-    reserva.status = "negado";
-    reserva.fluxo = "concluido";
+const handleConfirmarCancelamento = async (id: number) => {
+  try {
+    // Atualizar apenas o status para "cancelada"
+    await api.patch(`/reservas/reservas/${id}/`, {
+      status: "cancelada",
+    });
+
+    // Atualizar interface localmente
+    const reserva = reservasSalas.value.find((r) => r.id === id);
+    if (reserva) {
+      reserva.status = "negado";
+      reserva.fluxo = "concluido";
+    }
+
+    showCancelarModal.value = false;
+    reservaCancelarSelecionada.value = null;
+
+    // Recarregar dados para garantir sincronia
+    await fetchDados();
+    console.log("✅ Reunião cancelada com sucesso:", id);
+  } catch (err: any) {
+    console.error("❌ Erro ao cancelar:", err);
+
+    let mensagemErro = "Não foi possível cancelar a reserva.";
+    if (err.response?.data?.detail) {
+      mensagemErro = err.response.data.detail;
+    } else if (err.response?.data?.non_field_errors) {
+      mensagemErro = err.response.data.non_field_errors[0];
+    } else if (err.response?.data?.status) {
+      mensagemErro = "Erro no status: " + err.response.data.status[0];
+    }
+    alert(mensagemErro);
   }
-  showCancelarModal.value = false;
-  reservaCancelarSelecionada.value = null;
-  console.log("Reunião cancelada:", id);
 };
 
 const labelResultado = (resultado: ResultadoStatus): string => {
@@ -463,8 +648,11 @@ const reservasConcluidasFiltradas = computed(() => {
           </h2>
 
           <template v-if="activeTab === 'solicitacoes'">
+            <div v-if="isLoading" class="p-4 text-center">
+              Carregando solicitações...
+            </div>
             <div
-              v-if="solicitacoesEmAndamento.length === 0"
+              v-else-if="solicitacoesEmAndamento.length === 0"
               class="empty-state"
             >
               <p>Não há solicitações de salas em andamento no momento.</p>
@@ -518,7 +706,14 @@ const reservasConcluidasFiltradas = computed(() => {
           </template>
 
           <template v-else-if="activeTab === 'salas'">
-            <SalaDeReuniao :reservas="reservasSalas" />
+            <div v-if="isLoading" class="p-4 text-center">
+              Carregando salas...
+            </div>
+            <SalaDeReuniao
+              v-else
+              :reservas="reservasAprovadas"
+              :salas="salasFisicas"
+            />
           </template>
 
           <template v-else>
