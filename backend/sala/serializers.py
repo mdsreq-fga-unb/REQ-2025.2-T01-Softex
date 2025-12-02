@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Sala
+from .models import Sala, SalaDeReuniao
 from django.utils import timezone
 
 class SalaSerializer(serializers.ModelSerializer):
@@ -30,3 +30,8 @@ class SalaSerializer(serializers.ModelSerializer):
         
         return 'desocupada'
     
+
+class SalaDeReuniaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SalaDeReuniao
+        fields = ['id', 'nome']

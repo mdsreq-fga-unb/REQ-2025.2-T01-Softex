@@ -1,6 +1,6 @@
-from rest_framework import viewsets, permissions
-from .models import Sala
-from .serializers import SalaSerializer
+from rest_framework import viewsets, permissions, mixins
+from .models import Sala, SalaDeReuniao
+from .serializers import SalaSerializer, SalaDeReuniaoSerializer
 from reserva.models import Reserva
 
 class SalaViewSet(viewsets.ModelViewSet):
@@ -13,5 +13,12 @@ class SalaViewSet(viewsets.ModelViewSet):
     
 
     
-
-
+class SalaDeReuniaoViewSet(
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = SalaDeReuniao.objects.all().order_by('id')
+    serializer_class = SalaDeReuniaoSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
