@@ -22,6 +22,51 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// Tipos para os dados do dashboard
+interface GraficoHorarioItem {
+  hora: string;
+  porcentagem: number;
+}
+
+interface DashboardData {
+  metricas: {
+    sala: {
+      posicoes_ocupadas: number; // Backend retorna 0 para salas
+      salas_em_uso: number;
+      total_salas: number;
+      reservas_hoje: number;
+      taxa_ocupacao: number;
+    };
+    cadeira: {
+      posicoes_ocupadas: number;
+      total_cadeiras: number;
+      salas_em_uso: number; // Backend retorna 0 para cadeiras
+      reservas_hoje: number;
+      taxa_ocupacao: number;
+    };
+    todas: {
+      posicoes_ocupadas: number;
+      salas_em_uso: number;
+      reservas_hoje: number;
+      taxa_ocupacao: number;
+    };
+  };
+  graficos: {
+    ocupacao_horario: {
+      sala: GraficoHorarioItem[];
+      cadeira: GraficoHorarioItem[];
+      todas: GraficoHorarioItem[];
+    };
+    distribuicao_uso: {
+      salas: number;
+      coworking: number;
+      livre: number;
+      ocupado_geral: number;
+    };
+  };
+  atividades_recentes: any[];
+}
+
 const { user, logout } = useAuth();
 const { formatTipoFuncao } = useFormatTipoFuncao();
 const router = useRouter();
@@ -43,9 +88,10 @@ const tipoReservaFiltro = ref<TipoReserva>("todas");
 // --- INTEGRAÇÃO COM A API ---
 
 // 1. Estrutura inicial vazia (para não quebrar o template enquanto carrega)
-const dashboardData = ref({
+const dashboardData = ref<DashboardData>({
   metricas: {
     sala: {
+      posicoes_ocupadas: 0,
       salas_em_uso: 0,
       total_salas: 0,
       reservas_hoje: 0,
@@ -54,6 +100,7 @@ const dashboardData = ref({
     cadeira: {
       posicoes_ocupadas: 0,
       total_cadeiras: 0,
+      salas_em_uso: 0,
       reservas_hoje: 0,
       taxa_ocupacao: 0,
     },
@@ -68,19 +115,101 @@ const dashboardData = ref({
     ocupacao_horario: { sala: [], cadeira: [], todas: [] },
     distribuicao_uso: { salas: 0, coworking: 0, livre: 100, ocupado_geral: 0 },
   },
-  atividades_recentes: [] as any[], // Se você implementou isso no back, senão mantenha mock
+  atividades_recentes: [],
 });
 
 // 2. Função para buscar dados do Django
 const fetchDashboardData = async () => {
   isLoading.value = true;
   try {
-    const response = await api.get("reservas/dashboard/");
+    const url = "reservas/dashboard/";
+    console.log("🔗 Buscando dados do dashboard em:", url);
+    console.log(
+      "🔑 Token no localStorage:",
+      localStorage.getItem("access_token") ? "Presente" : "Ausente"
+    );
 
-    dashboardData.value = response.data;
-    console.log("Dados carregados com sucesso:", response.data);
-  } catch (error) {
-    console.error("Erro ao carregar dashboard:", error);
+    const response = await api.get(url);
+
+    console.log("📡 Resposta recebida:", response.status, response.statusText);
+    console.log("📦 Dados recebidos:", response.data);
+
+    if (response.data) {
+      // Validar e mapear os dados do backend
+      const data = response.data;
+
+      // Garantir que todos os campos existam, usando valores padrão se necessário
+      dashboardData.value = {
+        metricas: {
+          sala: {
+            posicoes_ocupadas: data.metricas?.sala?.posicoes_ocupadas ?? 0,
+            salas_em_uso: data.metricas?.sala?.salas_em_uso ?? 0,
+            total_salas: data.metricas?.sala?.total_salas ?? 0,
+            reservas_hoje: data.metricas?.sala?.reservas_hoje ?? 0,
+            taxa_ocupacao: data.metricas?.sala?.taxa_ocupacao ?? 0,
+          },
+          cadeira: {
+            posicoes_ocupadas: data.metricas?.cadeira?.posicoes_ocupadas ?? 0,
+            total_cadeiras: data.metricas?.cadeira?.total_cadeiras ?? 0,
+            salas_em_uso: data.metricas?.cadeira?.salas_em_uso ?? 0,
+            reservas_hoje: data.metricas?.cadeira?.reservas_hoje ?? 0,
+            taxa_ocupacao: data.metricas?.cadeira?.taxa_ocupacao ?? 0,
+          },
+          todas: {
+            posicoes_ocupadas: data.metricas?.todas?.posicoes_ocupadas ?? 0,
+            salas_em_uso: data.metricas?.todas?.salas_em_uso ?? 0,
+            reservas_hoje: data.metricas?.todas?.reservas_hoje ?? 0,
+            taxa_ocupacao: data.metricas?.todas?.taxa_ocupacao ?? 0,
+          },
+        },
+        graficos: {
+          ocupacao_horario: {
+            sala: data.graficos?.ocupacao_horario?.sala ?? [],
+            cadeira: data.graficos?.ocupacao_horario?.cadeira ?? [],
+            todas: data.graficos?.ocupacao_horario?.todas ?? [],
+          },
+          distribuicao_uso: {
+            salas: data.graficos?.distribuicao_uso?.salas ?? 0,
+            coworking: data.graficos?.distribuicao_uso?.coworking ?? 0,
+            livre: data.graficos?.distribuicao_uso?.livre ?? 100,
+            ocupado_geral: data.graficos?.distribuicao_uso?.ocupado_geral ?? 0,
+          },
+        },
+        atividades_recentes: data.atividades_recentes ?? [],
+      };
+
+      console.log(
+        "✅ Dados carregados e mapeados com sucesso:",
+        dashboardData.value
+      );
+    } else {
+      console.warn("⚠️ Resposta vazia do servidor");
+    }
+  } catch (error: any) {
+    console.error("❌ Erro ao carregar dashboard:", error);
+    console.error("Status:", error?.response?.status);
+    console.error("Data:", error?.response?.data);
+    console.error("Message:", error?.message);
+    console.error("URL completa:", error?.config?.url);
+
+    // Mostrar erro mais detalhado
+    if (error?.response) {
+      console.error("Erro completo da resposta:", error.response);
+    }
+
+    // Se for erro 401, pode ser problema de autenticação
+    if (error?.response?.status === 401) {
+      console.error(
+        "🔒 Erro de autenticação - token pode estar inválido ou expirado"
+      );
+    }
+
+    // Se for erro 404, a rota não foi encontrada
+    if (error?.response?.status === 404) {
+      console.error(
+        "🔍 Rota não encontrada - verifique se o endpoint está correto"
+      );
+    }
   } finally {
     isLoading.value = false;
   }
@@ -106,7 +235,10 @@ const metricasFiltradas = computed(() => {
     return {
       posicoesOcupadas: { valor: 0, total: 0 }, // Salas não tem "posições"
       salasEmUso: { valor: d.sala.salas_em_uso, total: d.sala.total_salas },
-      reservasHoje: { valor: d.sala.reservas_hoje, total: 20 }, // Total histórico ou fixo
+      reservasHoje: {
+        valor: d.sala.reservas_hoje,
+        total: d.sala.total_salas > 0 ? d.sala.total_salas * 10 : 20, // Estimativa baseada no total de salas
+      },
       taxaOcupacao: d.sala.taxa_ocupacao,
     };
   } else if (tipoReservaFiltro.value === "cadeira") {
@@ -116,33 +248,110 @@ const metricasFiltradas = computed(() => {
         total: d.cadeira.total_cadeiras,
       },
       salasEmUso: { valor: 0, total: 0 },
-      reservasHoje: { valor: d.cadeira.reservas_hoje, total: 50 },
+      reservasHoje: {
+        valor: d.cadeira.reservas_hoje,
+        total: d.cadeira.total_cadeiras > 0 ? d.cadeira.total_cadeiras * 2 : 50, // Estimativa baseada no total de cadeiras
+      },
       taxaOcupacao: d.cadeira.taxa_ocupacao,
     };
   } else {
     // todas
+    const totalCapacidade = d.sala.total_salas + d.cadeira.total_cadeiras;
     return {
       posicoesOcupadas: {
-        valor: d.cadeira.posicoes_ocupadas,
+        valor: d.todas.posicoes_ocupadas,
         total: d.cadeira.total_cadeiras,
       },
-      salasEmUso: { valor: d.sala.salas_em_uso, total: d.sala.total_salas },
-      reservasHoje: { valor: d.todas.reservas_hoje, total: 70 },
+      salasEmUso: { valor: d.todas.salas_em_uso, total: d.sala.total_salas },
+      reservasHoje: {
+        valor: d.todas.reservas_hoje,
+        total: totalCapacidade > 0 ? totalCapacidade * 3 : 70, // Estimativa baseada na capacidade total
+      },
       taxaOcupacao: d.todas.taxa_ocupacao,
     };
   }
 });
 
-const ocupacaoPorHorarioFiltrada = computed(() => {
+// Função para agrupar horários próximos nas labels corretas
+const agruparHorariosProximos = (
+  dados: GraficoHorarioItem[]
+): GraficoHorarioItem[] => {
+  // Labels fixas: 8h, 10h, 12h, 14h, 16h, 18h
+  const labelsFixas = [8, 10, 12, 14, 16, 18];
+
+  // Criar mapas para acumular valores e contar ocorrências
+  const somaPorcentagens: Record<number, number> = {};
+  const contadorOcorrencias: Record<number, number> = {};
+  labelsFixas.forEach((h) => {
+    somaPorcentagens[h] = 0;
+    contadorOcorrencias[h] = 0;
+  });
+
+  // Processar cada item dos dados
+  dados.forEach((item) => {
+    // Extrair o número da hora da string (ex: "8h" -> 8, "14h" -> 14)
+    const horaMatch = item.hora?.match(/(\d+)h/);
+    if (!horaMatch || !horaMatch[1]) return;
+
+    const horaOriginal = parseInt(horaMatch[1], 10);
+    if (isNaN(horaOriginal)) return;
+
+    if (typeof item.porcentagem !== "number" || isNaN(item.porcentagem)) return;
+
+    // Encontrar todas as labels próximas (dentro de ±1 hora)
+    const labelsProximas: number[] = [];
+    labelsFixas.forEach((labelHora) => {
+      const distancia = Math.abs(horaOriginal - labelHora);
+      // Aceitar se estiver dentro de ±1 hora
+      if (distancia <= 1) {
+        labelsProximas.push(labelHora);
+      }
+    });
+
+    // Se encontrou labels próximas, usar o máximo valor (preserva picos)
+    if (labelsProximas.length > 0) {
+      // Para cada label próxima, usar o máximo entre o valor atual e o novo valor
+      // Isso preserva os picos de ocupação sem diluir os valores
+      labelsProximas.forEach((labelHora) => {
+        const valorAtual = somaPorcentagens[labelHora] ?? 0;
+        somaPorcentagens[labelHora] = Math.max(valorAtual, item.porcentagem);
+        contadorOcorrencias[labelHora] =
+          (contadorOcorrencias[labelHora] ?? 0) + 1;
+      });
+    }
+  });
+
+  // Converter o mapa de volta para array, usando o máximo valor encontrado
+  return labelsFixas.map((h) => {
+    const porcentagem =
+      somaPorcentagens[h] !== undefined ? somaPorcentagens[h] : 0;
+    // Arredondar para 1 casa decimal
+    const porcentagemFinal = Math.round(porcentagem * 10) / 10;
+
+    return {
+      hora: `${h}h`,
+      porcentagem: porcentagemFinal,
+    };
+  });
+};
+
+const ocupacaoPorHorarioFiltrada = computed<GraficoHorarioItem[]>(() => {
   const g = dashboardData.value.graficos.ocupacao_horario;
+  let dadosOriginais: GraficoHorarioItem[] = [];
+
   switch (tipoReservaFiltro.value) {
     case "sala":
-      return g.sala;
+      dadosOriginais = g.sala;
+      break;
     case "cadeira":
-      return g.cadeira;
+      dadosOriginais = g.cadeira;
+      break;
     default:
-      return g.todas;
+      dadosOriginais = g.todas;
   }
+
+  // Aplicar agrupamento de horários próximos
+  return agruparHorariosProximos(dadosOriginais);
 });
 
 const distribuicaoFiltrada = computed(() => {

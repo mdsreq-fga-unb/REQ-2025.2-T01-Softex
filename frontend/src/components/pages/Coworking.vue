@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from "vue";
+import { ref, watch, computed, onMounted, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   Home,
@@ -19,7 +19,7 @@ import ModalCadeira from "@/components/modals/coworking/ModalCadeira.vue";
 
 const { user, logout, authenticatedFetch } = useAuth();
 const { formatTipoFuncao } = useFormatTipoFuncao();
-const { logError, logWarning } = useErrorLogger();
+const { logError } = useErrorLogger();
 const router = useRouter();
 const route = useRoute();
 
@@ -83,16 +83,6 @@ type PlantaOption = {
   id: number;
   nome: string;
   img: string | null;
-};
-
-type ReservaPayload = {
-  pessoas: number;
-  tipo: "interna" | "externa";
-  motivo: string;
-  data: string;
-  horaInicio: string;
-  horaFim: string;
-  salaId: number;
 };
 
 // -------------------------------------------------------
@@ -173,11 +163,14 @@ const carregarPlantas = async () => {
         selectedPlantaId.value = storedPlantaId;
         console.log(`📂 Planta restaurada do localStorage: ${storedPlantaId}`);
       } else {
-        selectedPlantaId.value = plantas.value[0].id;
-        salvarPlantaNoStorage(selectedPlantaId.value);
-        console.log(
-          `🆕 Usando primeira planta disponível: ${selectedPlantaId.value}`
-        );
+        const primeiraPlanta = plantas.value[0];
+        if (primeiraPlanta) {
+          selectedPlantaId.value = primeiraPlanta.id;
+          salvarPlantaNoStorage(selectedPlantaId.value);
+          console.log(
+            `🆕 Usando primeira planta disponível: ${selectedPlantaId.value}`
+          );
+        }
       }
     }
 
@@ -247,6 +240,32 @@ const carregarSeatsDaPlanta = async (plantaId: number) => {
 };
 
 // -------------------------------------------------------
+// ATUALIZAÇÃO EM TEMPO REAL
+// -------------------------------------------------------
+let intervalId: number | null = null;
+
+// Atualizar reservas a cada 30 segundos
+const iniciarAtualizacaoAutomatica = () => {
+  if (intervalId) return; // Já está rodando
+
+  console.log("🔄 Iniciando atualização automática de reservas (30s)");
+  intervalId = window.setInterval(() => {
+    if (user.value && selectedPlantaId.value) {
+      console.log("🔄 Atualizando reservas automaticamente...");
+      carregarReservasCadeira();
+    }
+  }, 30000); // 30 segundos
+};
+
+const pararAtualizacaoAutomatica = () => {
+  if (intervalId) {
+    console.log("⏹️ Parando atualização automática de reservas");
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+};
+
+// -------------------------------------------------------
 // MONTAGEM
 // -------------------------------------------------------
 onMounted(() => {
@@ -257,6 +276,14 @@ onMounted(() => {
     selectedPlantaId.value = storedPlantaId;
   }
   carregarPlantas();
+
+  // Iniciar atualização automática quando o componente montar
+  iniciarAtualizacaoAutomatica();
+});
+
+onUnmounted(() => {
+  // Parar atualização automática quando o componente desmontar
+  pararAtualizacaoAutomatica();
 });
 
 watch(selectedPlantaId, async (novoId, antigoId) => {
@@ -270,50 +297,6 @@ watch(selectedPlantaId, async (novoId, antigoId) => {
 // -------------------------------------------------------
 // FUNÇÕES DE USUÁRIO
 // -------------------------------------------------------
-const getNomeUsuarioLogado = (): string => {
-  let currentUser = user.value;
-
-  if (!currentUser) {
-    try {
-      const storedUser =
-        localStorage.getItem("user") ||
-        localStorage.getItem("auth_user") ||
-        localStorage.getItem("currentUser");
-
-      if (storedUser) {
-        currentUser = JSON.parse(storedUser);
-      }
-    } catch (e) {
-      logError(
-        "Erro ao carregar usuário do localStorage",
-        { error: e },
-        "Coworking.getNomeUsuarioLogado",
-        e instanceof Error ? e : new Error(String(e))
-      );
-    }
-  }
-
-  if (!currentUser) {
-    logWarning(
-      "Usuário não encontrado ao obter nome",
-      { localStorageKeys: Object.keys(localStorage) },
-      "Coworking.getNomeUsuarioLogado"
-    );
-    return "";
-  }
-
-  const firstName = currentUser.first_name || "";
-  const lastName = currentUser.last_name || "";
-  const username = currentUser.username || "";
-
-  if (firstName && lastName) return `${firstName} ${lastName}`;
-  if (firstName) return firstName;
-  if (lastName) return lastName;
-  if (username) return username;
-
-  return "";
-};
-
 const getIniciaisUsuario = (nome?: string): string => {
   if (!nome) return "";
 
@@ -325,11 +308,14 @@ const getIniciaisUsuario = (nome?: string): string => {
   if (partes.length >= 2) {
     const primeira = partes[0];
     const ultima = partes[partes.length - 1];
-    return `${primeira[0]}${ultima[0]}`.toUpperCase();
+    if (primeira && ultima && primeira[0] && ultima[0]) {
+      return `${primeira[0]}${ultima[0]}`.toUpperCase();
+    }
   }
 
   if (partes.length === 1) {
-    return partes[0][0]?.toUpperCase() || "";
+    const primeira = partes[0];
+    return primeira?.[0]?.toUpperCase() || "";
   }
 
   return "";
@@ -556,9 +542,9 @@ const carregarReservasCadeira = async () => {
       return;
     }
 
-    // Usar endpoint de disponibilidade para ver todas as reservas confirmadas
-    const url = `${API_URL}/api/reservas/cadeira/disponibilidade/`;
-    console.log("🔗 Carregando reservas confirmadas de:", url);
+    // Usar endpoint de listar reservas para ter dados completos e atualizados
+    const url = `${API_URL}/api/reservas/cadeira/`;
+    console.log("🔗 Carregando todas as reservas de:", url);
 
     const resp = await authenticatedFetch(url, {
       method: "GET",
@@ -588,29 +574,48 @@ const carregarReservasCadeira = async () => {
     }
 
     const reservas = await resp.json();
-    console.log("📋 Reservas de cadeira carregadas:", reservas);
+    console.log(
+      "📋 Reservas de cadeira carregadas:",
+      reservas.length,
+      "reservas"
+    );
 
-    // Atualizar status dos assentos baseado nas reservas
+    // Primeiro, resetar todos os assentos para disponível
+    seats.value.forEach((seat) => {
+      seat.status = "disponivel";
+      seat.usuarioNome = undefined;
+      seat.reservaInfo = undefined;
+    });
+
+    // Depois, atualizar status dos assentos baseado nas reservas confirmadas
     reservas.forEach((reserva: any) => {
+      // Filtrar apenas reservas confirmadas e que ainda estão válidas
+      if (reserva.status !== "confirmada") return;
+
       const seatIndex = seats.value.findIndex(
         (s) => s.idCadeira === reserva.cadeira_id
       );
 
-      if (seatIndex !== -1 && reserva.status === "confirmada") {
-        seats.value[seatIndex].status = "reservado";
-        seats.value[seatIndex].usuarioNome = reserva.usuario_nome || undefined;
-        seats.value[seatIndex].reservaInfo = {
-          id_reserva_cadeira: reserva.id_reserva_cadeira,
-          usuario_nome: reserva.usuario_nome || "Usuário desconhecido",
-          usuario_email: reserva.usuario_email,
-          data_inicio: reserva.data_inicio,
-          data_fim: reserva.data_fim,
-          hora_inicio: reserva.hora_inicio,
-          hora_fim: reserva.hora_fim,
-          status: reserva.status,
-        };
+      if (seatIndex !== -1) {
+        const seat = seats.value[seatIndex];
+        if (seat) {
+          seat.status = "reservado";
+          seat.usuarioNome = reserva.usuario_nome || undefined;
+          seat.reservaInfo = {
+            id_reserva_cadeira: reserva.id_reserva_cadeira,
+            usuario_nome: reserva.usuario_nome || "Usuário desconhecido",
+            usuario_email: reserva.usuario_email,
+            data_inicio: reserva.data_inicio,
+            data_fim: reserva.data_fim,
+            hora_inicio: reserva.hora_inicio,
+            hora_fim: reserva.hora_fim,
+            status: reserva.status,
+          };
+        }
       }
     });
+
+    console.log("✅ Status dos assentos atualizado com base nas reservas");
   } catch (e) {
     console.error("❌ Erro ao carregar reservas de cadeira:", e);
     logError(
@@ -666,7 +671,7 @@ const handleCancelarReserva = async (reservaIdOrSeatId: number) => {
     try {
       console.log("🔗 Buscando reservas para cadeira ID:", seat.idCadeira);
       const respReservas = await authenticatedFetch(
-        `${API_URL}/api/reservas/cadeira/disponibilidade/`,
+        `${API_URL}/api/reservas/cadeira/`,
         {
           method: "GET",
           headers: {
@@ -766,10 +771,13 @@ const handleCancelarReserva = async (reservaIdOrSeatId: number) => {
         (s) => s.id === selectedSeat.value?.id
       );
       if (seatIndex !== -1) {
-        seats.value[seatIndex].status = "disponivel";
-        seats.value[seatIndex].usuarioNome = undefined;
-        seats.value[seatIndex].reservaInfo = undefined;
-        console.log("🔄 Status da cadeira atualizado para disponível");
+        const seat = seats.value[seatIndex];
+        if (seat) {
+          seat.status = "disponivel";
+          seat.usuarioNome = undefined;
+          seat.reservaInfo = undefined;
+          console.log("🔄 Status da cadeira atualizado para disponível");
+        }
       }
     }
 
