@@ -1,4 +1,5 @@
 from django.db import models
+from permissoes.models import PerfilDePermissao
 from django.contrib.auth.models import AbstractUser
 
 class Cadastro(AbstractUser):
@@ -22,6 +23,20 @@ class Cadastro(AbstractUser):
         blank=False,
         default='colaborador',  
           )
+    
+    perfil = models.ForeignKey(
+        'permissoes.PerfilDePermissao',
+        on_delete=models.SET_NULL, 
+        null=True,                
+        blank=True,                
+        related_name='usuarios',   
+        verbose_name="Perfil de Acesso"
+    )
+    
+    acessoBasico = models.BooleanField(default=True, verbose_name="Acesso Básico")
+    dashboards = models.BooleanField(default=False, verbose_name="Dashboards")
+    salasReuniao = models.BooleanField(default=False, verbose_name="Salas de Reunião")
+    administracao = models.BooleanField(default=False, verbose_name="Administração")
 
     #configuração de login
     USERNAME_FIELD = 'email'

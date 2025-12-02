@@ -18,3 +18,4 @@ django-allauth==0.51.0
 cryptography==41.0.4
 django-environ==0.10.0
 python-dotenv==1.0.0
+djangorestframework-simplejwt
