@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Auth from '@/components/pages/Auth.vue'
-import Dashboard from '@/components/pages/Dashboard.vue'
-import Administracao from '@/components/pages/Administracao.vue'
-import Coworking from '@/components/pages/Coworking.vue'
-import Reservas from '@/components/pages/MinhasReservas.vue'
-import Salas from '@/components/pages/SalasDeReuniao.vue'
-import { useAuth } from '@/composables/useAuth'
-import { useErrorLogger } from '@/composables/useErrorLogger'
+import { createRouter, createWebHistory } from "vue-router";
+import Auth from "@/components/pages/Auth.vue";
+import Dashboard from "@/components/pages/Dashboard.vue";
+import Administracao from "@/components/pages/Administracao.vue";
+import Coworking from "@/components/pages/Coworking.vue";
+import Reservas from "@/components/pages/MinhasReservas.vue";
+import Salas from "@/components/pages/SalasDeReuniao.vue";
+import { useAuth } from "@/composables/useAuth";
+import { useErrorLogger } from "@/composables/useErrorLogger";
 
 // const router = createRouter({
 //   history: createWebHistory(),
@@ -24,53 +24,78 @@ import { useErrorLogger } from '@/composables/useErrorLogger'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Auth },
-    { path: '/login', component: Auth },
-    { path: '/dashboard', component: Dashboard},
-    { path: '/administracao', component: Administracao},
-    { path: '/coworking', component: Coworking},
-    { path: '/reservas', component: Reservas},
-    { path: '/salas', component: Salas },
-    { 
-      path: '/:pathMatch(.*)*', 
-      name: 'NotFound',
-      component: () => import('@/components/pages/NotFound.vue')
-    }
-  ]
-})
+    { path: "/", component: Auth },
+    { path: "/login", component: Auth },
+    { path: "/dashboard", component: Dashboard },
+    { path: "/administracao", component: Administracao },
+    { path: "/coworking", component: Coworking },
+    { path: "/reservas", component: Reservas },
+    { path: "/salas", component: Salas },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: () => import("@/components/pages/NotFound.vue"),
+    },
+  ],
+});
 
 router.beforeEach((to, from, next) => {
-  const { isAuthenticated } = useAuth()
-  const { logError, logWarning } = useErrorLogger()
+  const { isAuthenticated, user } = useAuth();
+  const { logError, logWarning } = useErrorLogger();
 
-  if (to.name === 'NotFound') {
+  if (to.name === "NotFound") {
     logError(
-      'Página não encontrada',
+      "Página não encontrada",
       { path: to.path, from: from.path, fullPath: to.fullPath },
-      'router.beforeEach'
-    )
+      "router.beforeEach"
+    );
   }
 
+  // Verificar se a rota requer autenticação
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     logWarning(
-      'Tentativa de acesso a página protegida sem autenticação',
+      "Tentativa de acesso a página protegida sem autenticação",
       { path: to.path, from: from.path },
-      'router.beforeEach'
-    )
-    next('/login')
-  } else {
-    next()
+      "router.beforeEach"
+    );
+    next("/login");
+    return;
   }
-})
+
+  // Verificar se a rota de administração requer permissão de administrador
+  if (to.path === "/administracao") {
+    if (!isAuthenticated.value) {
+      logWarning(
+        "Tentativa de acesso à administração sem autenticação",
+        { path: to.path, from: from.path },
+        "router.beforeEach"
+      );
+      next("/login");
+      return;
+    }
+
+    if (user.value?.tipo_funcao !== "Administrativo") {
+      logWarning(
+        "Tentativa de acesso à administração sem permissão",
+        { path: to.path, from: from.path, user: user.value?.tipo_funcao },
+        "router.beforeEach"
+      );
+      next("/dashboard");
+      return;
+    }
+  }
+
+  next();
+});
 
 router.onError((error) => {
-  const { logError } = useErrorLogger()
+  const { logError } = useErrorLogger();
   logError(
-    'Erro de navegação',
+    "Erro de navegação",
     { error },
-    'router.onError',
+    "router.onError",
     error instanceof Error ? error : new Error(String(error))
-  )
-})
+  );
+});
 
-export default router
+export default router;

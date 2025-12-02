@@ -18,15 +18,30 @@ class ReservaCadeiraViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]  # Usar autenticação JWT
     
     def get_queryset(self):
-        # Usuários podem ver apenas suas próprias reservas
+        # Para listagem (GET), usuários podem ver apenas suas próprias reservas
         # Admins podem ver todas
+        # Mas para verificar disponibilidade, precisamos ver todas as reservas confirmadas
         user = self.request.user
         queryset = ReservaCadeira.objects.select_related('usuario', 'cadeira', 'cadeira__sala')
         
-        if not user.is_staff:
+        # Se for GET e o usuário não for admin, filtrar apenas suas reservas
+        if self.request.method == 'GET' and not user.is_staff:
             queryset = queryset.filter(usuario=user)
         
         return queryset.order_by('-data_criacao')
+    
+    @action(detail=False, methods=['get'], url_path='disponibilidade')
+    def disponibilidade(self, request):
+        """
+        Endpoint para verificar disponibilidade de cadeiras
+        Retorna todas as reservas confirmadas (para verificar conflitos)
+        """
+        reservas_confirmadas = ReservaCadeira.objects.filter(
+            status='confirmada'
+        ).select_related('usuario', 'cadeira')
+        
+        serializer = self.get_serializer(reservas_confirmadas, many=True)
+        return Response(serializer.data)
     
     def perform_create(self, serializer):
         # Automaticamente associa a reserva ao usuário autenticado via JWT

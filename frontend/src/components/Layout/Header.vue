@@ -1,21 +1,72 @@
 <script setup lang="ts">
-import { useAuth } from '@/composables/useAuth'
-import { useRouter } from 'vue-router'
+import { watch, onMounted, computed } from "vue";
+import { useAuth } from "@/composables/useAuth";
+import { useRouter } from "vue-router";
 
-const { user, logout } = useAuth()
-const router = useRouter()
+console.log("🚀 Header.vue script executado!");
+
+const { user, logout } = useAuth();
+const router = useRouter();
+
+console.log("🚀 useAuth e router inicializados!");
+
+// Debug: verificar quando user muda
+watch(
+  () => user.value,
+  (newUser) => {
+    console.log("👤 User mudou no Header:", newUser);
+    console.log("👤 tipo_funcao:", newUser?.tipo_funcao);
+  },
+  { immediate: true, deep: true }
+);
+
+onMounted(() => {
+  console.log("📋 Header montado");
+  console.log("👤 User no mount:", user.value);
+  console.log("👤 tipo_funcao no mount:", user.value?.tipo_funcao);
+});
 
 const handleLogout = () => {
-  logout()
-  router.push('/login')   // navegação correta
-}
-</script>
+  logout();
+  router.push("/login"); // navegação correta
+};
 
+const formatTipoFuncao = (tipo?: string): string => {
+  console.log("🔍 formatTipoFuncao chamada com:", tipo);
+  console.log("🔍 user completo:", user.value);
+
+  if (!tipo) {
+    console.warn("⚠️ tipo_funcao é undefined ou vazio");
+    return "";
+  }
+
+  const mapping: Record<string, string> = {
+    colaborador: "Colaborador",
+    TI: "TI",
+    Financiro: "Financeiro",
+    Marketing: "Marketing",
+    Juridíco: "Jurídico",
+    Administrativo: "Administrativo",
+    Projeto: "Projeto",
+  };
+
+  const resultado = mapping[tipo] || tipo;
+  console.log("✅ formatTipoFuncao retornando:", resultado);
+  return resultado;
+};
+
+// Usar computed para garantir reatividade
+const userRole = computed(() => {
+  console.log("🔄 userRole computed executado");
+  console.log("🔄 user.value:", user.value);
+  console.log("🔄 user.value?.tipo_funcao:", user.value?.tipo_funcao);
+  return formatTipoFuncao(user.value?.tipo_funcao);
+});
+</script>
 
 <template>
   <header class="header">
     <div class="header-content">
-
       <!-- LOGO -->
       <div class="logo-section">
         <img
@@ -32,16 +83,25 @@ const handleLogout = () => {
 
       <!-- USER -->
       <div class="user-section">
-        <span class="user-name">{{ user?.first_name }} {{ user?.last_name }}</span>
-        <span class="user-role">{{ user?.tipo_funcao }}</span>
+        <span class="user-name"
+          >{{ user?.first_name }} {{ user?.last_name }}</span
+        >
+
+        <span class="user-role">{{ userRole }}</span>
 
         <div class="user-avatar">
           {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
         </div>
 
         <button @click="handleLogout" class="logout-btn" title="Sair">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-            fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
             <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -50,28 +110,27 @@ const handleLogout = () => {
       </div>
     </div>
 
-  <nav class="navigation">
-    <router-link to="/dashboard" class="nav-item" active-class="active">
-      Dashboard
-    </router-link>
+    <nav class="navigation">
+      <router-link to="/dashboard" class="nav-item" active-class="active">
+        Dashboard
+      </router-link>
 
-    <router-link to="/coworking" class="nav-item" active-class="active">
-      Coworking
-    </router-link>
+      <router-link to="/coworking" class="nav-item" active-class="active">
+        Coworking
+      </router-link>
 
-    <router-link to="/salas" class="nav-item" active-class="active">
-      Salas de reunião
-    </router-link>
+      <router-link to="/salas" class="nav-item" active-class="active">
+        Salas de reunião
+      </router-link>
 
-    <router-link to="/reservas" class="nav-item" active-class="active">
-      Minhas Reservas
-    </router-link>
+      <router-link to="/reservas" class="nav-item" active-class="active">
+        Minhas Reservas
+      </router-link>
 
-    <router-link to="/administracao" class="nav-item" active-class="active">
-      Administração
-    </router-link>
-  </nav>
-
+      <router-link to="/administracao" class="nav-item" active-class="active">
+        Administração
+      </router-link>
+    </nav>
   </header>
 </template>
 

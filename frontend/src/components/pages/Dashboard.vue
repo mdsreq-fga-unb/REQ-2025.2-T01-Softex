@@ -15,11 +15,13 @@ import {
   X
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/useAuth'
+import { useFormatTipoFuncao } from '@/composables/useFormatTipoFuncao'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 const { user, logout } = useAuth()
+const { formatTipoFuncao } = useFormatTipoFuncao()
 const router = useRouter()
 const route = useRoute()
 
@@ -437,7 +439,7 @@ const proximasReservasFiltradas = computed(() => {
           </router-link>
           <div class="user-info">
             <span class="navbar-user-name">{{ user ? `${user.first_name} ${user.last_name}` : 'Usuário' }}</span>
-            <span class="user-role">Administrador</span>
+            <span class="user-role">{{ formatTipoFuncao(user?.tipo_funcao) }}</span>
           </div>
           <div class="user-avatar">
             {{ userInitials }}
@@ -466,7 +468,12 @@ const proximasReservasFiltradas = computed(() => {
           <Calendar class="nav-icon" />
           <span>Minhas Reservas</span>
         </router-link>
-        <router-link to="/administracao" class="nav-link" :class="{ active: route.path === '/administracao' }">
+        <router-link
+          v-if="user?.tipo_funcao === 'Administrativo'"
+          to="/administracao"
+          class="nav-link"
+          :class="{ active: route.path === '/administracao' }"
+        >
           <Settings class="nav-icon" />
           <span>Administração</span>
         </router-link>

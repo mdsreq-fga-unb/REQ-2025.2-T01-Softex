@@ -12,17 +12,22 @@ import {
 } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
 import { useErrorLogger } from "@/composables/useErrorLogger";
+import { useFormatTipoFuncao } from "@/composables/useFormatTipoFuncao";
 import plantaImg from "@/assets/planta.png";
 import ModalSalaReuniao from "@/components/modals/coworking/ModalSalaReuniao.vue";
 import ModalCadeira from "@/components/modals/coworking/ModalCadeira.vue";
 
 const { user, logout, authenticatedFetch } = useAuth();
+const { formatTipoFuncao } = useFormatTipoFuncao();
 const { logError, logWarning } = useErrorLogger();
 const router = useRouter();
 const route = useRoute();
 
 // ⭐ URL da API
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+// ⭐ Chave para localStorage
+const STORAGE_PLANT_ID = "coworking_selected_planta_id";
 
 // -------------------------------------------------------
 // USER INITIALS
@@ -111,6 +116,19 @@ const selectedPlantaImg = computed(() => {
 const seats = ref<SeatPoint[]>([]);
 
 // -------------------------------------------------------
+// FUNÇÕES DE LOCALSTORAGE
+// -------------------------------------------------------
+const carregarPlantaDoStorage = (): number | null => {
+  const storedId = localStorage.getItem(STORAGE_PLANT_ID);
+  return storedId ? parseInt(storedId, 10) : null;
+};
+
+const salvarPlantaNoStorage = (plantaId: number) => {
+  localStorage.setItem(STORAGE_PLANT_ID, plantaId.toString());
+  console.log(`💾 Planta salva no localStorage: ${plantaId}`);
+};
+
+// -------------------------------------------------------
 // CARREGAR PLANTAS
 // -------------------------------------------------------
 const carregarPlantas = async () => {
@@ -139,8 +157,22 @@ const carregarPlantas = async () => {
       return;
     }
 
+    // Tentar carregar planta do localStorage
     if (!selectedPlantaId.value) {
-      selectedPlantaId.value = plantas.value[0].id;
+      const storedPlantaId = carregarPlantaDoStorage();
+      if (
+        storedPlantaId &&
+        plantas.value.some((p) => p.id === storedPlantaId)
+      ) {
+        selectedPlantaId.value = storedPlantaId;
+        console.log(`📂 Planta restaurada do localStorage: ${storedPlantaId}`);
+      } else {
+        selectedPlantaId.value = plantas.value[0].id;
+        salvarPlantaNoStorage(selectedPlantaId.value);
+        console.log(
+          `🆕 Usando primeira planta disponível: ${selectedPlantaId.value}`
+        );
+      }
     }
 
     if (selectedPlantaId.value) {
@@ -212,12 +244,19 @@ const carregarSeatsDaPlanta = async (plantaId: number) => {
 // MONTAGEM
 // -------------------------------------------------------
 onMounted(() => {
+  // Tentar carregar planta do localStorage antes de carregar plantas
+  const storedPlantaId = carregarPlantaDoStorage();
+  if (storedPlantaId) {
+    console.log(`📂 Planta pré-selecionada do localStorage: ${storedPlantaId}`);
+    selectedPlantaId.value = storedPlantaId;
+  }
   carregarPlantas();
 });
 
 watch(selectedPlantaId, async (novoId, antigoId) => {
   if (novoId && novoId !== antigoId) {
     console.log(`🔄 Mudando para planta ${novoId}`);
+    salvarPlantaNoStorage(novoId);
     await carregarSeatsDaPlanta(novoId);
   }
 });
@@ -398,8 +437,9 @@ const carregarReservasCadeira = async () => {
       return;
     }
 
-    const url = `${API_URL}/api/reservas/cadeira/`;
-    console.log("🔗 Carregando reservas de:", url);
+    // Usar endpoint de disponibilidade para ver todas as reservas confirmadas
+    const url = `${API_URL}/api/reservas/cadeira/disponibilidade/`;
+    console.log("🔗 Carregando reservas confirmadas de:", url);
 
     const resp = await authenticatedFetch(url, {
       method: "GET",
@@ -519,6 +559,15 @@ const handleReservaCadeira = async (payload: {
     return;
   }
 
+  // Verificar se a cadeira já está reservada
+  if (seatAtual.status === "reservado") {
+    alert(
+      "Esta cadeira já está reservada. Por favor, escolha outra cadeira disponível."
+    );
+    showCadeiraModal.value = false;
+    return;
+  }
+
   try {
     const url = `${API_URL}/api/reservas/cadeira/`;
     const payloadData = {
@@ -572,6 +621,21 @@ const handleReservaCadeira = async (payload: {
         }
       }
 
+      // Se for erro de validação (400), mostrar mensagem específica
+      if (response.status === 400) {
+        const errorMessage =
+          errorData.non_field_errors?.[0] ||
+          errorData.detail ||
+          (typeof errorData === "string"
+            ? errorData
+            : errorData.error || errorData.message) ||
+          "Erro ao criar reserva. Verifique os dados informados.";
+
+        alert(errorMessage);
+        showCadeiraModal.value = false;
+        return;
+      }
+
       throw new Error(
         errorData.detail ||
           errorData.error ||
@@ -583,15 +647,13 @@ const handleReservaCadeira = async (payload: {
     const reservaCriada = await response.json();
     console.log("✅ Reserva criada com sucesso:", reservaCriada);
 
-    // Atualizar o assento localmente
-    const nomeUsuario = getNomeUsuarioLogado();
-    seats.value[seatIndex] = {
-      ...seatAtual,
-      status: "reservado",
-      usuarioNome: nomeUsuario || reservaCriada.usuario_nome,
-    };
+    // Recarregar todas as reservas para atualizar o status corretamente
+    await carregarReservasCadeira();
 
     showCadeiraModal.value = false;
+
+    // Mostrar mensagem de sucesso
+    alert("Reserva criada com sucesso!");
   } catch (e) {
     console.error("❌ Erro ao criar reserva:", e);
     logError(
@@ -637,7 +699,9 @@ const handleReservaCadeira = async (payload: {
             <span class="navbar-user-name">{{
               user ? `${user.first_name} ${user.last_name}` : "Usuário"
             }}</span>
-            <span class="user-role">Administrador</span>
+            <span class="user-role">{{
+              formatTipoFuncao(user?.tipo_funcao)
+            }}</span>
           </div>
           <div class="user-avatar">
             {{ userInitials }}
@@ -683,6 +747,7 @@ const handleReservaCadeira = async (payload: {
           <span>Minhas Reservas</span>
         </router-link>
         <router-link
+          v-if="user?.tipo_funcao === 'Administrativo'"
           to="/administracao"
           class="nav-link"
           :class="{ active: route.path === '/administracao' }"
