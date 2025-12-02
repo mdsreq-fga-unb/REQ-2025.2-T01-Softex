@@ -256,10 +256,11 @@ class PlantaSerializer(serializers.ModelSerializer):
             if sala:
                 cadeiras = sala.cadeiras.all().order_by('id_cadeira')  # Ordenar para consistência
                 # Converter cadeiras em pontos (cada cadeira = um ponto)
-                # Retornar IDs sequenciais começando do 1 para cada planta (não usar id_cadeira do banco)
+                # Incluir tanto o ID sequencial quanto o id_cadeira real
                 data['pontos'] = [
                     {
                         'id': index + 1,  # ID sequencial começando do 1 para esta planta
+                        'id_cadeira': cadeira.id_cadeira,  # ID real da cadeira no banco
                         'x': cadeira.pos_x,  # Posição X da cadeira em porcentagem
                         'y': cadeira.pos_y   # Posição Y da cadeira em porcentagem
                     }

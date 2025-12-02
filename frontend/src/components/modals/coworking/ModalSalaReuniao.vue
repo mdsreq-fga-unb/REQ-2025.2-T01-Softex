@@ -1,74 +1,74 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed } from "vue";
 
-type TipoReuniao = 'interna' | 'externa'
+type TipoReuniao = "interna" | "externa";
 
 type ReservaPayload = {
-  pessoas: number
-  tipo: TipoReuniao
-  motivo: string
-  data: string        
-  horaInicio: string  
-  horaFim: string     
-}
+  pessoas: number;
+  tipo: TipoReuniao;
+  motivo: string;
+  data: string;
+  horaInicio: string;
+  horaFim: string;
+};
 
 const props = defineProps<{
-  open: boolean
-}>()
+  open: boolean;
+}>();
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'save', payload: ReservaPayload): void
-}>()
+  (e: "close"): void;
+  (e: "save", payload: ReservaPayload): void;
+}>();
 
-const pessoas = ref<string>('')     
-const tipo = ref<TipoReuniao>('interna')
-const motivo = ref<string>('')
-const data = ref<string>('')
-const horaInicio = ref<string>('')
-const horaFim = ref<string>('')
+const pessoas = ref<string>("");
+const tipo = ref<TipoReuniao>("interna");
+const motivo = ref<string>("");
+const data = ref<string>("");
+const horaInicio = ref<string>("");
+const horaFim = ref<string>("");
 
 watch(
   () => props.open,
   (isOpen) => {
     if (isOpen) {
-      pessoas.value = ''
-      tipo.value = 'interna'
-      motivo.value = ''
-      data.value = ''
-      horaInicio.value = ''
-      horaFim.value = ''
+      pessoas.value = "";
+      tipo.value = "interna";
+      motivo.value = "";
+      data.value = "";
+      horaInicio.value = "";
+      horaFim.value = "";
     }
   }
-)
+);
 
 const podeSalvar = computed(() => {
-  const qtd = Number(pessoas.value || 0)
+  const qtd = Number(pessoas.value || 0);
   return (
     qtd > 0 &&
     motivo.value.trim().length > 0 &&
-    data.value !== '' &&
-    horaInicio.value !== '' &&
-    horaFim.value !== ''
-  )
-})
+    data.value !== "" &&
+    horaInicio.value !== "" &&
+    horaFim.value !== ""
+  );
+});
 
 const fechar = () => {
-  emit('close')
-}
+  emit("close");
+};
 
 const salvar = () => {
-  if (!podeSalvar.value) return
+  if (!podeSalvar.value) return;
 
-  emit('save', {
+  emit("save", {
     pessoas: Number(pessoas.value),
     tipo: tipo.value,
     motivo: motivo.value.trim(),
     data: data.value,
     horaInicio: horaInicio.value,
-    horaFim: horaFim.value
-  })
-}
+    horaFim: horaFim.value,
+  });
+};
 </script>
 
 <template>
@@ -133,32 +133,20 @@ const salvar = () => {
       <div class="date-time-block">
         <div class="date-row">
           <span class="icon"><i class="fa-solid fa-calendar"></i></span>
-          <input
-            v-model="data"
-            type="date"
-            class="input-date"
-          />
+          <input v-model="data" type="date" class="input-date" />
         </div>
 
         <div class="time-row">
           <span class="icon"> <i class="fa-solid fa-clock"></i></span>
-          <input
-            v-model="horaInicio"
-            type="time"
-            class="input-time"
-          />
+          <input v-model="horaInicio" type="time" class="input-time" />
           <span class="time-separator">até</span>
-          <input
-            v-model="horaFim"
-            type="time"
-            class="input-time"
-          />
+          <input v-model="horaFim" type="time" class="input-time" />
         </div>
       </div>
 
       <p class="info-text">
-        Quando uma sala de reunião estiver reservada para você, você receberá
-        um aviso no Slack e também poderá consultar em
+        Quando uma sala de reunião estiver reservada para você, você receberá um
+        aviso no Slack e também poderá consultar em
         <strong>"Minhas reservas".</strong>
       </p>
 

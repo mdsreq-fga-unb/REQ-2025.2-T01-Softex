@@ -103,6 +103,7 @@ export function useAuth() {
       const response = await fetch(`${API_URL}/api/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // IMPORTANTE: Enviar cookies de sessão
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();

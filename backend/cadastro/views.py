@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth import login as django_login
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -177,6 +178,9 @@ def google_callback(request):
             user.set_unusable_password()
             user.save()
         
+        # FAZER LOGIN DE VERDADE - Criar sessão
+        django_login(request, user)
+        
         # Redirecionar para frontend com dados do usuário
         user_data = json.dumps({
             'id': user.id,
@@ -201,6 +205,30 @@ def google_callback(request):
         return redirect(f"{settings.FRONTEND_URL}?error={error_msg}")
 
 
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def check_auth(request):
+    """
+    Endpoint para verificar se o usuário está autenticado
+    GET /api/auth/check/
+    """
+    if request.user.is_authenticated:
+        return Response({
+            'authenticated': True,
+            'user': {
+                'id': request.user.id,
+                'username': request.user.username,
+                'email': request.user.email,
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+                'tipo_funcao': request.user.tipo_funcao,
+            }
+        }, status=status.HTTP_200_OK)
+    return Response({
+        'authenticated': False
+    }, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login_view(request):
@@ -218,6 +246,11 @@ def login_view(request):
     
     if serializer.is_valid():
         user_data = serializer.validated_data
+        user = user_data['user']
+        
+        # FAZER LOGIN DE VERDADE - Criar sessão
+        django_login(request, user)
+        
         return Response({
             'message': 'Login realizado com sucesso!',
             'user': {
