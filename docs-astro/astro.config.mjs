@@ -69,6 +69,10 @@ export default defineConfig({
 							slug: "visao/cronograma",
 						},
 						{
+							label: "Evidências",
+							slug: "visao/evidencias",
+						},
+						{
 							label: "Processo de Engenharia de Requisitos",
 							slug: "visao/engenharia-requisitos",
 						},
