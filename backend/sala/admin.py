@@ -14,10 +14,3 @@ class SalaAdmin(admin.ModelAdmin):
 class SalaDeReuniaoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nome')
     search_fields = ('nome',)
-
-    search_fields = ('nome_sala', '')
-    
-    # Adiciona a descrição completa do tipo no formulário de edição
-    fieldsets = (
-        (None, {'fields': ('nome_sala', 'tipo', 'capacidade', 'descricao', 'planta')}),
-    )

@@ -17,8 +17,10 @@ import NovaPlantaModal from "@/components/modals/administracao/NovaPlantaModal.v
 import ModalSala from "@/components/modals/administracao/ModalSala.vue";
 import EditarUsuario from "@/components/modals/administracao/EditarUsuario.vue";
 import PermissoesModal from "@/components/modals/administracao/PermissoesModal.vue";
-
+import { useFormatTipoFuncao } from "@/composables/useFormatTipoFuncao";
 const { user, logout, authenticatedFetch } = useAuth();
+
+const { formatTipoFuncao } = useFormatTipoFuncao();
 const router = useRouter();
 const route = useRoute();
 
@@ -45,18 +47,30 @@ const search = ref("");
 // -------------------------------------------------------
 // USUÁRIOS
 // -------------------------------------------------------
-type AdminUsuario  = {
-  id: number
-  nome: string
-  email: string
-  funcao: string
-  status: string
-}
+type AdminUsuario = {
+  id: number;
+  nome: string;
+  email: string;
+  funcao: string;
+  status: string;
+};
 
 const usuarios = ref<AdminUsuario[]>([
-  { id: 1, nome: 'Ana Claudia', email: 'ana@softex.br', funcao: 'TI', status: 'Ativo' },
-  { id: 2, nome: 'Ana Claudia 2', email: 'ana2@softex.br', funcao: 'Marketing', status: 'Ativo' }
-])
+  {
+    id: 1,
+    nome: "Ana Claudia",
+    email: "ana@softex.br",
+    funcao: "TI",
+    status: "Ativo",
+  },
+  {
+    id: 2,
+    nome: "Ana Claudia 2",
+    email: "ana2@softex.br",
+    funcao: "Marketing",
+    status: "Ativo",
+  },
+]);
 
 const filteredUsuarios = computed(() => {
   return usuarios.value.filter(
@@ -82,9 +96,7 @@ const abrirModalNovoUsuario = () => {
   showNovoUsuarioModal.value = true;
 };
 
-const handleSalvarUsuario = (
-  novo: Omit<AdminUsuario, 'id' | 'status'>
-) => {
+const handleSalvarUsuario = (novo: Omit<AdminUsuario, "id" | "status">) => {
   const novoId = usuarios.value.length
     ? Math.max(...usuarios.value.map((u) => u.id)) + 1
     : 1;
@@ -151,7 +163,6 @@ const getAuthHeaders = (): Record<string, string> => {
   // retorna um objeto vazio, mas ainda do tipo Record<string, string>
   return {};
 };
-
 
 const handleNovaPlantaSalva = async (payload: {
   nome: string;
@@ -276,12 +287,7 @@ const carregarSalas = async () => {
   try {
     console.log("📥 Carregando salas de reunião da API...");
 
-    const resp = await fetch(`${API_URL}/api/salas-reuniao/`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
-    });
+    const resp = await authenticatedFetch(`${API_URL}/api/salas-reuniao/`);
 
     if (!resp.ok) {
       const text = await resp.text();
@@ -314,14 +320,14 @@ const handleSalvarSala = async ({ nome }: { nome: string }) => {
   try {
     console.log("📨 Criando sala de reunião...", { nome });
 
-    const resp = await fetch(`${API_URL}/api/salas-reuniao/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
-      body: JSON.stringify({ nome }),
-    });
+      const resp = await authenticatedFetch(`${API_URL}/api/salas-reuniao/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nome }),
+      });
+
 
     const data = await resp.json();
 
@@ -348,12 +354,10 @@ const handleExcluirSala = async (salaId: number) => {
   try {
     console.log("🗑 Excluindo sala de reunião id=", salaId);
 
-    const resp = await fetch(`${API_URL}/api/salas-reuniao/${salaId}/`, {
+    const resp = await authenticatedFetch(`${API_URL}/api/salas-reuniao/${salaId}/`, {
       method: "DELETE",
-      headers: {
-        ...getAuthHeaders(),
-      },
     });
+
 
     if (!resp.ok && resp.status !== 204) {
       const text = await resp.text();
@@ -371,16 +375,16 @@ const handleExcluirSala = async (salaId: number) => {
 // -------------------------------------------------------
 // EDIÇÃO DE USUÁRIO
 // -------------------------------------------------------
-const showEditarUsuarioModal = ref(false)
-const usuarioSelecionado = ref<AdminUsuario | null>(null)
+const showEditarUsuarioModal = ref(false);
+const usuarioSelecionado = ref<AdminUsuario | null>(null);
 
 const abrirEditarUsuario = (usuario: AdminUsuario) => {
-  usuarioSelecionado.value = { ...usuario }
-  showEditarUsuarioModal.value = true
-}
+  usuarioSelecionado.value = { ...usuario };
+  showEditarUsuarioModal.value = true;
+};
 
 const handleSalvarUsuarioEditado = (atualizado: AdminUsuario) => {
-  const idx = usuarios.value.findIndex(u => u.id === atualizado.id)
+  const idx = usuarios.value.findIndex((u) => u.id === atualizado.id);
 
   if (idx !== -1) {
     usuarios.value[idx] = { ...usuarios.value[idx], ...atualizado };
@@ -448,7 +452,6 @@ const handleSalvarPermissoes = (novos: PerfilPermissao[]) => {
 };
 </script>
 
-
 <template>
   <div class="admin-container min-h-screen">
     <!-- Navbar -->
@@ -479,7 +482,9 @@ const handleSalvarPermissoes = (novos: PerfilPermissao[]) => {
             <span class="navbar-user-name">{{
               user ? `${user.first_name} ${user.last_name}` : "Usuário"
             }}</span>
-            <span class="user-role">Administrador</span>
+            <span class="user-role">{{
+              formatTipoFuncao(user?.tipo_funcao)
+            }}</span>
           </div>
           <div class="user-avatar">
             {{ userInitials }}
@@ -525,6 +530,7 @@ const handleSalvarPermissoes = (novos: PerfilPermissao[]) => {
           <span>Minhas Reservas</span>
         </router-link>
         <router-link
+          v-if="user?.tipo_funcao === 'Administrativo'"
           to="/administracao"
           class="nav-link"
           :class="{ active: route.path === '/administracao' }"

@@ -279,4 +279,17 @@ def login_view(request):
             }
         }, status=status.HTTP_200_OK)
     
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Retornar erros de validação em formato mais claro
+    errors = serializer.errors
+    # Se houver erro de validação não relacionado a campos específicos, usar non_field_errors
+    if 'non_field_errors' not in errors and any(isinstance(v, list) and len(v) > 0 for v in errors.values()):
+        # Pegar o primeiro erro encontrado
+        first_error = None
+        for field, field_errors in errors.items():
+            if isinstance(field_errors, list) and len(field_errors) > 0:
+                first_error = field_errors[0]
+                break
+        if first_error:
+            errors = {'non_field_errors': [first_error]}
+    
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)

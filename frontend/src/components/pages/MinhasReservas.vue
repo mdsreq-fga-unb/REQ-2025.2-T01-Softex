@@ -1,147 +1,327 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { 
-  Home, 
-  LogOut, 
-  Gauge, 
-  MapPin, 
-  Sofa, 
-  Calendar, 
-  Settings
-} from 'lucide-vue-next'
-import { useAuth } from '@/composables/useAuth'
-import CadeiraModal from '@/components/modals/reservas/Cadeira.vue'
-import SalaReuniaoModal from '@/components/modals/reservas/SalaReuniao.vue'
+import { ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import {
+  Home,
+  LogOut,
+  Gauge,
+  MapPin,
+  Sofa,
+  Calendar,
+  Settings,
+} from "lucide-vue-next";
+import { useAuth } from "@/composables/useAuth";
+import { useFormatTipoFuncao } from "@/composables/useFormatTipoFuncao";
+import { useErrorLogger } from "@/composables/useErrorLogger";
+import CadeiraModal from "@/components/modals/reservas/Cadeira.vue";
+import SalaReuniaoModal from "@/components/modals/reservas/SalaReuniao.vue";
 
-const { user, logout } = useAuth()
-const router = useRouter()
-const route = useRoute()
+const { user, logout, authenticatedFetch } = useAuth();
+const { formatTipoFuncao } = useFormatTipoFuncao();
+const { logError } = useErrorLogger();
+const router = useRouter();
+const route = useRoute();
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const userInitials = computed(() => {
-  if (!user.value) return 'U'
-  const firstName = user.value.first_name || ''
-  const lastName = user.value.last_name || ''
+  if (!user.value) return "U";
+  const firstName = user.value.first_name || "";
+  const lastName = user.value.last_name || "";
   if (firstName && lastName) {
-    return `${firstName[0]}${lastName[0]}`.toUpperCase()
+    return `${firstName[0]}${lastName[0]}`.toUpperCase();
   }
   if (firstName) {
-    return firstName.substring(0, 2).toUpperCase()
+    return firstName.substring(0, 2).toUpperCase();
   }
-  return 'U'
-})
+  return "U";
+});
 
 const handleLogout = () => {
-  logout()
-  router.push('/login')
-}
+  logout();
+  router.push("/login");
+};
 
-type ReservaStatus = 'andamento' | 'concluido'
-type ResultadoSala = 'aprovado' | 'pendente' | 'negado'
-type ResultadoEstacao = 'aprovado' | 'pendente'
+type ReservaStatus = "andamento" | "concluido";
+type ResultadoSala = "aprovado" | "pendente" | "negado";
+type ResultadoEstacao = "aprovado" | "pendente";
 
 type ReservaBase = {
-  id: number
-  titulo: string
-  descricao: string
-  status: ReservaStatus    
-  dataInicio: string
-  dataFim: string
-  horaInicio?: string
-  horaFim?: string
-}
-
+  id: number;
+  titulo: string;
+  descricao: string;
+  status: ReservaStatus;
+  dataInicio: string;
+  dataFim: string;
+  horaInicio?: string;
+  horaFim?: string;
+};
 
 type ReservaSala = ReservaBase & {
-  tipo: 'sala'
-  resultado: ResultadoSala     // sala pode ser negada
-}
+  tipo: "sala";
+  resultado: ResultadoSala; // sala pode ser negada
+};
 
 type ReservaEstacao = ReservaBase & {
-  tipo: 'estacao'
-  resultado: ResultadoEstacao  // estação NÃO pode ser negada
-}
+  tipo: "estacao";
+  resultado: ResultadoEstacao; // estação NÃO pode ser negada
+};
 
-type Reserva = ReservaSala | ReservaEstacao
+type Reserva = ReservaSala | ReservaEstacao;
 
-const activeTab = ref<ReservaStatus>('andamento')
+const activeTab = ref<ReservaStatus>("andamento");
+const reservas = ref<Reserva[]>([]);
+const isLoading = ref(false);
 
-const reservas = ref<Reserva[]>([
-  {
-    id: 1,
-    titulo: 'Sala de reunião — Andar 3',
-    descricao: 'Reunião com equipe de produto',
-    tipo: 'sala',
-    status: 'andamento',
-    resultado: 'aprovado',
-    dataInicio: '10/03/2026',
-    dataFim: '10/03/2026'
-  },
-  {
-    id: 2,
-    titulo: 'Estação 13 — Coworking',
-    descricao: 'Reserva de estação de trabalho',
-    tipo: 'estacao',
-    status: 'andamento',
-    resultado: 'pendente', 
-    dataInicio: '11/03/2026',
-    dataFim: '13/03/2026',
-    horaInicio: '09:00',
-    horaFim: '18:00'
-  },
-  {
-    id: 3,
-    titulo: 'Sala de reunião — Andar 1',
-    descricao: 'Call com cliente externo',
-    tipo: 'sala',
-    status: 'concluido',
-    resultado: 'aprovado',
-    dataInicio: '02/03/2026',
-    dataFim: '02/03/2026'
-  },
-  {
-    id: 4,
-    titulo: 'Estação 05 — Coworking',
-    descricao: 'Trabalho presencial',
-    tipo: 'estacao',
-    status: 'concluido',
-    resultado: 'aprovado',
-    dataInicio: '25/02/2026',
-    dataFim: '26/02/2026'
+// Função para formatar data de YYYY-MM-DD para DD/MM/YYYY
+const formatarData = (data: string | undefined | null): string => {
+  if (!data) return "";
+  try {
+    const dataPart = data.split("T")[0];
+    if (!dataPart) return data;
+    const [ano, mes, dia] = dataPart.split("-");
+    if (!ano || !mes || !dia) return data;
+    return `${dia}/${mes}/${ano}`;
+  } catch {
+    return data || "";
   }
-])
+};
+
+// Função para formatar hora de HH:MM:SS para HH:MM
+const formatarHora = (hora: string | undefined | null): string => {
+  if (!hora) return "";
+  return hora.substring(0, 5); // Pega apenas HH:MM
+};
+
+// Função para determinar se a reserva está em andamento ou concluída
+const determinarStatus = (
+  dataFim: string | undefined | null,
+  horaFim?: string | undefined | null
+): ReservaStatus => {
+  if (!dataFim) return "andamento";
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  try {
+    const dataPart = dataFim.split("T")[0];
+    if (!dataPart) return "andamento";
+    const [ano, mes, dia] = dataPart.split("-");
+    if (!ano || !mes || !dia) return "andamento";
+
+    const dataFimDate = new Date(
+      parseInt(ano),
+      parseInt(mes) - 1,
+      parseInt(dia)
+    );
+    dataFimDate.setHours(0, 0, 0, 0);
+
+    // Se a data de fim já passou, está concluída
+    if (dataFimDate < hoje) {
+      return "concluido";
+    }
+
+    // Se for hoje e tiver hora de fim, verificar se já passou
+    if (dataFimDate.getTime() === hoje.getTime() && horaFim) {
+      const partes = horaFim.split(":");
+      if (
+        partes.length >= 2 &&
+        partes[0] !== undefined &&
+        partes[1] !== undefined
+      ) {
+        const hora = parseInt(partes[0]);
+        const minuto = parseInt(partes[1]);
+        if (!isNaN(hora) && !isNaN(minuto)) {
+          const agora = new Date();
+          const horaFimDate = new Date();
+          horaFimDate.setHours(hora, minuto, 0, 0);
+
+          if (agora > horaFimDate) {
+            return "concluido";
+          }
+        }
+      }
+    }
+
+    return "andamento";
+  } catch {
+    return "andamento";
+  }
+};
+
+// Função para mapear status do backend para resultado do frontend
+const mapearResultado = (
+  status: string,
+  tipo: "sala" | "estacao"
+): ResultadoSala | ResultadoEstacao => {
+  if (status === "confirmada") {
+    return "aprovado";
+  }
+  if (status === "cancelada") {
+    return tipo === "sala" ? "negado" : "aprovado"; // Estação não pode ser negada
+  }
+  return "pendente";
+};
+
+// Carregar reservas do backend
+const carregarReservas = async () => {
+  if (!user.value) {
+    console.log("⚠️ Usuário não autenticado, não é possível carregar reservas");
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    // Buscar reservas de salas
+    const responseSalas = await authenticatedFetch(`${API_URL}/api/reservas/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Buscar reservas de cadeiras
+    const responseCadeiras = await authenticatedFetch(
+      `${API_URL}/api/reservas/cadeira/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const reservasSalas: Reserva[] = [];
+    const reservasCadeiras: Reserva[] = [];
+
+    if (responseSalas.ok) {
+      const salas = await responseSalas.json();
+      if (Array.isArray(salas)) {
+        reservasSalas.push(
+          ...salas.map((r: any) => {
+            const dataFim = r.data_fim
+              ? typeof r.data_fim === "string"
+                ? r.data_fim.split("T")[0]
+                : r.data_fim
+              : undefined;
+            const dataInicio = r.data_inicio
+              ? typeof r.data_inicio === "string"
+                ? r.data_inicio.split("T")[0]
+                : r.data_inicio
+              : undefined;
+
+            return {
+              id: r.id_reserva || 0,
+              titulo: `${r.sala_nome || "Sala"} — ${r.sala_id || ""}`,
+              descricao: r.descricao || "Reserva de sala de reunião",
+              tipo: "sala" as const,
+              status: determinarStatus(dataFim || undefined),
+              resultado: mapearResultado(r.status || "confirmada", "sala"),
+              dataInicio: formatarData(dataInicio || undefined),
+              dataFim: formatarData(dataFim || undefined),
+            } as ReservaSala;
+          })
+        );
+      }
+    }
+
+    if (responseCadeiras.ok) {
+      const cadeiras = await responseCadeiras.json();
+      if (Array.isArray(cadeiras)) {
+        reservasCadeiras.push(
+          ...cadeiras.map((r: any) => {
+            const dataFim = r.data_fim || undefined;
+            const dataInicio = r.data_inicio || undefined;
+
+            return {
+              id: r.id_reserva_cadeira || 0,
+              titulo: `Estação ${r.cadeira_id || ""} — Coworking`,
+              descricao: "Reserva de estação de trabalho",
+              tipo: "estacao" as const,
+              status: determinarStatus(
+                dataFim || undefined,
+                r.hora_fim || undefined
+              ),
+              resultado: mapearResultado(r.status || "confirmada", "estacao"),
+              dataInicio: formatarData(dataInicio || undefined),
+              dataFim: formatarData(dataFim || undefined),
+              horaInicio: formatarHora(r.hora_inicio),
+              horaFim: formatarHora(r.hora_fim),
+            } as ReservaEstacao;
+          })
+        );
+      }
+    }
+
+    // Combinar e ordenar por data de fim (mais recentes primeiro)
+    reservas.value = [...reservasSalas, ...reservasCadeiras].sort((a, b) => {
+      try {
+        // Ordenar por data de fim (mais recentes primeiro)
+        const partesA = a.dataFim.split("/");
+        const partesB = b.dataFim.split("/");
+
+        if (partesA.length === 3 && partesB.length === 3) {
+          const dataA = new Date(`${partesA[2]}-${partesA[1]}-${partesA[0]}`);
+          const dataB = new Date(`${partesB[2]}-${partesB[1]}-${partesB[0]}`);
+          return dataB.getTime() - dataA.getTime();
+        }
+        return 0;
+      } catch {
+        return 0;
+      }
+    });
+
+    console.log("✅ Reservas carregadas:", reservas.value.length);
+  } catch (e) {
+    console.error("❌ Erro ao carregar reservas:", e);
+    logError(
+      "Erro ao carregar reservas",
+      { error: e },
+      "MinhasReservas.carregarReservas",
+      e instanceof Error ? e : new Error(String(e))
+    );
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  carregarReservas();
+});
 
 const reservasFiltradas = computed(() =>
-  reservas.value.filter(r => r.status === activeTab.value)
-)
+  reservas.value.filter((r) => r.status === activeTab.value)
+);
 
 const selecionarTab = (tab: ReservaStatus) => {
-  activeTab.value = tab
-}
+  activeTab.value = tab;
+};
 
-const showCadeiraModal = ref(false)
-const showSalaModal = ref(false)
+const showCadeiraModal = ref(false);
+const showSalaModal = ref(false);
 
-const reservaCadeiraSelecionada = ref<any | null>(null)
-const reservaSalaSelecionada = ref<any | null>(null)
+const reservaCadeiraSelecionada = ref<any | null>(null);
+const reservaSalaSelecionada = ref<any | null>(null);
 
 const handleClickReserva = (reserva: Reserva) => {
-  console.log('Reserva clicada:', reserva)
+  console.log("Reserva clicada:", reserva);
 
-  if (reserva.tipo === 'estacao') {
-    reservaCadeiraSelecionada.value = reserva
-    showCadeiraModal.value = true
+  if (reserva.tipo === "estacao") {
+    reservaCadeiraSelecionada.value = reserva;
+    showCadeiraModal.value = true;
   } else {
-    reservaSalaSelecionada.value = reserva
-    showSalaModal.value = true
+    reservaSalaSelecionada.value = reserva;
+    showSalaModal.value = true;
   }
-}
+};
 
-const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => {
-  if (resultado === 'aprovado') return 'Aprovada'
-  if (resultado === 'pendente') return 'Pendente'
-  return 'Negada'
-}
+const labelResultado = (
+  resultado: ResultadoSala | ResultadoEstacao
+): string => {
+  if (resultado === "aprovado") return "Aprovada";
+  if (resultado === "pendente") return "Pendente";
+  return "Negada";
+};
 </script>
 
 <template>
@@ -152,9 +332,9 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
       <div class="navbar-header">
         <div class="header-left">
           <div class="logo-container">
-            <img 
-              src="../../assets/LOGO_SOFTEX_VERTICAL_BRANCO_OFFLINE.png" 
-              alt="Softex" 
+            <img
+              src="../../assets/LOGO_SOFTEX_VERTICAL_BRANCO_OFFLINE.png"
+              alt="Softex"
               class="logo-image"
             />
             <div class="logo-text">
@@ -165,14 +345,18 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
             </div>
           </div>
         </div>
-        
+
         <div class="header-right">
           <router-link to="/dashboard" class="header-icon-link">
             <Home class="header-icon" />
           </router-link>
           <div class="user-info">
-            <span class="navbar-user-name">{{ user ? `${user.first_name} ${user.last_name}` : 'Usuário' }}</span>
-            <span class="user-role">Administrador</span>
+            <span class="navbar-user-name">{{
+              user ? `${user.first_name} ${user.last_name}` : "Usuário"
+            }}</span>
+            <span class="user-role">{{
+              formatTipoFuncao(user?.tipo_funcao)
+            }}</span>
           </div>
           <div class="user-avatar">
             {{ userInitials }}
@@ -182,26 +366,47 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
           </button>
         </div>
       </div>
-      
+
       <!-- Bottom Section - Navigation Links -->
       <div class="navbar-nav">
-        <router-link to="/dashboard" class="nav-link" :class="{ active: route.path === '/dashboard' }">
+        <router-link
+          to="/dashboard"
+          class="nav-link"
+          :class="{ active: route.path === '/dashboard' }"
+        >
           <Gauge class="nav-icon" />
           <span>Dashboard</span>
         </router-link>
-        <router-link to="/coworking" class="nav-link" :class="{ active: route.path === '/coworking' }">
+        <router-link
+          to="/coworking"
+          class="nav-link"
+          :class="{ active: route.path === '/coworking' }"
+        >
           <MapPin class="nav-icon" />
           <span>Coworking</span>
         </router-link>
-        <router-link to="/salas" class="nav-link" :class="{ active: route.path === '/salas' }">
+        <router-link
+          to="/salas"
+          class="nav-link"
+          :class="{ active: route.path === '/salas' }"
+        >
           <Sofa class="nav-icon" />
           <span>Salas de reunião</span>
         </router-link>
-        <router-link to="/reservas" class="nav-link" :class="{ active: route.path === '/reservas' }">
+        <router-link
+          to="/reservas"
+          class="nav-link"
+          :class="{ active: route.path === '/reservas' }"
+        >
           <Calendar class="nav-icon" />
           <span>Minhas Reservas</span>
         </router-link>
-        <router-link to="/administracao" class="nav-link" :class="{ active: route.path === '/administracao' }">
+        <router-link
+          v-if="user?.tipo_funcao === 'Administrativo'"
+          to="/administracao"
+          class="nav-link"
+          :class="{ active: route.path === '/administracao' }"
+        >
           <Settings class="nav-icon" />
           <span>Administração</span>
         </router-link>
@@ -211,75 +416,80 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
     <div class="dashboard-content">
       <div class="dashboard-grid">
         <div class="tabs-row">
-        <button
-          type="button"
-          class="tab-btn"
-          :class="{ 'tab-active': activeTab === 'andamento' }"
-          @click="selecionarTab('andamento')"
-        >
-          Em andamento
-        </button>
-
-        <span class="tab-separator">/</span>
-
-        <button
-          type="button"
-          class="tab-btn"
-          :class="{ 'tab-active': activeTab === 'concluido' }"
-          @click="selecionarTab('concluido')"
-        >
-          Concluído
-        </button>
-      </div>
-
-      <div class="card">
-        <h2 class="card-title">Meu histórico</h2>
-
-        <div v-if="reservasFiltradas.length === 0" class="empty-state">
-          <p>
-            Você ainda não possui reservas
-            <span v-if="activeTab === 'andamento'">em andamento.</span>
-            <span v-else>concluídas.</span>
-          </p>
-          <p class="empty-hint">
-            Assim que você fizer uma reserva de sala ou estação, ela aparecerá aqui.
-          </p>
-        </div>
-
-        <div v-else class="lista-reservas">
           <button
-            v-for="reserva in reservasFiltradas"
-            :key="reserva.id"
             type="button"
-            class="reserva-item"
-            @click="handleClickReserva(reserva)"
+            class="tab-btn"
+            :class="{ 'tab-active': activeTab === 'andamento' }"
+            @click="selecionarTab('andamento')"
           >
-            <div class="reserva-main">
-              <p class="reserva-titulo">{{ reserva.titulo }}</p>
-              <p class="reserva-desc">{{ reserva.descricao }}</p>
-            </div>
+            Em andamento
+          </button>
 
-            <div class="reserva-meta">
-              <span
-                class="badge status"
-                :class="{
-                  'status-ok': reserva.resultado === 'aprovado',
-                  'status-wait': reserva.resultado === 'pendente',
-                  'status-denied': reserva.resultado === 'negado'
-                }"
-              >
-                {{ labelResultado(reserva.resultado) }}
-              </span>
+          <span class="tab-separator">/</span>
 
-              <span class="badge tipo">
-                {{ reserva.tipo === 'sala' ? 'Sala de reunião' : 'Estação' }}
-              </span>
-              <span class="badge periodo">
-                {{ reserva.dataInicio }} — {{ reserva.dataFim }}
-              </span>
-            </div>
+          <button
+            type="button"
+            class="tab-btn"
+            :class="{ 'tab-active': activeTab === 'concluido' }"
+            @click="selecionarTab('concluido')"
+          >
+            Concluído
           </button>
         </div>
+
+        <div class="card">
+          <h2 class="card-title">Meu histórico</h2>
+
+          <div v-if="isLoading" class="empty-state">
+            <p>Carregando reservas...</p>
+          </div>
+
+          <div v-else-if="reservasFiltradas.length === 0" class="empty-state">
+            <p>
+              Você ainda não possui reservas
+              <span v-if="activeTab === 'andamento'">em andamento.</span>
+              <span v-else>concluídas.</span>
+            </p>
+            <p class="empty-hint">
+              Assim que você fizer uma reserva de sala ou estação, ela aparecerá
+              aqui.
+            </p>
+          </div>
+
+          <div v-else class="lista-reservas">
+            <button
+              v-for="reserva in reservasFiltradas"
+              :key="reserva.id"
+              type="button"
+              class="reserva-item"
+              @click="handleClickReserva(reserva)"
+            >
+              <div class="reserva-main">
+                <p class="reserva-titulo">{{ reserva.titulo }}</p>
+                <p class="reserva-desc">{{ reserva.descricao }}</p>
+              </div>
+
+              <div class="reserva-meta">
+                <span
+                  class="badge status"
+                  :class="{
+                    'status-ok': reserva.resultado === 'aprovado',
+                    'status-wait': reserva.resultado === 'pendente',
+                    'status-denied': reserva.resultado === 'negado',
+                  }"
+                >
+                  {{ labelResultado(reserva.resultado) }}
+                </span>
+
+                <span class="badge tipo">
+                  {{ reserva.tipo === "sala" ? "Sala de reunião" : "Estação" }}
+                </span>
+                <span class="badge periodo">
+                  {{ reserva.dataInicio }} — {{ reserva.dataFim }}
+                </span>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -295,21 +505,26 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
       :reserva="reservaSalaSelecionada"
       @close="showSalaModal = false"
     />
-
   </div>
 </template>
 
 <style scoped>
 .reservas-container {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #1C2457 0%, #2F2365 40%, #4A2E70 70%, #6C5885 100%);
+  background: linear-gradient(
+    to bottom,
+    #1c2457 0%,
+    #2f2365 40%,
+    #4a2e70 70%,
+    #6c5885 100%
+  );
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
 .navbar {
-  background: #1C2457;
+  background: #1c2457;
   width: 100%;
   z-index: 100;
 }
@@ -404,7 +619,7 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #7C3AED;
+  background: #7c3aed;
   color: white;
   display: flex;
   align-items: center;
@@ -465,7 +680,7 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
 }
 
 .nav-link.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -537,10 +752,11 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
 }
 
 .card-title {
-  text-align: center;
-  font-size: 1rem;
+  text-align: left;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #111827;
 }
 
 .empty-state {
@@ -569,17 +785,20 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
   gap: 1rem;
   width: 100%;
   border: none;
-  border-radius: 999px;
-  background: #e5e7eb;
-  padding: 0.8rem 1.4rem;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
   cursor: pointer;
   text-align: left;
-  transition: box-shadow 0.12s ease, transform 0.1s ease, background 0.12s ease;
+  transition: box-shadow 0.12s ease, transform 0.1s ease, background 0.12s ease,
+    border-color 0.12s ease;
 }
 
 .reserva-item:hover {
-  background: #e5e7eb;
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
+  background: #ffffff;
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
   transform: translateY(-1px);
 }
 
@@ -602,16 +821,18 @@ const labelResultado = (resultado: ResultadoSala | ResultadoEstacao): string => 
 
 .reserva-meta {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.25rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .badge {
-  border-radius: 999px;
-  padding: 0.15rem 0.7rem;
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .badge.tipo {

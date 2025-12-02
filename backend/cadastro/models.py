@@ -21,7 +21,7 @@ class Cadastro(AbstractUser):
         max_length=50,
         choices=FUNCAO_CHOICES,
         blank=False,
-        default='colaborador',  
+        default='administrativo',  
           )
     
     perfil = models.ForeignKey(
