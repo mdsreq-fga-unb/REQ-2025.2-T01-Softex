@@ -1,8 +1,10 @@
-<!-- src/components/modals/ModalSala.vue -->
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import ConfirmarExclusao from '@/components/modals/ConfirmarExclusao.vue'
 
+// -------------------------------------------------------
+// TIPOS
+// -------------------------------------------------------
 type SalaPayload = {
   nome: string
 }
@@ -12,6 +14,9 @@ type SalaItem = {
   nome: string
 }
 
+// -------------------------------------------------------
+// PROPS / EMITS
+// -------------------------------------------------------
 const props = defineProps<{
   open: boolean
   initialName?: string | null
@@ -22,15 +27,19 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'save', payload: SalaPayload): void
-  (e: 'delete', salaId: number): void   // 👈 NOVO evento de exclusão
+  (e: 'delete', salaId: number): void
 }>()
 
+// -------------------------------------------------------
+// ESTADO LOCAL
+// -------------------------------------------------------
 const nome = ref<string>('')
 
 // estado do modal de confirmar exclusão
 const showConfirmDelete = ref(false)
 const salaParaExcluir = ref<SalaItem | null>(null)
 
+// sempre que o modal abrir, resetamos o estado
 watch(
   () => props.open,
   (isOpen) => {
@@ -38,11 +47,15 @@ watch(
       nome.value = props.initialName ?? ''
       showConfirmDelete.value = false
       salaParaExcluir.value = null
+      console.log('[ModalSalaReuniao] Aberto. initialName =', props.initialName)
     }
   },
   { immediate: true }
 )
 
+// -------------------------------------------------------
+// COMPUTED
+// -------------------------------------------------------
 const titulo = computed(() =>
   props.modo === 'editar' ? 'Editar sala' : 'Adicionar sala'
 )
@@ -53,33 +66,58 @@ const botaoTexto = computed(() =>
 
 const nomeEhValido = computed(() => nome.value.trim().length > 0)
 
+// -------------------------------------------------------
+// AÇÕES BÁSICAS
+// -------------------------------------------------------
 const fechar = () => {
+  console.log('[ModalSalaReuniao] Fechar modal')
   emit('close')
 }
 
 const salvar = () => {
-  if (!nomeEhValido.value) return
-  emit('save', { nome: nome.value.trim() })
+  if (!nomeEhValido.value) {
+    console.log('[ModalSalaReuniao] Nome inválido, não emitindo save')
+    return
+  }
+
+  const payload: SalaPayload = { nome: nome.value.trim() }
+  console.log('[ModalSalaReuniao] Emitindo evento "save" com payload:', payload)
+
+  emit('save', payload)
 }
 
-// abrir modal de confirmação
+// -------------------------------------------------------
+// EXCLUSÃO COM CONFIRMAÇÃO
+// -------------------------------------------------------
 const pedirConfirmacaoExclusao = (sala: SalaItem) => {
   salaParaExcluir.value = sala
   showConfirmDelete.value = true
+  console.log('[ModalSalaReuniao] Pedido de exclusão para sala:', sala)
 }
 
 const cancelarExclusao = () => {
+  console.log('[ModalSalaReuniao] Cancelou exclusão')
   showConfirmDelete.value = false
   salaParaExcluir.value = null
 }
 
 const confirmarExclusao = () => {
-  if (!salaParaExcluir.value) return
+  if (!salaParaExcluir.value) {
+    console.log('[ModalSalaReuniao] confirmExclusao chamado sem sala selecionada')
+    return
+  }
+
+  console.log(
+    '[ModalSalaReuniao] Emitindo evento "delete" para salaId:',
+    salaParaExcluir.value.id
+  )
+
   emit('delete', salaParaExcluir.value.id)
   showConfirmDelete.value = false
   salaParaExcluir.value = null
 }
 </script>
+
 
 <template>
   <div v-if="open" class="overlay">
@@ -340,7 +378,7 @@ const confirmarExclusao = () => {
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+  transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.1s.ease;
 }
 
 .btn:disabled {
@@ -365,5 +403,4 @@ const confirmarExclusao = () => {
   opacity: 0.95;
   transform: translateY(-1px);
 }
-
 </style>

@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from planta.views import PlantaViewSet
 from cadastro.views import CadastroViewSet, login_view, google_login_redirect, google_callback, check_auth
-from sala.views import SalaViewSet
+from sala.views import SalaViewSet, SalaDeReuniaoViewSet
 from cadeira.views import CadeiraViewSet
 
 router = DefaultRouter()
@@ -35,6 +35,7 @@ router.register(r'cadastro', CadastroViewSet, basename='cadastro')
 
 # Regista 'api/salas/'
 router.register(r'salas', SalaViewSet, basename='sala')
+router.register(r'salas-reuniao', SalaDeReuniaoViewSet, basename='sala-de-reuniao')
 
 # Regista 'api/cadeiras/'
 router.register(r'cadeiras', CadeiraViewSet, basename='cadeira')

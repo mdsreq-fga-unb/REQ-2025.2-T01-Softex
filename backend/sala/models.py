@@ -29,3 +29,16 @@ class Sala(models.Model):
 
     class Meta:
         db_table = 'sala'
+
+
+class SalaDeReuniao(models.Model):
+    id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        db_table = 'sala_de_reuniao'
+        verbose_name = "Sala de Reunião (simples)"
+        verbose_name_plural = "Salas de Reunião (simples)"
