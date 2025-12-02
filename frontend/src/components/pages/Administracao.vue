@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue"; // 👈 adicionado onMounted
 import { useRouter, useRoute } from "vue-router";
 import {
   Home,
@@ -18,7 +18,7 @@ import ModalSala from "@/components/modals/administracao/ModalSala.vue";
 import EditarUsuario from "@/components/modals/administracao/EditarUsuario.vue";
 import PermissoesModal from "@/components/modals/administracao/PermissoesModal.vue";
 
-const { user, logout } = useAuth();
+const { user, logout, authenticatedFetch } = useAuth();
 const router = useRouter();
 const route = useRoute();
 
@@ -42,6 +42,9 @@ const handleLogout = () => {
 
 const search = ref("");
 
+// -------------------------------------------------------
+// USUÁRIOS
+// -------------------------------------------------------
 type AdminUsuario  = {
   id: number
   nome: string
@@ -95,7 +98,9 @@ const handleSalvarUsuario = (
   console.log("Usuário salvo:", novo);
 };
 
-
+// -------------------------------------------------------
+// SLACK
+// -------------------------------------------------------
 type SlackConfig = {
   reservaEstacao: string;
   alertaDiaReserva: string;
@@ -121,19 +126,32 @@ const handleSalvarSlack = (config: SlackConfig) => {
   console.log("Config Slack salva:", slackConfig.value);
 };
 
+// -------------------------------------------------------
+// PLANTAS
+// -------------------------------------------------------
 const showNovaPlantaModal = ref(false);
-
-const escritorios = ref<string[]>([
-  "Escritório 1º andar",
-  "Escritório 2º andar",
-  "Escritório 3º andar",
-]);
 
 const abrirNovaPlantaModal = () => {
   showNovaPlantaModal.value = true;
 };
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+// se tiver auth com token, usa aqui
+const getAuthHeaders = (): Record<string, string> => {
+  const token =
+    localStorage.getItem("accessToken") ||
+    localStorage.getItem("token") ||
+    localStorage.getItem("authToken");
+
+  if (token) {
+    return { Authorization: `Bearer ${token}` };
+  }
+
+  // retorna um objeto vazio, mas ainda do tipo Record<string, string>
+  return {};
+};
+
 
 const handleNovaPlantaSalva = async (payload: {
   nome: string;
@@ -152,10 +170,8 @@ const handleNovaPlantaSalva = async (payload: {
       console.log("📎 Imagem adicionada:", payload.arquivo.name);
     }
 
-    // Não enviar pontos - o serializer usa lista vazia por padrão quando não fornecido
-
     console.log("📤 Enviando POST para:", `${API_URL}/api/plantas/`);
-    const response = await fetch(`${API_URL}/api/plantas/`, {
+    const response = await authenticatedFetch(`${API_URL}/api/plantas/`, {
       method: "POST",
       body: formData,
     });
@@ -171,9 +187,6 @@ const handleNovaPlantaSalva = async (payload: {
     }
 
     console.log("✅ Planta criada com sucesso:", data);
-    console.log("✅ Planta criada com sucesso! ID: " + data.id_planta);
-
-    // Fechar modal para que possa recarregar as plantas
     showNovaPlantaModal.value = false;
   } catch (error) {
     console.error("❌ Erro ao salvar planta:", error);
@@ -200,13 +213,11 @@ const handleEditSave = async (payload: {
     const formData = new FormData();
     formData.append("nome", payload.nome);
 
-    // Adicionar imagem se fornecida
     if (payload.imagemArquivo) {
       formData.append("mapa_imagem", payload.imagemArquivo);
       console.log("📎 Imagem adicionada:", payload.imagemArquivo.name);
     }
 
-    // Remover 'id' dos pontos, apenas enviar x e y
     const pontosLimpos = payload.pontos.map((p) => ({
       x: p.x,
       y: p.y,
@@ -223,7 +234,7 @@ const handleEditSave = async (payload: {
       temImagem: !!payload.imagemArquivo,
     });
 
-    const response = await fetch(
+    const response = await authenticatedFetch(
       `${API_URL}/api/plantas/${payload.plantaId}/`,
       {
         method: "PUT",
@@ -242,10 +253,6 @@ const handleEditSave = async (payload: {
     }
 
     console.log("✅ Planta atualizada com sucesso!", data);
-    console.log("✅ Planta atualizada com sucesso!");
-
-    // Fechar e reabrir modal para recarregar dados (incluindo imagem)
-    // Isso será feito pelo componente filho automaticamente
   } catch (error) {
     console.error("❌ Erro ao atualizar planta:", error);
     console.error(
@@ -254,32 +261,116 @@ const handleEditSave = async (payload: {
     );
   }
 };
+
+// -------------------------------------------------------
+// SALAS DE REUNIÃO (INTEGRADAS COM BACKEND)
+// -------------------------------------------------------
 const showModalSala = ref(false);
 
 type Sala = { id: number; nome: string };
 
-const salas = ref<Sala[]>([
-  { id: 1, nome: "Sala 1" },
-  { id: 2, nome: "Sala 2" },
-  { id: 3, nome: "Sala 3" },
-]);
+const salas = ref<Sala[]>([]);
+
+// 👉 FALTAVA ISSO: função pra carregar salas do back
+const carregarSalas = async () => {
+  try {
+    console.log("📥 Carregando salas de reunião da API...");
+
+    const resp = await fetch(`${API_URL}/api/salas-reuniao/`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(`Erro ao carregar salas: ${resp.status} - ${text}`);
+    }
+
+    const data = await resp.json();
+    console.log("✅ Salas recebidas:", data);
+
+    salas.value = data.map((s: any) => ({
+      id: s.id,
+      nome: s.nome,
+    }));
+  } catch (e) {
+    console.error("❌ Erro ao carregar salas de reunião:", e);
+  }
+};
+
+// 👉 E aqui o onMounted chamando ela
+onMounted(() => {
+  carregarSalas();
+});
 
 const abrirAdicionarSala = () => {
   showModalSala.value = true;
 };
 
-const handleSalvarSala = ({ nome }: { nome: string }) => {
-  const novoId = salas.value.length
-    ? Math.max(...salas.value.map((s) => s.id)) + 1
-    : 1;
+// 👉 Ajustado para chamar o backend (POST) em vez de só mock
+const handleSalvarSala = async ({ nome }: { nome: string }) => {
+  try {
+    console.log("📨 Criando sala de reunião...", { nome });
 
-  salas.value.push({ id: novoId, nome });
+    const resp = await fetch(`${API_URL}/api/salas-reuniao/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify({ nome }),
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      console.error("❌ Erro ao criar sala:", data);
+      return;
+    }
+
+    console.log("✅ Sala criada com sucesso:", data);
+
+    salas.value.push({
+      id: data.id,
+      nome: data.nome,
+    });
+
+    showModalSala.value = false;
+  } catch (e) {
+    console.error("❌ Erro ao salvar sala:", e);
+  }
 };
 
-const handleExcluirSala = (salaId: number) => {
-  salas.value = salas.value.filter((s) => s.id !== salaId);
+// 👉 Ajustado para DELETE no backend
+const handleExcluirSala = async (salaId: number) => {
+  try {
+    console.log("🗑 Excluindo sala de reunião id=", salaId);
+
+    const resp = await fetch(`${API_URL}/api/salas-reuniao/${salaId}/`, {
+      method: "DELETE",
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
+    if (!resp.ok && resp.status !== 204) {
+      const text = await resp.text();
+      throw new Error(`Erro ao excluir sala: ${resp.status} - ${text}`);
+    }
+
+    console.log("✅ Sala excluída com sucesso");
+
+    salas.value = salas.value.filter((s) => s.id !== salaId);
+  } catch (e) {
+    console.error("❌ Erro ao excluir sala:", e);
+  }
 };
 
+// -------------------------------------------------------
+// EDIÇÃO DE USUÁRIO
+// -------------------------------------------------------
 const showEditarUsuarioModal = ref(false)
 const usuarioSelecionado = ref<AdminUsuario | null>(null)
 
@@ -302,6 +393,9 @@ const handleExcluirUsuario = (id: number) => {
   showEditarUsuarioModal.value = false;
 };
 
+// -------------------------------------------------------
+// PERMISSÕES
+// -------------------------------------------------------
 type PerfilPermissao = {
   id: number;
   nome: string;
@@ -353,6 +447,7 @@ const handleSalvarPermissoes = (novos: PerfilPermissao[]) => {
   console.log("Perfis de permissão atualizados:", novos);
 };
 </script>
+
 
 <template>
   <div class="admin-container min-h-screen">

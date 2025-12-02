@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/composables/useAuth'
 
-const { login, isLoading, error } = useAuth()
+const { login, isLoading, error, setTokens, setUser } = useAuth()
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -46,11 +46,29 @@ onMounted(() => {
   if (urlParams.get('auth') === 'success') {
     const userData = urlParams.get('user')
     const isNewUser = urlParams.get('new_user') === 'true'
+    const tokensEncoded = urlParams.get('tokens')
     
     if (userData) {
       try {
         const user = JSON.parse(userData)
-        localStorage.setItem('user', JSON.stringify(user))
+        
+        // Salvar usuário no estado e localStorage
+        setUser(user)
+        console.log('✅ Usuário salvo no estado e localStorage:', user)
+        
+        // Processar tokens JWT se presentes
+        if (tokensEncoded) {
+          try {
+            const tokensData = JSON.parse(atob(tokensEncoded))
+            if (tokensData.access && tokensData.refresh) {
+              setTokens(tokensData.access, tokensData.refresh)
+              console.log('✅ Tokens JWT salvos')
+            }
+          } catch (e) {
+            console.error('Erro ao processar tokens:', e)
+          }
+        }
+        
         successMessage.value = isNewUser 
           ? 'Conta criada com sucesso!' 
           : 'Login realizado com sucesso!'
