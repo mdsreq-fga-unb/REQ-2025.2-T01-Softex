@@ -242,15 +242,54 @@ SESSION_COOKIE_DOMAIN = None  # None permite cookies para localhost
 # ========================================
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Usar JWT como padrão
+        'rest_framework.authentication.SessionAuthentication',  # Manter para o admin panel
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Permite acesso sem autenticação por padrão
+        'rest_framework.permissions.IsAuthenticated',  # Exige autenticação por padrão
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',  # Para upload de arquivos (multipart/form-data)
+        'rest_framework.parsers.FormParser',  # Para formulários HTML (application/x-www-form-urlencoded)
     ],
+}
+
+# ========================================
+# CONFIGURAÇÕES DO DJANGO REST FRAMEWORK SIMPLE JWT
+# ========================================
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),  # Token de acesso válido por 24 horas
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Token de refresh válido por 7 dias
+    'ROTATE_REFRESH_TOKENS': True,  # Rotacionar refresh token a cada uso
+    'BLACKLIST_AFTER_ROTATION': True,  # Adicionar tokens antigos à blacklist
+    'UPDATE_LAST_LOGIN': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+    
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+    
+    'JTI_CLAIM': 'jti',
+    
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }

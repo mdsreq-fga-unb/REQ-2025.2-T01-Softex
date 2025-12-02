@@ -16,7 +16,7 @@ import plantaImg from "@/assets/planta.png";
 import ModalSalaReuniao from "@/components/modals/coworking/ModalSalaReuniao.vue";
 import ModalCadeira from "@/components/modals/coworking/ModalCadeira.vue";
 
-const { user, logout } = useAuth();
+const { user, logout, authenticatedFetch } = useAuth();
 const { logError, logWarning } = useErrorLogger();
 const router = useRouter();
 const route = useRoute();
@@ -322,12 +322,15 @@ const handleSeatClick = async (id: number) => {
   // Se a cadeira estiver reservada, buscar informações da reserva
   if (seat.status === "reservado" && seat.idCadeira) {
     try {
-      const resp = await fetch(`${API_URL}/api/reservas/cadeira/`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const resp = await authenticatedFetch(
+        `${API_URL}/api/reservas/cadeira/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (resp.ok) {
         const reservas = await resp.json();
@@ -398,12 +401,11 @@ const carregarReservasCadeira = async () => {
     const url = `${API_URL}/api/reservas/cadeira/`;
     console.log("🔗 Carregando reservas de:", url);
 
-    const resp = await fetch(url, {
+    const resp = await authenticatedFetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
     });
 
     console.log("📡 Resposta do servidor:", resp.status, resp.statusText);
@@ -517,28 +519,6 @@ const handleReservaCadeira = async (payload: {
     return;
   }
 
-  // Verificar autenticação no backend antes de fazer a reserva
-  try {
-    const authCheck = await fetch(`${API_URL}/api/auth/check/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-
-    if (!authCheck.ok || !(await authCheck.json()).authenticated) {
-      alert("Sua sessão expirou. Por favor, faça login novamente.");
-      logout();
-      router.push("/login");
-      showCadeiraModal.value = false;
-      return;
-    }
-  } catch (authError) {
-    console.error("❌ Erro ao verificar autenticação:", authError);
-    // Continuar mesmo assim, pode ser um problema temporário
-  }
-
   try {
     const url = `${API_URL}/api/reservas/cadeira/`;
     const payloadData = {
@@ -552,12 +532,11 @@ const handleReservaCadeira = async (payload: {
     console.log("🔗 Criando reserva em:", url);
     console.log("📦 Dados da reserva:", payloadData);
 
-    const response = await fetch(url, {
+    const response = await authenticatedFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
       body: JSON.stringify(payloadData),
     });
 

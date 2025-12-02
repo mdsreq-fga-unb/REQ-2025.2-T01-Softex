@@ -14,12 +14,58 @@ export interface User {
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const user = ref<User | null>(null);
+const accessToken = ref<string | null>(null);
+const refreshToken = ref<string | null>(null);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
+const STORAGE_USER = "user";
+const STORAGE_ACCESS_TOKEN = "access_token";
+const STORAGE_REFRESH_TOKEN = "refresh_token";
+
+const getAuthHeader = (): string | null => {
+  if (!accessToken.value) {
+    console.warn("⚠️ Token de acesso não encontrado no localStorage");
+    return null;
+  }
+  return `Bearer ${accessToken.value}`;
+};
+
+let refreshAccessToken: () => Promise<boolean>; // Declarar antes de authenticatedFetch
+
+const authenticatedFetch = async (
+  url: string,
+  options: RequestInit = {}
+): Promise<Response> => {
+  const headers = new Headers(options.headers);
+  const authHeader = getAuthHeader();
+  if (authHeader) {
+    headers.set("Authorization", authHeader);
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  if (response.status === 401 && refreshToken.value) {
+    const refreshed = await refreshAccessToken();
+    if (refreshed) {
+      headers.set("Authorization", `Bearer ${accessToken.value}`);
+      return fetch(url, {
+        ...options,
+        headers,
+      });
+    }
+  }
+
+  return response;
+};
+
 const loadUserFromStorage = () => {
   const { logError } = useErrorLogger();
-  const storedUser = localStorage.getItem("user");
+
+  const storedUser = localStorage.getItem(STORAGE_USER);
   if (storedUser) {
     try {
       user.value = JSON.parse(storedUser);
@@ -30,8 +76,23 @@ const loadUserFromStorage = () => {
         "useAuth.loadUserFromStorage",
         e instanceof Error ? e : new Error(String(e))
       );
-      localStorage.removeItem("user");
+      localStorage.removeItem(STORAGE_USER);
     }
+  }
+
+  accessToken.value = localStorage.getItem(STORAGE_ACCESS_TOKEN);
+  refreshToken.value = localStorage.getItem(STORAGE_REFRESH_TOKEN);
+
+  if (accessToken.value) {
+    console.log("✅ Token de acesso carregado do localStorage");
+  } else {
+    console.warn("⚠️ Token de acesso não encontrado no localStorage");
+  }
+
+  if (refreshToken.value) {
+    console.log("✅ Token de refresh carregado do localStorage");
+  } else {
+    console.warn("⚠️ Token de refresh não encontrado no localStorage");
   }
 };
 
@@ -40,6 +101,52 @@ loadUserFromStorage();
 export function useAuth() {
   const router = useRouter();
   const isAuthenticated = computed(() => user.value !== null);
+
+  const logout = () => {
+    user.value = null;
+    accessToken.value = null;
+    refreshToken.value = null;
+    error.value = null;
+    localStorage.removeItem(STORAGE_USER);
+    localStorage.removeItem(STORAGE_ACCESS_TOKEN);
+    localStorage.removeItem(STORAGE_REFRESH_TOKEN);
+    router.push("/login");
+  };
+
+  refreshAccessToken = async (): Promise<boolean> => {
+    if (!refreshToken.value) {
+      logout(); // Se não há refresh token, desloga
+      return false;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refreshToken.value }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        accessToken.value = data.access;
+        localStorage.setItem(STORAGE_ACCESS_TOKEN, data.access);
+        return true;
+      }
+    } catch (e) {
+      console.error("Erro ao refresh token:", e);
+    }
+
+    logout();
+    return false;
+  };
+
+  const setTokens = (access: string, refresh: string) => {
+    accessToken.value = access;
+    refreshToken.value = refresh;
+    localStorage.setItem(STORAGE_ACCESS_TOKEN, access);
+    localStorage.setItem(STORAGE_REFRESH_TOKEN, refresh);
+    console.log("✅ Tokens JWT salvos no localStorage");
+  };
 
   /**
    * Login via Google SSO
@@ -70,9 +177,9 @@ export function useAuth() {
         throw new Error(errorMsg);
       }
 
-      // Salvar usuário
       user.value = data.user;
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem(STORAGE_USER, JSON.stringify(data.user));
+      setTokens(data.access, data.refresh); // Salvar tokens JWT
       router.push("/dashboard");
 
       return { success: true, isNewUser: data.is_new_user };
@@ -103,13 +210,12 @@ export function useAuth() {
       const response = await fetch(`${API_URL}/api/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // IMPORTANTE: Enviar cookies de sessão
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
       if (!response.ok) {
         const errorMsg =
-          data.error ||
+          data.detail ||
           data.non_field_errors?.[0] ||
           "Email ou senha incorretos";
         logError(
@@ -120,18 +226,9 @@ export function useAuth() {
         throw new Error(errorMsg);
       }
 
-      // Verificar se usuário foi retornado
-      if (!data.user) {
-        logError(
-          "Usuário não encontrado na resposta do login",
-          { data },
-          "useAuth.login"
-        );
-        throw new Error("Usuário não encontrado");
-      }
-
       user.value = data.user;
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem(STORAGE_USER, JSON.stringify(data.user));
+      setTokens(data.access, data.refresh);
       router.push("/dashboard");
       return true;
     } catch (err) {
@@ -148,13 +245,6 @@ export function useAuth() {
     } finally {
       isLoading.value = false;
     }
-  };
-
-  const logout = () => {
-    user.value = null;
-    error.value = null;
-    localStorage.removeItem("user");
-    router.push("/login");
   };
 
   const register = async (userData: {
@@ -219,5 +309,8 @@ export function useAuth() {
     googleLogin,
     logout,
     register,
+    getAuthHeader,
+    authenticatedFetch,
+    setTokens,
   };
 }

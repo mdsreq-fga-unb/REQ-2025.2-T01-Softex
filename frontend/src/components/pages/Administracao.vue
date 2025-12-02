@@ -18,7 +18,7 @@ import ModalSala from "@/components/modals/administracao/ModalSala.vue";
 import EditarUsuario from "@/components/modals/administracao/EditarUsuario.vue";
 import PermissoesModal from "@/components/modals/administracao/PermissoesModal.vue";
 
-const { user, logout } = useAuth();
+const { user, logout, authenticatedFetch } = useAuth();
 const router = useRouter();
 const route = useRoute();
 
@@ -171,7 +171,7 @@ const handleNovaPlantaSalva = async (payload: {
     }
 
     console.log("📤 Enviando POST para:", `${API_URL}/api/plantas/`);
-    const response = await fetch(`${API_URL}/api/plantas/`, {
+    const response = await authenticatedFetch(`${API_URL}/api/plantas/`, {
       method: "POST",
       body: formData,
     });
@@ -234,7 +234,7 @@ const handleEditSave = async (payload: {
       temImagem: !!payload.imagemArquivo,
     });
 
-    const response = await fetch(
+    const response = await authenticatedFetch(
       `${API_URL}/api/plantas/${payload.plantaId}/`,
       {
         method: "PUT",

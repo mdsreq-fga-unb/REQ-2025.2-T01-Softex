@@ -4,11 +4,13 @@ from django.contrib.auth import login as django_login
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from google_auth_oauthlib.flow import Flow
 from django.conf import settings
 import json
+import base64
 from .models import Cadastro
 from .serializers import CadastroSerializer, LoginSerializer
 
@@ -178,10 +180,12 @@ def google_callback(request):
             user.set_unusable_password()
             user.save()
         
-        # FAZER LOGIN DE VERDADE - Criar sessão
-        django_login(request, user)
+        # Gerar tokens JWT
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
         
-        # Redirecionar para frontend com dados do usuário
+        # Redirecionar para frontend com dados do usuário e tokens
         user_data = json.dumps({
             'id': user.id,
             'username': user.username,
@@ -191,8 +195,15 @@ def google_callback(request):
             'tipo_funcao': user.tipo_funcao,
         })
         
-        # Redirecionar para frontend com sucesso
-        return redirect(f"{settings.FRONTEND_URL}?auth=success&user={user_data}&new_user={created}")
+        # Codificar tokens para URL (base64 seguro)
+        tokens_data = json.dumps({
+            'access': access_token,
+            'refresh': refresh_token,
+        })
+        tokens_encoded = base64.urlsafe_b64encode(tokens_data.encode()).decode()
+        
+        # Redirecionar para frontend com sucesso, tokens e dados do usuário
+        return redirect(f"{settings.FRONTEND_URL}?auth=success&user={user_data}&tokens={tokens_encoded}&new_user={created}")
         
     except Exception as e:
         # Log do erro completo
@@ -210,6 +221,7 @@ def google_callback(request):
 def check_auth(request):
     """
     Endpoint para verificar se o usuário está autenticado
+    Suporta tanto JWT quanto sessão
     GET /api/auth/check/
     """
     if request.user.is_authenticated:
@@ -248,11 +260,15 @@ def login_view(request):
         user_data = serializer.validated_data
         user = user_data['user']
         
-        # FAZER LOGIN DE VERDADE - Criar sessão
-        django_login(request, user)
+        # Gerar tokens JWT
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
         
         return Response({
             'message': 'Login realizado com sucesso!',
+            'access': access_token,
+            'refresh': refresh_token,
             'user': {
                 'id': user_data['id'],
                 'username': user_data['username'],
