@@ -60,10 +60,21 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # CORS - deve vir antes do CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'core.middleware.DisableCSRFForAPI',  # Desabilitar CSRF para APIs (antes do CsrfViewMiddleware)
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Desabilitar CSRF para APIs REST (o DRF já faz isso, mas garantindo)
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8080",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -213,3 +224,33 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' if DEBUG else '0'
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 SITE_ID = 1
+
+# ========================================
+# CONFIGURAÇÕES DE SESSÃO E COOKIES
+# ========================================
+# Em desenvolvimento, usar 'Lax' para permitir cookies em requisições do mesmo site
+# Em produção com HTTPS, usar 'None' e Secure=True para cross-site
+SESSION_COOKIE_SAMESITE = 'Lax'  # Lax permite cookies em requisições do mesmo site
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False  # True em produção com HTTPS
+SESSION_COOKIE_AGE = 86400  # 24 horas
+SESSION_SAVE_EVERY_REQUEST = True  # Renovar sessão a cada requisição
+SESSION_COOKIE_DOMAIN = None  # None permite cookies para localhost
+
+# ========================================
+# CONFIGURAÇÕES DO DJANGO REST FRAMEWORK
+# ========================================
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Permite acesso sem autenticação por padrão
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+}

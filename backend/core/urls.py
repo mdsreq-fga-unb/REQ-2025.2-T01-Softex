@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 from rest_framework.routers import DefaultRouter
 from planta.views import PlantaViewSet
-from cadastro.views import CadastroViewSet, login_view, google_login_redirect, google_callback
+from cadastro.views import CadastroViewSet, login_view, google_login_redirect, google_callback, check_auth
 from sala.views import SalaViewSet
 from cadeira.views import CadeiraViewSet
 
@@ -42,8 +42,10 @@ router.register(r'cadeiras', CadeiraViewSet, basename='cadeira')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/reservas/', include('reserva.urls')),  # Rotas de reserva
     path('api/auth/google/login/', google_login_redirect, name='google-login-redirect'),  # Inicia OAuth2
     path('api/auth/google/callback/', google_callback, name='google-callback'),  # Callback OAuth2
+    path('api/auth/check/', check_auth, name='check-auth'),  # Verificar autenticação
     path('api/login/', login_view, name='login'),  # Login tradicional (backup)
 ]
 

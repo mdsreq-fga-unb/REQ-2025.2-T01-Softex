@@ -57,6 +57,27 @@ onMounted(() => {
         
         console.log('✅ Login bem-sucedido!', user)
         
+        // Verificar se a sessão está sendo mantida no backend
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+        fetch(`${API_URL}/api/auth/check/`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.authenticated) {
+              console.log('✅ Sessão confirmada no backend:', data.user)
+            } else {
+              console.warn('⚠️ Sessão não confirmada no backend')
+            }
+          })
+          .catch(err => {
+            console.error('❌ Erro ao verificar sessão:', err)
+          })
+        
         setTimeout(() => {
           window.location.href = '/dashboard'
         }, 1000)
