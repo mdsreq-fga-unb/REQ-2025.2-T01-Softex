@@ -101,6 +101,10 @@ export default defineConfig({
 						label: "Unidade 2",
 						slug: "licoes/unidade-2",
 					},
+					{
+						label: "Unidade 3",
+						slug: "licoes/unidade-3",
+					},
 				],
 			},
 		
@@ -118,7 +122,7 @@ export default defineConfig({
 					{
 						label: "Unidade 3",
 						slug: "entregas/unidade-3",
-					}
+					},
 				],
 			},
 			],
