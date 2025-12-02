@@ -43,7 +43,7 @@ O feedback do cliente foi fundamental para o refinamento do sistema e validaçã
   <iframe 
     width="100%" 
     height="315" 
-    src="https://youtu.be/TC6OWwq72OM" 
+    src="https://www.youtube.com/embed/TC6OWwq72OM" 
     title="YouTube video player" 
     frameborder="0" 
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
