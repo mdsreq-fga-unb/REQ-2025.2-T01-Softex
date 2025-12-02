@@ -8,7 +8,14 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
-  tipo_funcao: "colaborador" | "lider" | "rh" | "admin";
+  tipo_funcao:
+    | "colaborador"
+    | "TI"
+    | "Financiro"
+    | "Marketing"
+    | "Juridíco"
+    | "Administrativo"
+    | "Projeto";
 }
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -222,12 +229,38 @@ export function useAuth() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        // Se não conseguir parsear JSON, tentar ler como texto
+        const text = await response.text();
+        throw new Error(text || "Erro ao fazer login");
+      }
+
       if (!response.ok) {
-        const errorMsg =
-          data.detail ||
-          data.non_field_errors?.[0] ||
-          "Email ou senha incorretos";
+        // Tentar extrair mensagem de erro de diferentes formatos do DRF
+        let errorMsg = "Email ou senha incorretos";
+
+        if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+          errorMsg = data.non_field_errors[0];
+        } else if (data.non_field_errors) {
+          errorMsg = data.non_field_errors;
+        } else if (data.detail) {
+          errorMsg = data.detail;
+        } else if (data.error) {
+          errorMsg = data.error;
+        } else if (data.message) {
+          errorMsg = data.message;
+        } else if (typeof data === "string") {
+          errorMsg = data;
+        } else if (data.email && Array.isArray(data.email)) {
+          errorMsg = data.email[0];
+        } else if (data.password && Array.isArray(data.password)) {
+          errorMsg = data.password[0];
+        }
+
         logError(
           "Falha ao fazer login",
           { status: response.status, email, hasPassword: !!password, data },
@@ -236,8 +269,8 @@ export function useAuth() {
         throw new Error(errorMsg);
       }
 
-      user.value = data.user;
-      localStorage.setItem(STORAGE_USER, JSON.stringify(data.user));
+      // Usar setUser para garantir consistência
+      setUser(data.user);
       setTokens(data.access, data.refresh);
       router.push("/dashboard");
       return true;
