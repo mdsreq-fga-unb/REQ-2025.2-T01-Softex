@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/composables/useAuth'
 
-const { login, isLoading, error, setTokens } = useAuth()
+const { login, isLoading, error, setTokens, setUser } = useAuth()
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -51,6 +51,10 @@ onMounted(() => {
     if (userData) {
       try {
         const user = JSON.parse(userData)
+        
+        // Salvar usuário no estado e localStorage
+        setUser(user)
+        console.log('✅ Usuário salvo no estado e localStorage:', user)
         
         // Processar tokens JWT se presentes
         if (tokensEncoded) {

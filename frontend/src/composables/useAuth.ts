@@ -148,6 +148,16 @@ export function useAuth() {
     console.log("✅ Tokens JWT salvos no localStorage");
   };
 
+  const setUser = (userData: User) => {
+    user.value = userData;
+    localStorage.setItem(STORAGE_USER, JSON.stringify(userData));
+    console.log("✅ Usuário atualizado no estado:", userData);
+  };
+
+  const reloadUserFromStorage = () => {
+    loadUserFromStorage();
+  };
+
   /**
    * Login via Google SSO
    */
@@ -312,5 +322,7 @@ export function useAuth() {
     getAuthHeader,
     authenticatedFetch,
     setTokens,
+    setUser,
+    reloadUserFromStorage,
   };
 }
