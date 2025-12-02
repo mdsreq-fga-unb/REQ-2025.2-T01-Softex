@@ -11,15 +11,15 @@ import {
   Settings,
 } from "lucide-vue-next";
 import { useAuth } from "@/composables/useAuth";
-import { useFormatTipoFuncao } from "@/composables/useFormatTipoFuncao";
 import NovoUsuarioModal from "@/components/modals/administracao/NovoUsuarioModal.vue";
 import SlackConfigModal from "@/components/modals/administracao/SlackConfigModal.vue";
 import NovaPlantaModal from "@/components/modals/administracao/NovaPlantaModal.vue";
 import ModalSala from "@/components/modals/administracao/ModalSala.vue";
 import EditarUsuario from "@/components/modals/administracao/EditarUsuario.vue";
 import PermissoesModal from "@/components/modals/administracao/PermissoesModal.vue";
-
+import { useFormatTipoFuncao } from "@/composables/useFormatTipoFuncao";
 const { user, logout, authenticatedFetch } = useAuth();
+
 const { formatTipoFuncao } = useFormatTipoFuncao();
 const router = useRouter();
 const route = useRoute();
@@ -287,12 +287,7 @@ const carregarSalas = async () => {
   try {
     console.log("📥 Carregando salas de reunião da API...");
 
-    const resp = await fetch(`${API_URL}/api/salas-reuniao/`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
-    });
+    const resp = await authenticatedFetch(`${API_URL}/api/salas-reuniao/`);
 
     if (!resp.ok) {
       const text = await resp.text();
@@ -325,14 +320,14 @@ const handleSalvarSala = async ({ nome }: { nome: string }) => {
   try {
     console.log("📨 Criando sala de reunião...", { nome });
 
-    const resp = await fetch(`${API_URL}/api/salas-reuniao/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
-      body: JSON.stringify({ nome }),
-    });
+      const resp = await authenticatedFetch(`${API_URL}/api/salas-reuniao/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nome }),
+      });
+
 
     const data = await resp.json();
 
@@ -359,12 +354,10 @@ const handleExcluirSala = async (salaId: number) => {
   try {
     console.log("🗑 Excluindo sala de reunião id=", salaId);
 
-    const resp = await fetch(`${API_URL}/api/salas-reuniao/${salaId}/`, {
+    const resp = await authenticatedFetch(`${API_URL}/api/salas-reuniao/${salaId}/`, {
       method: "DELETE",
-      headers: {
-        ...getAuthHeaders(),
-      },
     });
+
 
     if (!resp.ok && resp.status !== 204) {
       const text = await resp.text();
