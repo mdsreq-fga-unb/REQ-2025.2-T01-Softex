@@ -130,6 +130,7 @@ type SlackConfig = {
   espelhoSala: string;
   mensagemSalaCodigo: string;
 };
+const escritorios = ref<string[]>([]);
 
 const showSlackModal = ref(false);
 
@@ -160,20 +161,7 @@ const abrirNovaPlantaModal = () => {
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-// se tiver auth com token, usa aqui
-const getAuthHeaders = (): Record<string, string> => {
-  const token =
-    localStorage.getItem("accessToken") ||
-    localStorage.getItem("token") ||
-    localStorage.getItem("authToken");
-
-  if (token) {
-    return { Authorization: `Bearer ${token}` };
-  }
-
-  // retorna um objeto vazio, mas ainda do tipo Record<string, string>
-  return {};
-};
+// se tiver auth com token, usa aqu
 
 const handleNovaPlantaSalva = async (payload: {
   nome: string;
@@ -443,7 +431,7 @@ const abrirPermissoes = () => {
   showPermissoesModal.value = true;
 };
 
-const handleSalvarPermissoes = async (novos) => {
+const handleSalvarPermissoes = async (novos: any) => {
   try {
     const resp = await authenticatedFetch(
       `${API_URL}/api/permissoes/perfis/update-all-profiles/`,

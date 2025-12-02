@@ -60,7 +60,6 @@ const showConfirmExcluir = ref(false);
 
 // --------- CAMPOS DA NOVA PLANTA / UPLOAD ---------
 const novoNome = ref("");
-const novoEscritorio = ref("");
 const arquivo = ref<File | null>(null);
 
 // --------- HELPERS BACKEND ---------
@@ -102,9 +101,10 @@ const carregarPlantas = async () => {
     }
 
     // Se não houver planta selecionada ainda, seleciona a primeira
-    if (!selectedPlantaId.value) {
-      selectedPlantaId.value = plantas.value[0].id;
+    if (!selectedPlantaId.value && plantas.value.length > 0) {
+    selectedPlantaId.value = plantas.value[0]?.id ?? null;
     }
+
 
     // Carrega dados da planta selecionada
     if (selectedPlantaId.value) {
@@ -277,15 +277,6 @@ const handleOverlayClick = (e: MouseEvent) => {
 };
 
 // --------- ABRIR NOVA PLANTA ---------
-const abrirNovaPlanta = () => {
-  selectedPlantaId.value = null;
-  novoNome.value = "";
-  novoEscritorio.value = props.escritorios[0] ?? "";
-  arquivo.value = null;
-  previewUrl.value = null;
-
-  showUploadModal.value = true;
-};
 
 // --------- EDITAR PLANTA (ABRIR MODAL EDITOR) ---------
 const abrirEditarPlanta = async () => {
