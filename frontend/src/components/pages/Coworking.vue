@@ -68,6 +68,7 @@ type SeatPoint = {
   status: SeatStatus;
   usuarioNome?: string;
   reservaInfo?: {
+    id_reserva_cadeira?: number;
     usuario_nome: string;
     usuario_email?: string;
     data_inicio: string;
@@ -385,6 +386,7 @@ const handleSeatClick = async (id: number) => {
 
         if (reserva) {
           selectedReservaInfo.value = {
+            id_reserva_cadeira: reserva.id_reserva_cadeira,
             usuario_nome: reserva.usuario_nome || "Usuário desconhecido",
             usuario_email: reserva.usuario_email,
             data_inicio: reserva.data_inicio,
@@ -598,6 +600,7 @@ const carregarReservasCadeira = async () => {
         seats.value[seatIndex].status = "reservado";
         seats.value[seatIndex].usuarioNome = reserva.usuario_nome || undefined;
         seats.value[seatIndex].reservaInfo = {
+          id_reserva_cadeira: reserva.id_reserva_cadeira,
           usuario_nome: reserva.usuario_nome || "Usuário desconhecido",
           usuario_email: reserva.usuario_email,
           data_inicio: reserva.data_inicio,
@@ -615,6 +618,180 @@ const carregarReservasCadeira = async () => {
       { error: e },
       "Coworking.carregarReservasCadeira",
       e instanceof Error ? e : new Error(String(e))
+    );
+  }
+};
+
+// -------------------------------------------------------
+// CANCELAR RESERVA DE CADEIRA
+// -------------------------------------------------------
+const handleCancelarReserva = async (reservaIdOrSeatId: number) => {
+  if (!user.value) {
+    alert("Você precisa estar autenticado para cancelar uma reserva.");
+    return;
+  }
+
+  if (user.value.tipo_funcao !== "Administrativo") {
+    alert("Apenas administradores podem cancelar reservas.");
+    return;
+  }
+
+  let reservaId: number | null = null;
+
+  // Se temos o ID da reserva diretamente do modal (quando > 0 e é um ID válido)
+  if (selectedReservaInfo.value?.id_reserva_cadeira) {
+    reservaId = selectedReservaInfo.value.id_reserva_cadeira;
+    console.log("✅ Usando ID da reserva do selectedReservaInfo:", reservaId);
+  } else {
+    // Caso contrário, buscar pelo seatId
+    console.log("🔍 Buscando reserva pelo seatId:", reservaIdOrSeatId);
+    const seat = seats.value.find((s) => s.id === reservaIdOrSeatId);
+
+    if (!seat) {
+      alert("Cadeira não encontrada.");
+      return;
+    }
+
+    if (!seat.idCadeira) {
+      alert("ID da cadeira não encontrado.");
+      console.error("❌ Seat sem idCadeira:", seat);
+      return;
+    }
+
+    if (seat.status !== "reservado") {
+      alert("Esta cadeira não possui reserva ativa para cancelar.");
+      return;
+    }
+
+    try {
+      console.log("🔗 Buscando reservas para cadeira ID:", seat.idCadeira);
+      const respReservas = await authenticatedFetch(
+        `${API_URL}/api/reservas/cadeira/disponibilidade/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!respReservas.ok) {
+        const errorText = await respReservas.text();
+        console.error("❌ Erro ao buscar reservas:", errorText);
+        throw new Error("Erro ao buscar reservas.");
+      }
+
+      const reservas = await respReservas.json();
+      console.log("📋 Reservas encontradas:", reservas.length);
+
+      const reservaAtiva = reservas.find(
+        (r: any) => r.cadeira_id === seat.idCadeira && r.status === "confirmada"
+      );
+
+      if (!reservaAtiva) {
+        console.error(
+          "❌ Reserva ativa não encontrada para cadeira:",
+          seat.idCadeira
+        );
+        alert("Reserva ativa não encontrada.");
+        return;
+      }
+
+      reservaId = reservaAtiva.id_reserva_cadeira;
+      console.log("✅ Reserva encontrada, ID:", reservaId);
+    } catch (e) {
+      console.error("❌ Erro ao buscar reserva:", e);
+      alert("Erro ao buscar informações da reserva.");
+      return;
+    }
+  }
+
+  if (!reservaId) {
+    alert("ID da reserva não encontrado.");
+    console.error("❌ Não foi possível obter o ID da reserva");
+    return;
+  }
+
+  try {
+    const url = `${API_URL}/api/reservas/cadeira/${reservaId}/`;
+    console.log("🔗 Cancelando reserva em:", url);
+    console.log("📦 Dados: { status: 'cancelada' }");
+
+    const response = await authenticatedFetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: "cancelada",
+      }),
+    });
+
+    console.log(
+      "📡 Resposta do servidor:",
+      response.status,
+      response.statusText
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ Erro na resposta:", errorText);
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { error: errorText };
+      }
+
+      if (response.status === 401 || response.status === 403) {
+        alert("Você não tem permissão para cancelar esta reserva.");
+        return;
+      }
+
+      const errorMessage =
+        errorData.detail ||
+        errorData.error ||
+        errorData.message ||
+        "Erro ao cancelar reserva. Tente novamente.";
+      alert(errorMessage);
+      return;
+    }
+
+    const reservaCancelada = await response.json();
+    console.log("✅ Reserva cancelada com sucesso:", reservaCancelada);
+
+    // Atualizar imediatamente o status da cadeira na interface
+    if (selectedSeat.value) {
+      const seatIndex = seats.value.findIndex(
+        (s) => s.id === selectedSeat.value?.id
+      );
+      if (seatIndex !== -1) {
+        seats.value[seatIndex].status = "disponivel";
+        seats.value[seatIndex].usuarioNome = undefined;
+        seats.value[seatIndex].reservaInfo = undefined;
+        console.log("🔄 Status da cadeira atualizado para disponível");
+      }
+    }
+
+    // Recarregar reservas para garantir sincronização
+    await carregarReservasCadeira();
+
+    showCadeiraModal.value = false;
+    alert(
+      "Reserva cancelada com sucesso! A cadeira está disponível novamente."
+    );
+  } catch (e) {
+    console.error("❌ Erro ao cancelar reserva:", e);
+    logError(
+      "Erro ao cancelar reserva",
+      { error: e, reservaId },
+      "Coworking.handleCancelarReserva",
+      e instanceof Error ? e : new Error(String(e))
+    );
+    alert(
+      e instanceof Error
+        ? e.message
+        : "Erro ao cancelar reserva. Tente novamente."
     );
   }
 };
@@ -976,8 +1153,10 @@ const handleReservaCadeira = async (payload: {
       :open="showCadeiraModal"
       :seat="selectedSeat"
       :reserva-info="selectedReservaInfo"
+      :is-admin="user?.tipo_funcao === 'Administrativo'"
       @close="showCadeiraModal = false"
       @reserve="handleReservaCadeira"
+      @cancel-reservation="handleCancelarReserva"
     />
   </div>
 </template>

@@ -11,6 +11,7 @@ type SeatInfo = {
 };
 
 type ReservaInfo = {
+  id_reserva_cadeira?: number;
   usuario_nome: string;
   usuario_email?: string;
   data_inicio: string;
@@ -32,11 +33,13 @@ const props = defineProps<{
   open: boolean;
   seat: SeatInfo | null;
   reservaInfo?: ReservaInfo | null;
+  isAdmin?: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "close"): void;
   (e: "reserve", payload: ReservaCadeiraPayload): void;
+  (e: "cancel-reservation", reservaId: number): void;
 }>();
 
 const dataInicio = ref("");
@@ -277,6 +280,25 @@ const salvar = () => {
     horaFim: horaFim.value,
   });
 };
+
+const showConfirmCancel = ref(false);
+
+const cancelarReserva = () => {
+  if (!props.seat || !props.reservaInfo) return;
+  showConfirmCancel.value = true;
+};
+
+const confirmarCancelamento = () => {
+  if (!props.seat || !props.reservaInfo) return;
+  // Passar o ID da reserva se disponível, senão passar o seatId para buscar
+  const reservaId = props.reservaInfo.id_reserva_cadeira || 0;
+  emit("cancel-reservation", reservaId || props.seat.id);
+  showConfirmCancel.value = false;
+};
+
+const cancelarConfirmacao = () => {
+  showConfirmCancel.value = false;
+};
 </script>
 
 <template>
@@ -352,9 +374,19 @@ const salvar = () => {
             </div>
           </div>
 
-          <button type="button" class="btn-close" @click="fechar">
-            Fechar
-          </button>
+          <div class="actions-buttons">
+            <button
+              v-if="props.isAdmin && isReservado"
+              type="button"
+              class="btn-delete"
+              @click="cancelarReserva"
+            >
+              Cancelar reserva
+            </button>
+            <button type="button" class="btn-close" @click="fechar">
+              Fechar
+            </button>
+          </div>
         </div>
 
         <!-- Modal de reserva quando disponível -->
@@ -423,6 +455,45 @@ const salvar = () => {
         </template>
       </div>
     </div>
+
+    <!-- Modal de confirmação de cancelamento -->
+    <Teleport to="body">
+      <div
+        v-if="showConfirmCancel"
+        class="confirm-overlay"
+        @click.self="cancelarConfirmacao"
+      >
+        <div class="confirm-card">
+          <div class="confirm-header">
+            <h3 class="confirm-title">Cancelar Reserva</h3>
+          </div>
+          <div class="confirm-body">
+            <p class="confirm-message">
+              Tem certeza que deseja cancelar esta reserva?
+            </p>
+            <p class="confirm-submessage">
+              A cadeira ficará disponível novamente para outros usuários.
+            </p>
+          </div>
+          <div class="confirm-actions">
+            <button
+              type="button"
+              class="btn-confirm-cancel"
+              @click="cancelarConfirmacao"
+            >
+              Não, manter reserva
+            </button>
+            <button
+              type="button"
+              class="btn-confirm-ok"
+              @click="confirmarCancelamento"
+            >
+              Sim, cancelar reserva
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </Teleport>
 </template>
 
@@ -693,8 +764,14 @@ const salvar = () => {
   color: #991b1b;
 }
 
-.btn-close {
+.actions-buttons {
+  display: flex;
+  gap: 0.75rem;
   width: 100%;
+}
+
+.btn-close {
+  flex: 1;
   border: none;
   border-radius: 12px;
   padding: 0.75rem 1.5rem;
@@ -708,5 +785,131 @@ const salvar = () => {
 
 .btn-close:hover {
   background: #4b5563;
+}
+
+.btn-delete {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #ffffff;
+  background: #ef4444;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-submit {
+  flex: 1;
+}
+
+/* Modal de confirmação */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100001;
+  padding: 2rem 1rem;
+}
+
+.confirm-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3),
+    0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  max-width: 420px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.confirm-header {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.confirm-title {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.confirm-body {
+  padding: 2rem 1.5rem;
+}
+
+.confirm-message {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+  text-align: center;
+}
+
+.confirm-submessage {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.btn-confirm-cancel {
+  flex: 1;
+  border: 2px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-confirm-cancel:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn-confirm-ok {
+  flex: 1;
+  border: none;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-confirm-ok:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
 }
 </style>

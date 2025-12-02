@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import {api } from '@/services/api'
+import { ref, watch } from "vue";
+import api from "@/services/api";
 
 type NovoUsuario = {
-  nome: string
-  email: string
-  funcao: string
-  enviarSenha: boolean
-}
+  nome: string;
+  email: string;
+  funcao: string;
+  enviarSenha: boolean;
+};
 
 const props = defineProps<{
-  open: boolean
-  funcoes: string[]
-}>()
+  open: boolean;
+  funcoes: string[];
+}>();
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'save', payload: NovoUsuario): void
-}>()
+  (e: "close"): void;
+  (e: "save", payload: NovoUsuario): void;
+}>();
 
 // Estado interno do formulário
 const form = ref<NovoUsuario>({
-  nome: '',
-  email: '',
-  funcao: '',
-  enviarSenha: true    // padrão: enviar senha
-})
+  nome: "",
+  email: "",
+  funcao: "",
+  enviarSenha: true, // padrão: enviar senha
+});
 
 // Sempre que abrir o modal, limpa o formulário
 watch(
   () => props.open,
   (val) => {
     if (val) {
-      form.value = { 
-        nome: '', 
-        email: '', 
-        funcao: '',
-        enviarSenha: true
-      }
+      form.value = {
+        nome: "",
+        email: "",
+        funcao: "",
+        enviarSenha: true,
+      };
     }
   }
-)
+);
 
 const fechar = () => {
-  emit('close')
-}
+  emit("close");
+};
 
 const salvar = async () => {
   try {
@@ -52,22 +52,25 @@ const salvar = async () => {
       first_name: form.value.nome,
       email: form.value.email,
       username: form.value.email,
-      password:form.value.enviarSenha ? 'TrocarSenha': '',
+      password: form.value.enviarSenha ? "TrocarSenha" : "",
       tipo_funcao: form.value.funcao,
+    };
 
-    }
+    const response = await api.post("/cadastro/", payload);
+    console.log("Usuário criado:", response.data);
 
-const response = await api.post('/cadastro/', payload)
-    console.log('Usuário criado:', response.data)
-
-    emit('save', { ...form.value })
-    emit('close')
+    emit("save", { ...form.value });
+    emit("close");
   } catch (err) {
-    console.error('Erro ao criar usuário:', err.response?.status, err.response?.data)
-    return
+    console.error(
+      "Erro ao criar usuário:",
+      err instanceof Error ? err.message : err,
+      (err as any)?.response?.status,
+      (err as any)?.response?.data
+    );
+    return;
   }
-}
-
+};
 </script>
 
 <template>
@@ -105,14 +108,16 @@ const response = await api.post('/cadastro/', payload)
           >
             <span class="toggle-knob" />
             <span class="toggle-label">
-              {{ form.enviarSenha ? 'On' : 'Off' }}
+              {{ form.enviarSenha ? "On" : "Off" }}
             </span>
           </button>
         </div>
       </form>
 
       <div class="modal-footer">
-        <button class="btn-cancelar" type="button" @click="fechar">Cancelar</button>
+        <button class="btn-cancelar" type="button" @click="fechar">
+          Cancelar
+        </button>
         <button class="btn-salvar" type="button" @click="salvar">Salvar</button>
       </div>
     </div>
@@ -123,7 +128,7 @@ const response = await api.post('/cadastro/', payload)
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -137,7 +142,7 @@ const response = await api.post('/cadastro/', payload)
   border-radius: 12px;
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .modal-title {
@@ -161,7 +166,7 @@ const response = await api.post('/cadastro/', payload)
 
 .input:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59,130,246,0.4);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
 }
 
 .modal-footer {

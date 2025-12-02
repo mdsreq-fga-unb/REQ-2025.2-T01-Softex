@@ -63,6 +63,24 @@ class ReservaCadeiraSerializer(serializers.ModelSerializer):
             return f"{obj.usuario.first_name} {obj.usuario.last_name}".strip()
         return None
     
+    def update(self, instance, validated_data):
+        """
+        Permite atualizar o status da reserva (para cancelamento)
+        Administradores podem cancelar qualquer reserva
+        """
+        user = self.context.get('request').user if self.context.get('request') else None
+        
+        if user and user.tipo_funcao == 'Administrativo':
+            # Administradores podem cancelar qualquer reserva
+            return super().update(instance, validated_data)
+        elif user and 'status' in validated_data:
+            # Usuários não-admin só podem cancelar suas próprias reservas
+            if validated_data.get('status') == 'cancelada' and instance.usuario != user:
+                from rest_framework.exceptions import PermissionDenied
+                raise PermissionDenied('Você só pode cancelar suas próprias reservas.')
+        
+        return super().update(instance, validated_data)
+    
     def validate(self, data):
         """
         Valida se não há conflito com reservas existentes
