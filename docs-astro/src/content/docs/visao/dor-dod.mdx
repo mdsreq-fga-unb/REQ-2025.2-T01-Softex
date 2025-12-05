@@ -1,0 +1,134 @@
+---
+title: Definition of Ready e Definition of Done
+description: Critérios de prontidão e conclusão para o projeto Softex
+---
+
+<div class="softex-process">
+> Esta seção apresenta os conceitos de **Definition of Ready (DoR)** e **Definition of Done (DoD)**, que ajudam a garantir que o trabalho seja bem definido antes de ser iniciado e que esteja completo antes de ser considerado pronto para entrega.
+</div>
+
+## Definition of Ready (DoR)
+
+<div class="softex-process">
+> A **Definition of Ready (DoR)** estabelece os critérios mínimos que uma história de usuário deve atender para ser considerada pronta para desenvolvimento. O objetivo é garantir que o time compreenda completamente o escopo, dependências e critérios de aceitação antes de iniciar a implementação.
+</div>
+
+### Clareza e Compreensão
+
+<ul class="softex-list">
+  <li>A história está descrita de forma clara no formato: "Como [persona], quero [ação], para [benefício]"</li>
+  <li>Há rastreabilidade com a Característica da Solução (CXX) e o Requisito Funcional (RF-XX) correspondente</li>
+  <li>Todos os termos e fluxos estão compreendidos pelo time de desenvolvimento e pelo Product Owner</li>
+</ul>
+
+### Critérios de Aceitação
+
+<ul class="softex-list">
+  <li>Todos os critérios de aceitação estão definidos, revisados e são testáveis</li>
+  <li>Os critérios representam o comportamento esperado pelo usuário, sem ambiguidades</li>
+</ul>
+
+### Dependências
+
+<ul class="softex-list">
+  <li>Dependências técnicas de design (Figma)</li>
+  <li>O impacto de cada dependência está mapeado e não bloqueia o início do desenvolvimento</li>
+</ul>
+
+### Estimativa e Priorização
+
+<ul class="softex-list">
+  <li>A história foi estimada pelo time (dias)</li>
+  <li>Está priorizada conforme o modelo MoSCoW (Must, Should, Could, Won't)</li>
+  <li>Faz parte de um Sprint planejado e possui critérios de aceite acordados</li>
+</ul>
+
+### Aprovação
+
+<ul class="softex-list">
+  <li>O Product Owner revisou e aprovou a história para desenvolvimento</li>
+  <li>A história foi discutida e refinada em backlog refinement</li>
+</ul>
+
+## Definition of Done (DoD)
+
+<div class="softex-process">
+> O **DoD** define os critérios que precisam ser cumpridos para que uma funcionalidade seja considerada completa. Isso inclui os requisitos, desenvolvimento, testes, revisão e validação da qualidade, garantindo que a entrega atenda ao escopo e aos padrões de qualidade acordados.
+</div>
+
+### Implementação
+
+<ul class="softex-list">
+  <li>Todas as funcionalidades descritas nos critérios de aceitação foram implementadas integralmente</li>
+  <li>A funcionalidade está integrada e testada no ambiente de desenvolvimento</li>
+</ul>
+
+### Testes
+
+<ul class="softex-list">
+  <li>Foram realizados testes unitários, de integração e de interface</li>
+  <li>Todos os critérios de aceitação foram validados e aprovados pela empresa</li>
+</ul>
+
+### UX/UI e Performance
+
+<ul class="softex-list">
+  <li>O design implementado segue o padrão visual aprovado no Figma</li>
+  <li>A interface está responsiva e funcional em navegadores suportados: <strong>Chrome</strong>, <strong>Firefox</strong> e <strong>Edge</strong> (conforme RNF10)</li>
+  <li>
+    O desempenho está dentro dos parâmetros esperados:
+    <ul>
+      <li><strong>RNF01</strong> — Atualização em tempo real: reservas devem refletir alterações instantaneamente para todos os usuários</li>
+      <li><strong>RNF03</strong> — Performance: sistema deve ser performático em ações críticas (reservar e cancelar)</li>
+      <li><strong>RNF04</strong> — Rapidez: sistema deve responder prontamente às solicitações</li>
+    </ul>
+  </li>
+</ul>
+
+### Documentação
+
+<ul class="softex-list">
+  <li>
+    Documentação técnica atualizada:
+    <ul>
+      <li>Endpoints da API REST (Django REST Framework) documentados</li>
+      <li>Estrutura de dados e modelos do banco de dados</li>
+    </ul>
+  </li>
+  <li>
+    Documentação de usuário atualizada:
+    <ul>
+      <li>Requisitos funcionais (RF-XX) e não funcionais (RNFXX) relacionados à funcionalidade</li>
+      <li>Critérios de aceitação validados</li>
+    </ul>
+  </li>
+  <li>
+    Notificações implementadas conforme especificado:
+    <ul>
+      <li><strong>RF-010</strong> — Enviar confirmações/cancelamentos por e-mail e sistemas internos (Slack)</li>
+      <li><strong>RF-010</strong> — Alertar sobre conflitos e início iminente de reservas</li>
+      <li><strong>US-007</strong> — Enviar notificações via Slack e e-mail ao criar/editar/cancelar reservas</li>
+      <li><strong>US-007</strong> — Enviar lembrete próximo ao horário da reserva</li>
+    </ul>
+  </li>
+</ul>
+
+### Deploy e Versionamento
+
+<ul class="softex-list">
+  <li>O incremento foi implantado em ambiente de <strong>homoogação</strong> para validação do cliente antes da produção</li>
+  <li>
+    Todos os bugs críticos identificados foram corrigidos:
+    <ul>
+      <li><strong>Bugs críticos</strong> são aqueles que impedem o uso do sistema, causam perda de dados, corrupção de informações ou violam requisitos críticos (RNF01, RNF12 - LGPD)</li>
+      <li>Bugs que bloqueiam funcionalidades essenciais (reservar, cancelar, visualizar disponibilidade)</li>
+      <li>Problemas de segurança que expõem dados sensíveis ou permitem acesso não autorizado</li>
+    </ul>
+  </li>
+</ul>
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 21/10/2025 | 1.0 | Criação do documento de DoR e DoD com critérios detalhados. | Felipe Pedroza | Todos |

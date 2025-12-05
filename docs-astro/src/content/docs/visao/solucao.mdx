@@ -12,35 +12,67 @@ O objetivo do produto é modernizar e centralizar o processo de reservas de sala
 
 #### Objetivos Específicos
 
-- **Eliminar ineficiências do processo atual**: reduzir dependência de planilhas (modo que é feito atualmente) e do trabalho manual de uma única pessoa.
+- <span id="eliminar-ineficiencias">**OE1 - Eliminar ineficiências do processo atual**</span>: reduzir dependência de planilhas (modo que é feito atualmente) e do trabalho manual de uma única pessoa.
 
-- **Otimizar a utilização do espaço**: permitir que colaboradores planejem com antecedência sua presença no escritório, garantindo previsibilidade e reduzindo conflitos.
+- <span id="otimizar-espaco">**OE2 - Otimizar a utilização do espaço**</span>: permitir que colaboradores planejem com antecedência sua presença no escritório, garantindo previsibilidade e reduzindo conflitos.
 
-- **Aumentar a produtividade interna**: liberar tempo dos colaboradores que hoje gastam em tarefas administrativas e resolução de conflitos de reserva.
+- <span id="aumentar-produtividade">**OE3 - Aumentar a produtividade interna**</span>: liberar tempo dos colaboradores que hoje gastam em tarefas administrativas e resolução de conflitos de reserva.
 
-- **Proporcionar autonomia e conveniência**: criar um processo centralizado e acessível de agendamento de recursos, sem necessidade de intermediários.
+- <span id="autonomia-conveniencia">**OE4 - Proporcionar autonomia e conveniência**</span>: criar um processo centralizado e acessível de agendamento de recursos, sem necessidade de intermediários.
 
-- **Ampliar a visibilidade estratégica para a gestão**: disponibilizar dados consistentes sobre taxa de ocupação e padrões de uso do escritório, apoiando decisões sobre infraestrutura e custos operacionais.
+- <span id="visibilidade-estrategica">**OE5 - Ampliar a visibilidade estratégica para a gestão**</span>: disponibilizar dados consistentes sobre taxa de ocupação e padrões de uso do escritório, apoiando decisões sobre infraestrutura e custos operacionais.
 
-- **Apoiar a adesão ao modelo híbrido**: tornar o trabalho presencial mais organizado e eficiente, fortalecendo a integração entre equipes.
 
-###  Características da Solução
+### Características da Solução
 
-A solução proposta terá como foco apoiar a organização e o planejamento do modelo híbrido da empresa, garantindo o uso eficiente das salas e ambientes de trabalho. De forma preliminar, destacam-se as seguintes características:
+A solução proposta terá como foco apoiar a organização e o planejamento do modelo híbrido da empresa, garantindo o uso eficiente das salas e ambientes de trabalho. As características foram reorganizadas **por objetivo**, conforme solicitado.
 
-- **Reserva de Salas e Estações de Trabalho**: reservas online simples e rápidas, com prevenção automática de conflitos e maior controle do uso dos espaços.
+---
 
-- **Mapa Interativo de Ocupação**: visualização em tempo real de salas e estações disponíveis/ocupadas, apoiando decisões imediatas.
+## 🎯 OE1 — Otimizar o uso de salas e espaços
 
-- **Gestão de Capacidade e Regras de Uso**: definição de limites por sala conforme políticas internas e normas de segurança, garantindo uso adequado.
+- **1.1 Reserva de salas:** reservas online simples e rápidas, com prevenção automática de conflitos e maior controle do uso dos espaços.
 
-- **Relatórios e Indicadores de Utilização**: métricas de frequência de uso, horários de pico e uso por equipe, apoiando reorganização ou expansão da infraestrutura.
+- **1.2 Reserva de estações de trabalho:** agendamento de mesas/estações individuais, garantindo organização e distribuição equilibrada dos espaços.
 
-- **Controle de Permissões e Perfis de Acesso**: perfis por cargo/setor/equipe, com possibilidade de bloqueio ou prioridade de uso em situações específicas.
+---
 
-- **Integração com Ferramentas Corporativas**: sincronização com calendários (Google Workspace) para evitar conflitos, além de notificações automáticas em canais como Slack.
+## 🎯 OE2 — Fornecer visibilidade sobre a ocupação dos ambientes
 
-- **Flexibilidade para Diferentes Ambientes**: funcionamento adaptado para coworking interno, salas de reunião, hubs de inovação e escritórios satélites, escalável para múltiplas unidades da empresa.
+- **2.1 Mapa de ocupação em tempo real:** visualização imediata das salas e estações disponíveis/ocupadas.
+
+- **2.2 Indicadores de disponibilidade:** gráficos e sinais simples mostrando taxas de ocupação e tendências do dia.
+
+---
+
+## 🎯 OE3 — Apoiar a tomada de decisão e gestão de infraestrutura
+
+- **3.1 Relatórios de frequência de uso:** métricas de uso por sala, período e equipe.
+
+- **3.2 Análise de horários de pico:** identificação de momentos críticos para apoiar ajustes na infraestrutura.
+
+---
+
+## 🎯 OE4 — Garantir segurança, controle e organização do uso
+
+- **4.1 Perfis e permissões:** definição de permissões por cargo/setor/equipe para reservar, editar ou cancelar.
+
+- **4.2 Regras de prioridade e bloqueio:** possibilidade de bloquear horários sensíveis ou priorizar determinados grupos em situações específicas.
+
+---
+
+## 🎯 OE5 — Apoiar reorganização e planejamento do trabalho híbrido
+
+- **5.1 Métricas de ocupação histórica:** análises contínuas da ocupação para decisões de expansão, redução ou reconfiguração dos espaços.
+
+- **5.2 Alertas de uso anormal:** notificações automáticas quando ocupações estiverem acima ou abaixo do esperado.
+
+---
+
+## Extra — Integrações Externas
+
+- **Notificações em canais como Slack:** envio automático de alertas de reservas, cancelamentos e atualizações, facilitando a comunicação entre equipes.
+
 
 ###  Métodos e Tecnologias
 
@@ -98,14 +130,6 @@ O desenvolvimento da solução seguirá uma metodologia ágil, utilizando tecnol
 #### Integrações Corporativas
 
 <CardGrid>
-  <Card title="Google Calendar" icon="calendar">
-    **Sincronização de Reservas**
-    
-    - Bloqueios automáticos
-    - Atualizações em tempo real
-    - Cancelamentos sincronizados
-    - Integração nativa com workspace
-  </Card>
   
   <Card title="Slack" icon="slack">
     **Comunicação e Lembretes**
@@ -254,10 +278,8 @@ A ferramenta de gestão de coworking e salas de reunião é tecnicamente viável
   <Card title="Integração Corporativa" icon="link">
     **Ecossistema Unificado**
     
-    - Sincronização com Google Calendar
     - Notificações via Slack
     - SSO integrado
-    - Processo oficial consolidado
   </Card>
   
   <Card title="Custo-benefício" icon="dollar-sign">
